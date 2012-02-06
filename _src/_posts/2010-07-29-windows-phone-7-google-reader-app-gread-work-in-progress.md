@@ -1,9 +1,10 @@
 ---
-Title: Windows Phone 7 Google Reader App (GREAD) Work In Progress
-Layout: post
-Categories:
+title: Windows Phone 7 Google Reader App (GREAD) Work In Progress
+date: 2010-07-29T14:06:40.0000000+10:00
+layout: post
+categories:
 - Mobile
-Tags:
+tags:
 - GREAD
 - wp7dev
 ---

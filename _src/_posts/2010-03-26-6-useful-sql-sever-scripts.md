@@ -1,9 +1,10 @@
 ---
-Title: 6 Useful SQL Server Scripts
-Layout: post
-Categories:
+title: 6 Useful SQL Server Scripts
+date: 2010-03-26T19:10:49.0000000+10:00
+layout: post
+categories:
 - Database
-Tags:
+tags:
 - sql
 ---
 

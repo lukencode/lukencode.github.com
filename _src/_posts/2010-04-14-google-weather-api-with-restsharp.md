@@ -1,9 +1,10 @@
 ---
-Title: Google Weather API with RestSharp
-Layout: post
-Categories:
+title: Google Weather API with RestSharp
+date: 2010-04-14T10:15:17.0000000+10:00
+layout: post
+categories:
 - Web Services
-Tags:
+tags:
 - API
 - RestSharp
 ---

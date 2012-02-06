@@ -1,9 +1,10 @@
 ---
-Title: Fluent Email in .NET
-Layout: post
-Categories:
+title: Fluent Email in .NET
+date: 2010-04-11T18:33:01.0000000+10:00
+layout: post
+categories:
 - Code
-Tags:
+tags:
 - .net
 - email
 - open-source

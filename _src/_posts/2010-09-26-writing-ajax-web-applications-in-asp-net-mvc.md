@@ -1,9 +1,10 @@
 ---
-Title: Writing AJAX web applications in Asp.Net MVC
-Layout: post
-Categories:
+title: Writing AJAX web applications in Asp.Net MVC
+date: 2010-09-26T19:18:04.0000000+10:00
+layout: post
+categories:
 - Web
-Tags:
+tags:
 - jqax
 - jqote
 - jquery

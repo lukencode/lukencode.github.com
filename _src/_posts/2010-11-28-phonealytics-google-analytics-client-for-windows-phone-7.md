@@ -1,9 +1,10 @@
 ---
-Title: "Phonealytics – Google Analytics App for Windows Phone 7"
-Layout: post
-Categories:
+title: "Phonealytics – Google Analytics App for Windows Phone 7"
+date: 2010-11-28T20:02:33.0000000+10:00
+layout: post
+categories:
 - Mobile
-Tags:
+tags:
 - app
 - phonealytics
 - wp7

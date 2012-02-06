@@ -1,10 +1,11 @@
 ---
-Title: Windows Phone (Mango) Contact Chooser Task
-Layout: post
-Categories:
+title: Windows Phone (Mango) Contact Chooser Task
+date: 2011-12-01T21:16:00.0000000+10:00
+layout: post
+categories:
 - Code
 - Mobile
-Tags:
+tags:
 - wp7
 ---
 

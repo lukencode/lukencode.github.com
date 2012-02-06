@@ -1,10 +1,11 @@
 ---
-Title: Rest Web Services In Windows Phone 7
-Layout: post
-Categories:
+title: Rest Web Services In Windows Phone 7
+date: 2010-08-04T20:30:38.0000000+10:00
+layout: post
+categories:
 - Mobile
 - Web Services
-Tags:
+tags:
 - RestSharp
 - wp7dev
 ---

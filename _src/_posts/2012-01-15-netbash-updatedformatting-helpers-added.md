@@ -1,10 +1,11 @@
 ---
-Title: "NetBash Updated – Formatting Helpers Added"
-Layout: post
-Categories:
+title: "NetBash Updated – Formatting Helpers Added"
+date: 2012-01-15T11:51:19.0000000+10:00
+layout: post
+categories:
 - Code
 - Web
-Tags:
+tags:
 - netbash
 ---
 

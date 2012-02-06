@@ -1,9 +1,10 @@
 ---
-Title: Fluent Email Now Supporting Razor Syntax For Templates
-Layout: post
-Categories:
+title: Fluent Email Now Supporting Razor Syntax For Templates
+date: 2011-04-30T16:26:01.0000000+10:00
+layout: post
+categories:
 - Code
-Tags:
+tags:
 - .net
 - email
 - nuget

@@ -1,9 +1,10 @@
 ---
-Title: Simple C# Synchronous / Asynchronous Email Sender
-Layout: post
-Categories:
+title: Simple C# Synchronous / Asynchronous Email Sender
+date: 2010-04-08T10:47:51.0000000+10:00
+layout: post
+categories:
 - Code
-Tags:
+tags:
 - email
 ---
 

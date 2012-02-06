@@ -1,9 +1,10 @@
 ---
-Title: Split String Into Array of Chunks
-Layout: post
-Categories:
+title: Split String Into Array of Chunks
+date: 2010-04-21T14:57:17.0000000+10:00
+layout: post
+categories:
 - Code
-Tags: []
+tags: []
 ---
 
 Here is a little function I needed to use today for spliting a string into an array of strings of a given length rather than by a particular character. I ran into a situation where the database columns I wanted to insert some text into were split over a number of columns eg "DescriptionLine1", "DescriptionLine2", "DescriptionLine3".

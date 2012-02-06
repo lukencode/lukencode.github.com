@@ -1,9 +1,10 @@
 ---
-Title: Getting Started With MongoDB and NoRM
-Layout: post
-Categories:
+title: Getting Started With MongoDB and NoRM
+date: 2010-07-09T16:39:00.0000000+10:00
+layout: post
+categories:
 - Database
-Tags:
+tags:
 - c#
 - mongodb
 ---

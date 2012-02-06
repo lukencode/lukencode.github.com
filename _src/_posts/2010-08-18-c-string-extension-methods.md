@@ -1,9 +1,10 @@
 ---
-Title: C# String Extension Methods
-Layout: post
-Categories:
+title: C# String Extension Methods
+date: 2010-08-18T23:04:09.0000000+10:00
+layout: post
+categories:
 - Code
-Tags:
+tags:
 - extension methods
 ---
 

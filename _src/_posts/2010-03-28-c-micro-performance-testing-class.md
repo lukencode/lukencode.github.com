@@ -1,9 +1,10 @@
 ---
-Title: C# Micro Performance Testing Class
-Layout: post
-Categories:
+title: C# Micro Performance Testing Class
+date: 2010-03-28T18:48:45.0000000+10:00
+layout: post
+categories:
 - Code
-Tags:
+tags:
 - .net
 - performance
 ---

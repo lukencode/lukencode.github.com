@@ -1,10 +1,11 @@
 ---
-Title: "NetBash – An Alternative to Endless Admin Pages in Asp.Net Web Applications"
-Layout: post
-Categories:
+title: "NetBash – An Alternative to Endless Admin Pages in Asp.Net Web Applications"
+date: 2011-12-11T21:14:54.0000000+10:00
+layout: post
+categories:
 - Code
 - Web
-Tags:
+tags:
 - netbash
 - open-source
 ---

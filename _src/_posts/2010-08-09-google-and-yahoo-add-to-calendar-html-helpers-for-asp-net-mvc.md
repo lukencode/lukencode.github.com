@@ -1,9 +1,10 @@
 ---
-Title: Google and Yahoo Add to Calendar Html Helpers for Asp.net MVC
-Layout: post
-Categories:
+title: Google and Yahoo Add to Calendar Html Helpers for Asp.net MVC
+date: 2010-08-09T21:11:42.0000000+10:00
+layout: post
+categories:
 - Web
-Tags:
+tags:
 - html helper
 - mvc
 ---

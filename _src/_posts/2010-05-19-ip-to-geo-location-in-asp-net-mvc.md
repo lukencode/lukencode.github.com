@@ -1,9 +1,10 @@
 ---
-Title: IP to Geo Location in Asp.Net MVC
-Layout: post
-Categories:
+title: IP to Geo Location in Asp.Net MVC
+date: 2010-05-19T23:37:42.0000000+10:00
+layout: post
+categories:
 - Web
-Tags:
+tags:
 - location
 ---
 

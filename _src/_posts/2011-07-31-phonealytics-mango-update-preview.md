@@ -1,9 +1,10 @@
 ---
-Title: "Phonealytics “Mango” Update Preview"
-Layout: post
-Categories:
+title: "Phonealytics “Mango” Update Preview"
+date: 2011-07-31T15:54:24.0000000+10:00
+layout: post
+categories:
 - Mobile
-Tags:
+tags:
 - wp7
 ---
 

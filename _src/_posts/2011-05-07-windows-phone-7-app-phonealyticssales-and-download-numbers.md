@@ -1,9 +1,10 @@
 ---
-Title: "Windows Phone 7 App Phonealytics – Sales and Download Numbers"
-Layout: post
-Categories:
+title: "Windows Phone 7 App Phonealytics – Sales and Download Numbers"
+date: 2011-05-07T14:13:00.0000000+10:00
+layout: post
+categories:
 - Mobile
-Tags:
+tags:
 - stats
 - wp7
 ---

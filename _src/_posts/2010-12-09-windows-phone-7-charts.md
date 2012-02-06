@@ -1,10 +1,11 @@
 ---
-Title: Windows Phone 7 Charts
-Layout: post
-Categories:
+title: Windows Phone 7 Charts
+date: 2010-12-09T21:25:06.0000000+10:00
+layout: post
+categories:
 - Code
 - Mobile
-Tags:
+tags:
 - chart
 - graph
 - wp7
