@@ -7,7 +7,7 @@ title : SiteName
     {% for post in site.posts %}
 		<li>
 			<a href="{{ post.url }}">{{ post.title }}</a>
-			<span class="date">{{ post.date | date: "%j %B, %Y" }}</span>
+			<span class="date">{{ post.date | date: "%d %B, %Y" }}</span>
 		</li>
     {% endfor %}
 </ul>
