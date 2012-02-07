@@ -1,0 +1,318 @@
+
+<!DOCTYPE html>
+
+<html> 
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<title>lukencode | code first, ask questions later</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="profile" href="http://gmpg.org/xfn/11" />
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen, projection" />
+	<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
+	
+	<!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+	
+	<script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
+	<meta name="google-site-verification" content="e6fQUO7vqSIw6sdQQeiUPs4JPc8VghE_9u72V2NXv4U" /> 	
+</head>		
+	
+<body>
+	<div id="header-wrap">
+		<header>
+			<hgroup>
+				<h1>
+					<a href="/" title="lukencode" rel="home">lukencode</a>
+				</h1>
+				<div id="site-description">code first, ask questions later</div>
+			</hgroup>			
+		</header>
+								
+		<div id="secondary" class="widget-area">
+			<aside id="me" class="widget">
+				<h4>Author</h4>	
+				
+				<img class="grav" src='http://en.gravatar.com/userimage/7397984/5de7392594b98c6b510f0691ca5e0638.jpeg' />
+				
+				<div class="about">
+					<strong>Luke Lowrey</strong>
+					<p>I drink beer and build web and mobile apps (in that order).</p>
+				</div>
+				
+				<ul>
+					<li> <a href='/about'>About</a> </li>					
+					<li> <a href='/contact'>Contact</a> </li>
+					<li>
+						<a href="/rss.xml">
+							<img src='http://lukencode.com/wp-content/uploads/2011/04/feed-icon.png' />
+							Subscribe
+						</a>
+					</li>
+					<li><a href="http://twitter.com/lukencode" class="twitter-follow-button" data-button="grey" data-text-color="#FFFFFF" data-link-color="#00AEFF">Follow @lukencode</a></li>
+				</ul>
+			</aside>
+		</div>			
+	</div>
+				
+	<div id="primary">
+		<div id="content">
+			<div class="entry-container">
+	<div class='entry'>
+		<h1> Calling Web Services in Android using HttpClient </h1>
+		<span class="postdate">e B, Y
+			
+				<li><a href="/tag/[">[</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/j">j</a></li>
+			
+				<li><a href="/tag/a">a</a></li>
+			
+				<li><a href="/tag/v">v</a></li>
+			
+				<li><a href="/tag/a">a</a></li>
+			
+				<li><a href="/tag/,">,</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/M">M</a></li>
+			
+				<li><a href="/tag/o">o</a></li>
+			
+				<li><a href="/tag/b">b</a></li>
+			
+				<li><a href="/tag/i">i</a></li>
+			
+				<li><a href="/tag/l">l</a></li>
+			
+				<li><a href="/tag/e">e</a></li>
+			
+				<li><a href="/tag/,">,</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/w">w</a></li>
+			
+				<li><a href="/tag/e">e</a></li>
+			
+				<li><a href="/tag/b">b</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/s">s</a></li>
+			
+				<li><a href="/tag/e">e</a></li>
+			
+				<li><a href="/tag/r">r</a></li>
+			
+				<li><a href="/tag/v">v</a></li>
+			
+				<li><a href="/tag/i">i</a></li>
+			
+				<li><a href="/tag/c">c</a></li>
+			
+				<li><a href="/tag/e">e</a></li>
+			
+				<li><a href="/tag/s">s</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/]">]</a></li>
+			
+		</span>
+		<p>I’ve decided recently to branch out from mainly web development into the mobile app space – starting with Google’s Android (because I own a Android phone). One of the first things I wanted to do was start calling webservices, specifically Google Analytics.</p>
+<p>Now I am pretty new to Android and Java in general but I feel I’ve come up with a nice simple way to make requests to web services and APIs (and plain html pages if you want). The class uses the <em>org.apache.http</em> library which is included in Android.</p>
+<p>This is the code for the class.</p>
+<pre class="brush: java;">public class RestClient {
+
+    private ArrayList &lt;NameValuePair&gt; params;
+    private ArrayList &lt;NameValuePair&gt; headers;
+
+    private String url;
+
+    private int responseCode;
+    private String message;
+
+    private String response;
+
+    public String getResponse() {
+        return response;
+    }
+
+    public String getErrorMessage() {
+        return message;
+    }
+
+    public int getResponseCode() {
+        return responseCode;
+    }
+
+    public RestClient(String url)
+    {
+        this.url = url;
+        params = new ArrayList&lt;NameValuePair&gt;();
+        headers = new ArrayList&lt;NameValuePair&gt;();
+    }
+
+    public void AddParam(String name, String value)
+    {
+        params.add(new BasicNameValuePair(name, value));
+    }
+
+    public void AddHeader(String name, String value)
+    {
+        headers.add(new BasicNameValuePair(name, value));
+    }
+
+    public void Execute(RequestMethod method) throws Exception
+    {
+        switch(method) {
+            case GET:
+            {
+                //add parameters
+                String combinedParams = "";
+                if(!params.isEmpty()){
+                    combinedParams += "?";
+                    for(NameValuePair p : params)
+                    {
+                        String paramString = p.getName() + "=" + URLEncoder.encode(p.getValue(),”UTF-8″);
+                        if(combinedParams.length() &gt; 1)
+                        {
+                            combinedParams  +=  "&amp;" + paramString;
+                        }
+                        else
+                        {
+                            combinedParams += paramString;
+                        }
+                    }
+                }
+
+                HttpGet request = new HttpGet(url + combinedParams);
+
+                //add headers
+                for(NameValuePair h : headers)
+                {
+                    request.addHeader(h.getName(), h.getValue());
+                }
+
+                executeRequest(request, url);
+                break;
+            }
+            case POST:
+            {
+                HttpPost request = new HttpPost(url);
+
+                //add headers
+                for(NameValuePair h : headers)
+                {
+                    request.addHeader(h.getName(), h.getValue());
+                }
+
+                if(!params.isEmpty()){
+                    request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+                }
+
+                executeRequest(request, url);
+                break;
+            }
+        }
+    }
+
+    private void executeRequest(HttpUriRequest request, String url)
+    {
+        HttpClient client = new DefaultHttpClient();
+
+        HttpResponse httpResponse;
+
+        try {
+            httpResponse = client.execute(request);
+            responseCode = httpResponse.getStatusLine().getStatusCode();
+            message = httpResponse.getStatusLine().getReasonPhrase();
+
+            HttpEntity entity = httpResponse.getEntity();
+
+            if (entity != null) {
+
+                InputStream instream = entity.getContent();
+                response = convertStreamToString(instream);
+
+                // Closing the input stream will trigger connection release
+                instream.close();
+            }
+
+        } catch (ClientProtocolException e)  {
+            client.getConnectionManager().shutdown();
+            e.printStackTrace();
+        } catch (IOException e) {
+            client.getConnectionManager().shutdown();
+            e.printStackTrace();
+        }
+    }
+
+    private static String convertStreamToString(InputStream is) {
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sb.toString();
+    }
+}</pre>
+<p>Here is an example of how I use the class to call the Google Analytics API. I use the AddParam methods to add query string / post values and the AddHeader method to add headers to the request. RequestMethod is a simple enum with GET and POST values.</p>
+<pre class="brush: java;">RestClient client = new RestClient(LOGIN_URL);
+client.AddParam("accountType", "GOOGLE");
+client.AddParam("source", "tboda-widgalytics-0.1");
+client.AddParam("Email", _username);
+client.AddParam("Passwd", _password);
+client.AddParam("service", "analytics");
+client.AddHeader("GData-Version", "2");
+
+try {
+    client.Execute(RequestMethod.POST);
+} catch (Exception e) {
+    e.printStackTrace();
+}
+
+String response = client.getResponse();</pre>
+<p>The class also exposes the Http response code and message which are important when using some Restful APIs. I know could definitely improve/extend on this code and would love to hear from those more experienced in Java and Android than myself.</p>
+
+	</div>
+</div>
+<div id="page-navigation"> 
+	<div class="left">  </div> 
+	<div class="right">  </div> 
+	<div class="clear">&nbsp;</div>
+</div> 
+
+
+
+		</div>				
+
+		<footer>
+			<small>powered by <a href="https://github.com/code52/pretzel">pretzel</a> / <a href="https://github.com/mojombo/jekyll">jekyll</a> and living on <a href="https://github.com">github</a></small>
+		</footer>
+	</div>
+
+</body>
+</html>
+

@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+
+<html> 
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<title>lukencode | code first, ask questions later</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="profile" href="http://gmpg.org/xfn/11" />
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen, projection" />
+	<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
+	
+	<!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+	
+	<script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
+	<meta name="google-site-verification" content="e6fQUO7vqSIw6sdQQeiUPs4JPc8VghE_9u72V2NXv4U" /> 	
+</head>		
+	
+<body>
+	<div id="header-wrap">
+		<header>
+			<hgroup>
+				<h1>
+					<a href="/" title="lukencode" rel="home">lukencode</a>
+				</h1>
+				<div id="site-description">code first, ask questions later</div>
+			</hgroup>			
+		</header>
+								
+		<div id="secondary" class="widget-area">
+			<aside id="me" class="widget">
+				<h4>Author</h4>	
+				
+				<img class="grav" src='http://en.gravatar.com/userimage/7397984/5de7392594b98c6b510f0691ca5e0638.jpeg' />
+				
+				<div class="about">
+					<strong>Luke Lowrey</strong>
+					<p>I drink beer and build web and mobile apps (in that order).</p>
+				</div>
+				
+				<ul>
+					<li> <a href='/about'>About</a> </li>					
+					<li> <a href='/contact'>Contact</a> </li>
+					<li>
+						<a href="/rss.xml">
+							<img src='http://lukencode.com/wp-content/uploads/2011/04/feed-icon.png' />
+							Subscribe
+						</a>
+					</li>
+					<li><a href="http://twitter.com/lukencode" class="twitter-follow-button" data-button="grey" data-text-color="#FFFFFF" data-link-color="#00AEFF">Follow @lukencode</a></li>
+				</ul>
+			</aside>
+		</div>			
+	</div>
+				
+	<div id="primary">
+		<div id="content">
+			<div class="entry-container">
+	<div class='entry'>
+		<h1> Google Weather API with RestSharp </h1>
+		<span class="postdate">e B, Y
+			
+				<li><a href="/tag/[">[</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/A">A</a></li>
+			
+				<li><a href="/tag/P">P</a></li>
+			
+				<li><a href="/tag/I">I</a></li>
+			
+				<li><a href="/tag/,">,</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/R">R</a></li>
+			
+				<li><a href="/tag/e">e</a></li>
+			
+				<li><a href="/tag/s">s</a></li>
+			
+				<li><a href="/tag/t">t</a></li>
+			
+				<li><a href="/tag/S">S</a></li>
+			
+				<li><a href="/tag/h">h</a></li>
+			
+				<li><a href="/tag/a">a</a></li>
+			
+				<li><a href="/tag/r">r</a></li>
+			
+				<li><a href="/tag/p">p</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/]">]</a></li>
+			
+		</span>
+		<p>Guest post by <a href="http://github.com/dkarzon">DK</a>!</p>
+<p>The <a href="http://www.googleapihelp.com/2009/08/google-weather-api.html">Google Weather API</a> is a grand service for developers to get weather data for any location with ease.</p>
+<p><a href="http://restsharp.org/">RestSharp</a> is a open source .NET REST Client…</p>
+<p>Been doing some work getting weather information from Google Weather and I thought I might take the time to explain how I used Restsharp with this API. I started with the xml from the API itself.</p>
+<p><a title="http://www.google.com/ig/api?weather=Brisbane+au" href="http://www.google.com/ig/api?weather=Brisbane+au">http://www.google.com/ig/api?weather=Brisbane+au</a></p>
+<blockquote>
+<pre class="brush: xml;">&lt;xml_api_reply version="1"&gt;
+    &lt;weather&gt;
+        &lt;forecast_information&gt;
+            &lt;city data="Brisbane, QLD"/&gt;
+            &lt;postal_code data="Brisbane au"/&gt;
+            &lt;latitude_e6 data=""/&gt;
+            &lt;longitude_e6 data=""/&gt;
+            &lt;forecast_date data="2010-04-14"/&gt;
+            &lt;current_date_time data="2010-04-14 14:00:00 +0000"/&gt;
+            &lt;unit_system data="US"/&gt;
+        &lt;/forecast_information&gt;
+        &lt;current_conditions&gt;
+            &lt;condition data="Partly Cloudy"/&gt;
+            &lt;temp_f data="72"/&gt;
+            &lt;temp_c data="22"/&gt;
+            &lt;humidity data="Humidity: 64%"/&gt;
+            &lt;icon data="/ig/images/weather/partly_cloudy.gif"/&gt;
+            &lt;wind_condition data="Wind: SW at 14 mph"/&gt;
+        &lt;/current_conditions&gt;
+        &lt;forecast_conditions&gt;
+            &lt;day_of_week data="Wed"/&gt;
+            &lt;low data="64"/&gt;
+            &lt;high data="78"/&gt;
+            &lt;icon data="/ig/images/weather/chance_of_rain.gif"/&gt;
+            &lt;condition data="Chance of Rain"/&gt;
+        &lt;/forecast_conditions&gt;
+	  ...
+    &lt;/weather&gt;
+&lt;/xml_api_reply&gt;</pre>
+</blockquote>
+<p>Notice the weather element contains multiple forecast<em>conditions elements without a single container element as well as the other forecast</em>information and current_conditions elements. At first this was a problem, I spoke to John Sheehan (the creator of RestSharp) about this and he told me it was currently unsupported with RestSharp. So I took a dive into the RestSharp source (mainly the XmlDeserialiser) to try and find a solution to this problem and I came across the support for Derived Lists, therein lies a solution…</p>
+<pre class="brush: csharp;">public class xml_api_reply
+{
+    public string version { get; set; }
+    public Weather weather { get; set; }
+}
+public class Weather : List&lt;Forecast_Conditions&gt;
+{
+    public Forecast_Information Forecast_Information { get; set; }
+    public Current_Conditions Current_Conditions { get; set; }
+}
+public class DataElement
+{
+    public string Data { get; set; }
+}
+public class Forecast_Information
+{
+    public DataElement City { get; set; }
+    public DataElement Postal_Code { get; set; }
+    public DataElement Forecast_Date { get; set; }
+    public DataElement Unit_System { get; set; }
+}
+public class Current_Conditions
+{
+    public DataElement Condition { get; set; }
+    public DataElement Temp_c { get; set; }
+    public DataElement Humidity { get; set; }
+    public DataElement Icon { get; set; }
+    public DataElement Wind_condition { get; set; }
+}
+public class Forecast_Conditions
+{
+    public DataElement Day_Of_Week { get; set; }
+    public DataElement Condition { get; set; }
+    public DataElement Low { get; set; }
+    public DataElement High { get; set; }
+    public DataElement Icon { get; set; }
+}</pre>
+<p>These classes are then used by RestSharp to Deserialise the response. xml<em>api</em>reply is the root element and under it is weather. The weather class inherits from a List&lt;forecast_conditions&gt; because it can contain multiple elements as well as other properties. The DataElement class was created because of the way the xml has its data ie. &lt;city data=&quot;Brisbane, QLD&quot;/&gt;  instead of &lt;city&gt;Brisbane, QLD&lt;/city&gt;.</p>
+<p>Now that we have setup the Response classes we can use get to the real code…</p>
+<pre class="brush: csharp;">var client = new RestClient("http://www.google.com/ig/api");
+var request = new RestRequest(Method.GET);
+request.AddParameter("weather", "Brisbane");
+
+var response = client.Execute&lt;Models.xml_api_reply&gt;(request);</pre>
+<p>Pretty easy, and the response is a RestResponse&lt;T&gt; where T is my xml<em>api</em>reply class, this object then gives us access to anything we could need from the response including the content itself (response.Content) and the deserialised class (response.Data).</p>
+<p>And to find the current temperature:</p>
+<pre class="brush: csharp;">response.Data.weather.Current_Conditions.Temp_c.Data</pre>
+<p>Now you know how to use RestSharp the world of Restful services is yours for the taking!</p>
+<p>Update: Updated the reponse class to Pascal Case.</p>
+
+	</div>
+</div>
+<div id="page-navigation"> 
+	<div class="left">  </div> 
+	<div class="right">  </div> 
+	<div class="clear">&nbsp;</div>
+</div> 
+
+
+
+		</div>				
+
+		<footer>
+			<small>powered by <a href="https://github.com/code52/pretzel">pretzel</a> / <a href="https://github.com/mojombo/jekyll">jekyll</a> and living on <a href="https://github.com">github</a></small>
+		</footer>
+	</div>
+
+</body>
+</html>
+

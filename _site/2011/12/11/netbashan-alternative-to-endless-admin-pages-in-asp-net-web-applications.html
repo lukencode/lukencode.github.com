@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+
+<html> 
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<title>lukencode | code first, ask questions later</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="profile" href="http://gmpg.org/xfn/11" />
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen, projection" />
+	<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
+	
+	<!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+	
+	<script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
+	<meta name="google-site-verification" content="e6fQUO7vqSIw6sdQQeiUPs4JPc8VghE_9u72V2NXv4U" /> 	
+</head>		
+	
+<body>
+	<div id="header-wrap">
+		<header>
+			<hgroup>
+				<h1>
+					<a href="/" title="lukencode" rel="home">lukencode</a>
+				</h1>
+				<div id="site-description">code first, ask questions later</div>
+			</hgroup>			
+		</header>
+								
+		<div id="secondary" class="widget-area">
+			<aside id="me" class="widget">
+				<h4>Author</h4>	
+				
+				<img class="grav" src='http://en.gravatar.com/userimage/7397984/5de7392594b98c6b510f0691ca5e0638.jpeg' />
+				
+				<div class="about">
+					<strong>Luke Lowrey</strong>
+					<p>I drink beer and build web and mobile apps (in that order).</p>
+				</div>
+				
+				<ul>
+					<li> <a href='/about'>About</a> </li>					
+					<li> <a href='/contact'>Contact</a> </li>
+					<li>
+						<a href="/rss.xml">
+							<img src='http://lukencode.com/wp-content/uploads/2011/04/feed-icon.png' />
+							Subscribe
+						</a>
+					</li>
+					<li><a href="http://twitter.com/lukencode" class="twitter-follow-button" data-button="grey" data-text-color="#FFFFFF" data-link-color="#00AEFF">Follow @lukencode</a></li>
+				</ul>
+			</aside>
+		</div>			
+	</div>
+				
+	<div id="primary">
+		<div id="content">
+			<div class="entry-container">
+	<div class='entry'>
+		<h1> NetBash – An Alternative to Endless Admin Pages in Asp.Net Web Applications </h1>
+		<span class="postdate">e B, Y
+			
+				<li><a href="/tag/[">[</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/n">n</a></li>
+			
+				<li><a href="/tag/e">e</a></li>
+			
+				<li><a href="/tag/t">t</a></li>
+			
+				<li><a href="/tag/b">b</a></li>
+			
+				<li><a href="/tag/a">a</a></li>
+			
+				<li><a href="/tag/s">s</a></li>
+			
+				<li><a href="/tag/h">h</a></li>
+			
+				<li><a href="/tag/,">,</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/o">o</a></li>
+			
+				<li><a href="/tag/p">p</a></li>
+			
+				<li><a href="/tag/e">e</a></li>
+			
+				<li><a href="/tag/n">n</a></li>
+			
+				<li><a href="/tag/-">-</a></li>
+			
+				<li><a href="/tag/s">s</a></li>
+			
+				<li><a href="/tag/o">o</a></li>
+			
+				<li><a href="/tag/u">u</a></li>
+			
+				<li><a href="/tag/r">r</a></li>
+			
+				<li><a href="/tag/c">c</a></li>
+			
+				<li><a href="/tag/e">e</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/]">]</a></li>
+			
+		</span>
+		<p>One thing that always annoys me when working on a web app is having to write those inevitable pages full of admin functions some of which are just a single button. When hacking up one such page I had a thought - a plug in library providing a command line for your web app might save me a lot of time. <a href="https://github.com/lukencode/NetBash" target="_blank">NetBash</a> is what I came up with.</p> <p><a href="http://lukencode.com/wp-content/uploads/2011/12/netbash.png"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="netbash" border="0" alt="netbash" src="http://lukencode.com/wp-content/uploads/2011/12/netbash_thumb.png" width="1028" height="561"></a></p> <p>As you can see from the screenshot NetBash is basically a miniature command line complete with that sweet lime green on black theme that lives in your web app. It can be expanded, minimised and hidden with keyboard shortcuts (<a href="https://github.com/madrobby/keymaster" target="_blank">keymaster</a> ftw) and remembers recent command history using localStorage. NetBash works in a similar way to the <a href="http://code.google.com/p/mvc-mini-profiler/" target="_blank">MVC Mini Profiler</a> meaning that it can be installed with minimal effort on your part (just a NuGet package) and follows you around your site. This is the setup:</p><pre class="brush: csharp;">protected void Application_Start()
+{
+    AreaRegistration.RegisterAllAreas();
+
+    RegisterGlobalFilters(GlobalFilters.Filters);
+    RegisterRoutes(RouteTable.Routes);
+
+    NetBash.Init();
+
+    //this is optional, allows you to decide who sees netbash
+    NetBash.Settings.Authorize = (request) =&gt;
+        {
+            return request.IsLocal;
+        };
+}
+</pre>
+<p>The call to Init inserts a couple of routes for the handler, css and js files. You also need to somewhere in your _Layout.cshtml / MasterPage add the RenderIncludes function to write the css and script tags to the page.</p><pre class="brush: csharp;">NetBash.RenderIncludes()</pre>
+<p>The way it works is by searching your application using reflection for classes implementing IWebCommand with a WebCommand attribute. The WebCommand attribute defines a name for the command which is used to invoke it as well as a description displayed on help. The IWebCommand interface has a method called Process which passes in a string array of arguments in the same manor that a .NET console application’s main method would. When a command is entered on the front end an ajax request is made to the NetBash handler. The handler grabs the first word of the request text and matches it to a WebCommand with the same name then invokes Process and returns the result. Here is a very simple example command that returns the length of the arguments passed in:</p><pre class="brush: csharp;">[WebCommand("length", "Returns number of characters in given arguments")]
+public class LengthCommand : IWebCommand
+{
+    public bool ReturnHtml
+    {
+        get { return false; }
+    }
+
+    public string Process(string[] args)
+    {
+        return string.Join(" ", args).Length.ToString();
+    }
+}</pre>
+<p>Hopefully defining commands this way makes it both dead easy to implement while allowing flexibility to do something more complex (perhaps parsing the arguments with <a href="http://www.ndesk.org/Options" target="_blank">nDesk.Options</a>).</p>
+<p>It is pretty early days for the code so I probably wouldn’t recommend using it in a production situation at the moment. NetBash is available as a <a href="http://nuget.org/packages/NetBash" target="_blank">NuGet package</a> and the source on GitHub at <a href="https://github.com/lukencode/NetBash" target="_blank">lukencode/netbash</a>. I’d love to hear people opinions on the api (nothing is set in stone) as well as the UI which could use some work. I have some ideas for some useful commands (some mad stats with a .net version of <a href="https://github.com/holman/spark" target="_blank">spark</a>) also <a href="http://benjii.me/" target="_blank">Ben Cull</a> promises me he will write an asp.net membership command pack.</p>
+	</div>
+</div>
+<div id="page-navigation"> 
+	<div class="left">  </div> 
+	<div class="right">  </div> 
+	<div class="clear">&nbsp;</div>
+</div> 
+
+
+
+		</div>				
+
+		<footer>
+			<small>powered by <a href="https://github.com/code52/pretzel">pretzel</a> / <a href="https://github.com/mojombo/jekyll">jekyll</a> and living on <a href="https://github.com">github</a></small>
+		</footer>
+	</div>
+
+</body>
+</html>
+

@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+
+<html> 
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<title>lukencode | code first, ask questions later</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="profile" href="http://gmpg.org/xfn/11" />
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen, projection" />
+	<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
+	
+	<!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+	
+	<script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
+	<meta name="google-site-verification" content="e6fQUO7vqSIw6sdQQeiUPs4JPc8VghE_9u72V2NXv4U" /> 	
+</head>		
+	
+<body>
+	<div id="header-wrap">
+		<header>
+			<hgroup>
+				<h1>
+					<a href="/" title="lukencode" rel="home">lukencode</a>
+				</h1>
+				<div id="site-description">code first, ask questions later</div>
+			</hgroup>			
+		</header>
+								
+		<div id="secondary" class="widget-area">
+			<aside id="me" class="widget">
+				<h4>Author</h4>	
+				
+				<img class="grav" src='http://en.gravatar.com/userimage/7397984/5de7392594b98c6b510f0691ca5e0638.jpeg' />
+				
+				<div class="about">
+					<strong>Luke Lowrey</strong>
+					<p>I drink beer and build web and mobile apps (in that order).</p>
+				</div>
+				
+				<ul>
+					<li> <a href='/about'>About</a> </li>					
+					<li> <a href='/contact'>Contact</a> </li>
+					<li>
+						<a href="/rss.xml">
+							<img src='http://lukencode.com/wp-content/uploads/2011/04/feed-icon.png' />
+							Subscribe
+						</a>
+					</li>
+					<li><a href="http://twitter.com/lukencode" class="twitter-follow-button" data-button="grey" data-text-color="#FFFFFF" data-link-color="#00AEFF">Follow @lukencode</a></li>
+				</ul>
+			</aside>
+		</div>			
+	</div>
+				
+	<div id="primary">
+		<div id="content">
+			<div class="entry-container">
+	<div class='entry'>
+		<h1> Windows Phone 7 Charts </h1>
+		<span class="postdate">e B, Y
+			
+				<li><a href="/tag/[">[</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/c">c</a></li>
+			
+				<li><a href="/tag/h">h</a></li>
+			
+				<li><a href="/tag/a">a</a></li>
+			
+				<li><a href="/tag/r">r</a></li>
+			
+				<li><a href="/tag/t">t</a></li>
+			
+				<li><a href="/tag/,">,</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/g">g</a></li>
+			
+				<li><a href="/tag/r">r</a></li>
+			
+				<li><a href="/tag/a">a</a></li>
+			
+				<li><a href="/tag/p">p</a></li>
+			
+				<li><a href="/tag/h">h</a></li>
+			
+				<li><a href="/tag/,">,</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/w">w</a></li>
+			
+				<li><a href="/tag/p">p</a></li>
+			
+				<li><a href="/tag/7">7</a></li>
+			
+				<li><a href="/tag/,">,</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/w">w</a></li>
+			
+				<li><a href="/tag/p">p</a></li>
+			
+				<li><a href="/tag/7">7</a></li>
+			
+				<li><a href="/tag/d">d</a></li>
+			
+				<li><a href="/tag/e">e</a></li>
+			
+				<li><a href="/tag/v">v</a></li>
+			
+				<li><a href="/tag/ "> </a></li>
+			
+				<li><a href="/tag/]">]</a></li>
+			
+		</span>
+		<p>One of the big features of my <a href="http://lukencode.com/2010/11/28/phonealytics-google-analytics-client-for-windows-phone-7/" target="_blank">Windows Phone 7 Google Analytics Client – Phonealytics</a> is the nice (I think) looking graphs. After briefly considering porting an existing Silverlight solution to wp7 I stumbled upon <a href="http://wpf.amcharts.com/quick" target="_blank">Quick Charts</a> by amCharts. Quick Charts is a lightweight and more importantly free chart control for Windows phone 7. It’s a bit light on options but very easy to get working and looks good. </p>  <p>The xaml for a line chart is pretty straightforward. You can see I am using the phone’s inbuilt styles partially because it looks awesome and partially because I am a terrible designer. The things to note here are setting the CategoryValueMemberPath to the name of the property in your model you want the graph to use as the label and in the LineGraph section setting the ValueMemberPath to the property you want to chart. The title property of the LineGraph renders on a small legend. One tip I have is setting IsEnabled to false when the graph is loading (or just in general) I got an exception tapping the graph before any data has been bound.</p>  <pre class="brush: xml;"><amcharts_windows_quickcharts:serialchart isenabled="False" datasource="{Binding GraphData}" x:name="chtMain" categoryvaluememberpath="Label" verticalalignment="Top">
+    
+    <amcharts_windows_quickcharts:serialchart.foreground>
+        <solidcolorbrush color="{StaticResource PhoneForegroundColor}" />
+    </amcharts_windows_quickcharts:serialchart.foreground>
+    
+    <amcharts_windows_quickcharts:serialchart.borderbrush>
+        <solidcolorbrush color="{StaticResource PhoneBorderColor}" />
+    </amcharts_windows_quickcharts:serialchart.borderbrush>
+    
+    <amcharts_windows_quickcharts:serialchart.axisforeground>
+        <solidcolorbrush color="{StaticResource PhoneForegroundColor}" />
+    </amcharts_windows_quickcharts:serialchart.axisforeground>
+    
+    <amcharts_windows_quickcharts:serialchart.background>
+        <solidcolorbrush color="{StaticResource PhoneBackgroundColor}" />
+    </amcharts_windows_quickcharts:serialchart.background> 
+    
+    <amcharts_windows_quickcharts:serialchart.graphs>
+        <amcharts_windows_quickcharts:linegraph title="Visits" valuememberpath="Value" strokethickness="5">
+            <amcharts_windows_quickcharts:linegraph.brush>
+                <solidcolorbrush color="{StaticResource PhoneAccentColor}" />                                        
+            </amcharts_windows_quickcharts:linegraph.brush>
+        </amcharts_windows_quickcharts:linegraph>
+    </amcharts_windows_quickcharts:serialchart.graphs>    
+    
+</amcharts_windows_quickcharts:serialchart></pre>
+<p>I use an ObservableCollection of the super simple ChartDataPoint class below, with just the top properties I set on the chart xaml above.</p>
+<pre class="brush: csharp;">public class ChartDataPoint
+{
+    public string Label { get; set; }
+    public double Value { get; set; }
+}</pre>
+<p>Here is a screen of the resulting graph with a dark / blue theme.</p>
+<p><img style="margin: ; display: block; float: none" src="http://lukencode.com/wp-content/uploads/2010/11/profile.png" /></p>
+<p>Quick charts also allows for some pretty delicious pie charts. Here is one I prepared earlier:</p>
+<pre class="brush: xml; smart-tabs: false;"><amcharts_windows_quickcharts:piechart margin="0" isenabled="False" titlememberpath="Label" valuememberpath="Value" datasource="{Binding PieData}">
+    <amcharts_windows_quickcharts:piechart.brushes>
+        <solidcolorbrush color="{StaticResource PhoneAccentColor}" />
+        <solidcolorbrush color="{StaticResource PhoneAccentColor}" opacity="0.8" />
+        <solidcolorbrush color="{StaticResource PhoneAccentColor}" opacity="0.6" />
+        <solidcolorbrush color="{StaticResource PhoneAccentColor}" opacity="0.4" />
+        <solidcolorbrush color="{StaticResource PhoneAccentColor}" opacity="0.2" />
+        <solidcolorbrush color="{StaticResource PhoneAccentColor}" opacity="0.1" />
+    </amcharts_windows_quickcharts:piechart.brushes>
+    <amcharts_windows_quickcharts:piechart.foreground>
+        <solidcolorbrush color="{StaticResource PhoneForegroundColor}" />
+    </amcharts_windows_quickcharts:piechart.foreground>
+</amcharts_windows_quickcharts:piechart></pre>
+<p>Again I am using the default phone colours, this time I set a few brushes with different opacities. These will be used depending on the number of slices in your pie. Speaking of pie, here is what it looks like.</p>
+<p><img style="margin: ; display: block; float: none" src="http://lukencode.com/wp-content/uploads/2010/11/pie.png" /></p>
+	</div>
+</div>
+<div id="page-navigation"> 
+	<div class="left">  </div> 
+	<div class="right">  </div> 
+	<div class="clear">&nbsp;</div>
+</div> 
+
+
+
+		</div>				
+
+		<footer>
+			<small>powered by <a href="https://github.com/code52/pretzel">pretzel</a> / <a href="https://github.com/mojombo/jekyll">jekyll</a> and living on <a href="https://github.com">github</a></small>
+		</footer>
+	</div>
+
+</body>
+</html>
+
