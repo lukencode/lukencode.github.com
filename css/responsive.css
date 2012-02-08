@@ -1,0 +1,100 @@
+
+@media screen and (max-width: 800px) 
+{	
+	#header-wrap
+	{
+		width:100%;
+		position:static;
+		height:auto;
+		padding:0;
+	}
+	
+	#header-wrap hgroup h1
+	{
+		margin-bottom:13px;
+	}
+	
+	#primary
+	{
+		margin:0;
+		clear:both;
+		width:100%;
+	}
+	
+	#content
+	{
+		margin:10px 10px;
+		clear:both;
+	}	
+	
+	#site-description
+	{
+		display:none;
+	}
+	
+	#me
+	{		
+		padding-top:0;
+	}
+	
+	#me .info
+	{
+		display:none;
+	}
+	
+	#me .short-info
+	{
+		display:block;
+		text-align:center;
+		padding-bottom:7px;
+		color:#ccc;
+		font-style:italic;
+	}
+	
+	#me .short-info strong
+	{
+		display:inline;
+	}
+	
+	#me ul
+	{
+		text-align:center;
+	}
+	
+	#me ul li
+	{
+		display:inline;
+		padding:0 5px;
+	}
+	
+	#me ul li#twitter-button
+	{
+		display:none;
+	}
+	
+	#me ul li#twitter-text
+	{
+		display:inline;
+	}
+	
+	#me ul li#twitter-text a
+	{
+		color:#168aff;
+	}
+	
+	#post h1
+	{
+		font-size:32px;
+	}
+	
+	#post h3
+	{
+		font-size:18px;
+	}
+	
+	#post img, #post pre
+	{
+		margin-left:0;
+		margin-right:0;
+	}
+}

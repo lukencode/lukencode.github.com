@@ -13,6 +13,7 @@
 
 	<link rel="profile" href="http://gmpg.org/xfn/11" />
     <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="/css/responsive.css" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="/css/prettify.css" type="text/css" media="screen, projection" />
 	<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
 	
@@ -40,25 +41,30 @@
 								
 		<div id="secondary" class="widget-area">
 			<aside id="me" class="widget">
-				<h4>Author</h4>	
-				
-				<img class="grav" src='http://en.gravatar.com/userimage/7397984/5de7392594b98c6b510f0691ca5e0638.jpeg' />
-				
-				<div class="about">
-					<strong>Luke Lowrey</strong>
-					<p>I drink beer and build web and mobile apps (in that order).</p>
+				<div class="info">
+					<h4>Author</h4>	
+					
+					<img class="grav" src='http://en.gravatar.com/userimage/7397984/5de7392594b98c6b510f0691ca5e0638.jpeg' />
+					
+					<div class="about">
+						<strong>Luke Lowrey</strong>
+						<p>I drink beer and build web and mobile apps (in that order).</p>
+					</div>
 				</div>
-				
+				<div class="short-info">
+					A programming blog by <strong>Luke Lowrey</strong>
+				</div>
 				<ul>
+					<li id="twitter-button"><a href="http://twitter.com/lukencode" class="twitter-follow-button" data-button="grey" data-text-color="#FFFFFF" data-link-color="#00AEFF">Follow @lukencode</a></li>
 					<li> <a href='/about'>About</a> </li>					
 					<li> <a href='/contact'>Contact</a> </li>
+					<li id="twitter-text"><a href="http://twitter.com/lukencode" >@lukencode</a></li>
 					<li>
 						<a href="/rss.xml">
 							<img src='http://lukencode.com/wp-content/uploads/2011/04/feed-icon.png' />
 							Subscribe
 						</a>
 					</li>
-					<li><a href="http://twitter.com/lukencode" class="twitter-follow-button" data-button="grey" data-text-color="#FFFFFF" data-link-color="#00AEFF">Follow @lukencode</a></li>
 				</ul>
 			</aside>
 		</div>			
@@ -66,57 +72,12 @@
 				
 	<div id="primary">
 		<div id="content">
-			<div class="entry-container">
-	<div class='entry'>
-		<h1> Fluent Email Now Supporting Razor Syntax For Templates </h1>
-		<span class="postdate">e B, Y
-			
-				<li><a href="/tag/[">[</a></li>
-			
-				<li><a href="/tag/ "> </a></li>
-			
-				<li><a href="/tag/.">.</a></li>
-			
-				<li><a href="/tag/n">n</a></li>
-			
-				<li><a href="/tag/e">e</a></li>
-			
-				<li><a href="/tag/t">t</a></li>
-			
-				<li><a href="/tag/,">,</a></li>
-			
-				<li><a href="/tag/ "> </a></li>
-			
-				<li><a href="/tag/e">e</a></li>
-			
-				<li><a href="/tag/m">m</a></li>
-			
-				<li><a href="/tag/a">a</a></li>
-			
-				<li><a href="/tag/i">i</a></li>
-			
-				<li><a href="/tag/l">l</a></li>
-			
-				<li><a href="/tag/,">,</a></li>
-			
-				<li><a href="/tag/ "> </a></li>
-			
-				<li><a href="/tag/n">n</a></li>
-			
-				<li><a href="/tag/u">u</a></li>
-			
-				<li><a href="/tag/g">g</a></li>
-			
-				<li><a href="/tag/e">e</a></li>
-			
-				<li><a href="/tag/t">t</a></li>
-			
-				<li><a href="/tag/ "> </a></li>
-			
-				<li><a href="/tag/]">]</a></li>
-			
-		</span>
-		<p>A while back I wrote Fluent Email, a little .NET wrapper for sending emails with System.Net.Mail using a fluent interface. After relentless requests (there was at least 2) to publish the library on <a href="http://nuget.org/" target="_blank">NuGet.org</a> I eventually caved in. You can add Fluent Email to your project using Nuget’s built in library package manager or the following package console command.</p>  <p><a href="http://nuget.org/List/Packages/fluent-email" target="_blank"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top: 0px; border-right: 0px; padding-top: 0px" title="nuget-fluent-email" border="0" alt="PM&gt; Install-Package fluent-email" src="http://lukencode.com/wp-content/uploads/2011/04/nuget-fluent-email.png" width="589" height="70" /></a></p>  <p>The library is pretty simple buts makes the code for sending emails easy to use and read.</p>  <pre class="brush: csharp;">var email = Email
+			<div id="post">
+	<h1> Fluent Email Now Supporting Razor Syntax For Templates </h1>
+	<div class="date">12, febuary 2011</div>
+	
+	<article>
+		<p>A while back I wrote Fluent Email, a little .NET wrapper for sending emails with System.Net.Mail using a fluent interface. After relentless requests (there was at least 2) to publish the library on <a href="http://nuget.org/" target="_blank">NuGet.org</a> I eventually caved in. You can add Fluent Email to your project using Nuget’s built in library package manager or the following package console command.</p>  <p><a href="http://nuget.org/List/Packages/fluent-email" target="_blank"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top: 0px; border-right: 0px; padding-top: 0px" title="nuget-fluent-email" border="0" alt="PM&gt; Install-Package fluent-email" src="http://lukencode.com/wp-content/uploads/2011/04/nuget-fluent-email.png" width="589" height="70" /></a></p>  <p>The library is pretty simple buts makes the code for sending emails easy to use and read.</p>  <pre class="prettyprint">var email = Email
             .From(&quot;john@email.com&quot;)
             .To(&quot;bob@email.com&quot;, &quot;bob&quot;)
             .Subject(&quot;hows it going bob&quot;)
@@ -132,7 +93,7 @@ email.SendAsync((sender, e) =&gt;
 });</pre>
 <p>There are a few other methods not shown here that work in a similar way for adding the usual email suspects such as CC, BCC&#160; and ReplyTo.</p>
 <p>I had also been playing around with some form of templating when I came across <a href="http://razorengine.codeplex.com/" target="_blank">RazorEngine</a>. RazorEngine is an awesome library that brings the razor syntax (from MVC3) to other applications. In Fluent Email we use RazorEngine to make email templates as simple as this:</p>
-<pre class="brush: csharp;">var template = &quot;Dear @Model.Name, You are totally @Model.Compliment.&quot;;
+<pre class="prettyprint">var template = &quot;Dear @Model.Name, You are totally @Model.Compliment.&quot;;
 
 var email = Email
             .From(&quot;bob@hotmail.com&quot;)
@@ -141,8 +102,9 @@ var email = Email
             .UsingTemplate(template, new { Name = &quot;Luke&quot;, Compliment = &quot;Awesome&quot; });</pre>
 <p>This will set the body of the email to the rendered template “Dear Luke, You are totally Awesome.&quot; and can be sent the same way as the first example. The UsingTemplate method uses generics so you can pass in a specific type or just use an anonymous object like in the example. If you prefer to use a seperate file for your template there is a method called UsingTemplateFromFile to handle that. Since RazorEngine supports everything you would expect from the Razor view engine so does Fluent Email!</p>
 <p>If you want to take a look at the code it is hosted on Github at <a href="https://github.com/lukencode/FluentEmail" target="_blank">lukencode/fluentemail</a> otherwise just grab the NuGet package.</p>
-	</div>
+	</article>
 </div>
+	
 <div id="page-navigation"> 
 	<div class="left">  </div> 
 	<div class="right">  </div> 
@@ -150,7 +112,22 @@ var email = Email
 </div> 
 
 
+<div id="disqus_thread"></div>
 
+<script type="text/javascript">
+	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+	var disqus_shortname = 'lukencode'; // required: replace example with your forum shortname
+
+	/* * * DON'T EDIT BELOW THIS LINE * * */
+	(function() {
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 		</div>				
 
 		<footer>

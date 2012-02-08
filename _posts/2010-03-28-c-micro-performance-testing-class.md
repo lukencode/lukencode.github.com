@@ -10,7 +10,7 @@ tags:
 ---
 
 I often find myself wondering which version of a method would run more efficiently so for my own amusement I built this little class so I could easily test various method's performance. I understand this is no substitute for real profiling but it is handy to do some quick comparisons.
-<pre class="brush: csharp;">public class PerformanceTester
+<pre class="prettyprint">public class PerformanceTester
 {
     public TimeSpan TotalTime { get; private set; }
     public TimeSpan AverageTime { get; private set; }
@@ -84,7 +84,7 @@ I often find myself wondering which version of a method would run more efficient
     }
 }</pre>
 Here is how you can use it.
-<pre class="brush: csharp;">//usage
+<pre class="prettyprint">//usage
 var tester = new PerformanceTester(() =&gt; SomeMethod());
 tester.MeasureExecTimeWithMetrics(1000);
 Console.Writeline(string.Format("Executed in {0} milliseconds", tester.AverageTime.TotalMilliseconds));</pre>

@@ -33,7 +33,7 @@ Like all good Windows Phone apps we focused on a few key ideas – simply and be
 This is one are where windows phone is really starting to shine, nearly any control you would want UI wise that isn’t in the base SDK exists in a well documented and supported open source library. The two we like best are the official <a href="http://silverlight.codeplex.com/" target="_blank">Silverlight Toolkit</a> and the <a href="http://coding4fun.codeplex.com/" target="_blank">Coding4Fun Toolkit</a> both are available on NuGet.
 
 Silverlight toolkit is more or less a must have in every windows phone app. The most useful thing it brings to the table is really nice and super simple to implement page transitions. Here is an example of some XAML form the Numbertap about page to do turnstile transitions in and out:
-<pre class="brush: xml;">
+<pre class="prettyprint">
 <toolkit:transitionservice.navigationintransition>
     <toolkit:navigationintransition>
         <toolkit:navigationintransition.backward>
@@ -56,9 +56,9 @@ Silverlight toolkit is more or less a must have in every windows phone app. The 
 </toolkit:transitionservice.navigationouttransition>
 </pre>
 The other Silverlight Toolkit feature I really like is the tilt effect, it really helps bring an application to life when elements react to touch. You can automatically add a “tilt” to all eligible controls (buttons, list items, etc) on a page by just adding this to your PhoneApplicationPage xaml.
-<pre class="brush: xml;">toolkit:TiltEffect.IsTiltEnabled="True"</pre>
+<pre class="prettyprint">toolkit:TiltEffect.IsTiltEnabled="True"</pre>
 Coding4Fun is the other toolkit we make heavy use of. It has a couple of good controls but the ones we really like are the prompts. The input prompt was clean way to prompt players on registration, as with all the Coding4Fun prompts the code is really simple.
-<pre class="brush: csharp;">var msg = new InputPrompt();
+<pre class="prettyprint">var msg = new InputPrompt();
 msg.Title = "Create Player";
 msg.Message = "Please enter a player name";
 
@@ -76,7 +76,7 @@ I've already posted about how much I love <a href="http://restsharp.org/" target
 </strong>With mobile apps getting a good review is pretty much gold. As a user I am very unlikely to try any app with a sub 3/5 star rating. We wanted to give Numbertap the best chance we could at a decent rating by asking users (nicely) to rate the app. We didn’t just want to annoy any user either, we wanted to hit them up when we KNOW they are enjoying the game and they are at a point where they can jump out and give us a good score.
 
 To achieved this lofty goal we used a little library @d1k_is open sourced – <a href="https://github.com/dkarzon/AppEvents" target="_blank">AppEvents</a>. The syntax is a little funky so you should probably check out <a href="http://dkdevelopment.net/2011/04/29/appevents-do-stuff-when-things-happen-wp7/" target="_blank">dk’s blog post</a> for a full intro but essentially what we are doing here is running the method AskToRate() when the “games-played” event has been fired 5 or more times and the “rated” event has not occurred.
-<pre class="brush: csharp;">//in app.xaml.cs set up the rule
+<pre class="prettyprint">//in app.xaml.cs set up the rule
 AppEventsClient.New(Rule.When("rate-app",
                 el =&gt; el.Any(e =&gt; e.Name == "games-played" &amp;&amp; e.Occurrrences.Count &gt;= 5) &amp;&amp; !el.Any(e =&gt; e.Name == "rated"))
                 .Do(r =&gt; DispatcherHelper.SafeDispatch(() =&gt; AskToRate()))
@@ -95,7 +95,7 @@ Like the App we wanted the server side of Numbertap to be fast and simple, this 
 
 <strong>The Framework</strong>
 We know ASP.NET MVC so just like the Silverlight decision we rolled with what we knew. Turns out combining RestSharp, mvc and a shared class library for the API models makes REST based API’s really easy. Because both our app and server shares a class library for RestSharp models it means that we can easily update our web service responses and have that data available in the app. We return json over xml because json rules – this is how you do it from an MVC controller, this action returns some info on player rank and the current number of players in game:
-<pre class="brush: csharp;">[HttpPost]
+<pre class="prettyprint">[HttpPost]
 public ActionResult GameStats(LoginRequest loginRequest)
 {
     var player = DB.Queries.Player.GetPlayer(loginRequest.ID, loginRequest.PlatformID, loginRequest.GameID, null);

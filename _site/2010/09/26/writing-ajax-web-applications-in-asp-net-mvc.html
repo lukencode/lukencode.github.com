@@ -13,6 +13,7 @@
 
 	<link rel="profile" href="http://gmpg.org/xfn/11" />
     <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="/css/responsive.css" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="/css/prettify.css" type="text/css" media="screen, projection" />
 	<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
 	
@@ -40,25 +41,30 @@
 								
 		<div id="secondary" class="widget-area">
 			<aside id="me" class="widget">
-				<h4>Author</h4>	
-				
-				<img class="grav" src='http://en.gravatar.com/userimage/7397984/5de7392594b98c6b510f0691ca5e0638.jpeg' />
-				
-				<div class="about">
-					<strong>Luke Lowrey</strong>
-					<p>I drink beer and build web and mobile apps (in that order).</p>
+				<div class="info">
+					<h4>Author</h4>	
+					
+					<img class="grav" src='http://en.gravatar.com/userimage/7397984/5de7392594b98c6b510f0691ca5e0638.jpeg' />
+					
+					<div class="about">
+						<strong>Luke Lowrey</strong>
+						<p>I drink beer and build web and mobile apps (in that order).</p>
+					</div>
 				</div>
-				
+				<div class="short-info">
+					A programming blog by <strong>Luke Lowrey</strong>
+				</div>
 				<ul>
+					<li id="twitter-button"><a href="http://twitter.com/lukencode" class="twitter-follow-button" data-button="grey" data-text-color="#FFFFFF" data-link-color="#00AEFF">Follow @lukencode</a></li>
 					<li> <a href='/about'>About</a> </li>					
 					<li> <a href='/contact'>Contact</a> </li>
+					<li id="twitter-text"><a href="http://twitter.com/lukencode" >@lukencode</a></li>
 					<li>
 						<a href="/rss.xml">
 							<img src='http://lukencode.com/wp-content/uploads/2011/04/feed-icon.png' />
 							Subscribe
 						</a>
 					</li>
-					<li><a href="http://twitter.com/lukencode" class="twitter-follow-button" data-button="grey" data-text-color="#FFFFFF" data-link-color="#00AEFF">Follow @lukencode</a></li>
 				</ul>
 			</aside>
 		</div>			
@@ -66,76 +72,19 @@
 				
 	<div id="primary">
 		<div id="content">
-			<div class="entry-container">
-	<div class='entry'>
-		<h1> Writing AJAX web applications in Asp.Net MVC </h1>
-		<span class="postdate">e B, Y
-			
-				<li><a href="/tag/[">[</a></li>
-			
-				<li><a href="/tag/ "> </a></li>
-			
-				<li><a href="/tag/j">j</a></li>
-			
-				<li><a href="/tag/q">q</a></li>
-			
-				<li><a href="/tag/a">a</a></li>
-			
-				<li><a href="/tag/x">x</a></li>
-			
-				<li><a href="/tag/,">,</a></li>
-			
-				<li><a href="/tag/ "> </a></li>
-			
-				<li><a href="/tag/j">j</a></li>
-			
-				<li><a href="/tag/q">q</a></li>
-			
-				<li><a href="/tag/o">o</a></li>
-			
-				<li><a href="/tag/t">t</a></li>
-			
-				<li><a href="/tag/e">e</a></li>
-			
-				<li><a href="/tag/,">,</a></li>
-			
-				<li><a href="/tag/ "> </a></li>
-			
-				<li><a href="/tag/j">j</a></li>
-			
-				<li><a href="/tag/q">q</a></li>
-			
-				<li><a href="/tag/u">u</a></li>
-			
-				<li><a href="/tag/e">e</a></li>
-			
-				<li><a href="/tag/r">r</a></li>
-			
-				<li><a href="/tag/y">y</a></li>
-			
-				<li><a href="/tag/,">,</a></li>
-			
-				<li><a href="/tag/ "> </a></li>
-			
-				<li><a href="/tag/m">m</a></li>
-			
-				<li><a href="/tag/v">v</a></li>
-			
-				<li><a href="/tag/c">c</a></li>
-			
-				<li><a href="/tag/ "> </a></li>
-			
-				<li><a href="/tag/]">]</a></li>
-			
-		</span>
-		<p>Asp.Net MVC and jQuery have made it much easier to build awesome Gmail like ajax powered applications. I am going to run through the technique I used to do the ajax web services, call them in javascript and display the html through a template. </p>  <h3>What Do I Need?</h3>  <ol>   <li>An Asp.Net MVC web application </li>    <li><a href="http://jquery.com/" target="_blank">jQuery</a> </li>    <li><a href="http://benjii.me/2010/08/jqax-jquery-plugin-the-jquery-plugin-version-of-the-jqax-ajax-wrapper/" target="_blank">jQax</a> – a wrapper around jQuery ajax </li>    <li><a href="http://aefxx.com/jquery-plugins/jqote2/" target="_blank">jQote</a> – a simple lightweight jQuery templating engine </li> </ol>  <h3>What Do I Do?</h3>  <p>Lets start at the web application because you probably already have something there. Pick a nice simple controller action you wish was ajaxy – say displaying some gig (also know as concert) info?</p>  <p>You probably have a view model you hand to your concert details page. Here is a simplified version of what I use:</p>  <pre class="brush: csharp;">public class GigViewModel
+			<div id="post">
+	<h1> Writing AJAX web applications in Asp.Net MVC </h1>
+	<div class="date">12, febuary 2011</div>
+	
+	<article>
+		<p>Asp.Net MVC and jQuery have made it much easier to build awesome Gmail like ajax powered applications. I am going to run through the technique I used to do the ajax web services, call them in javascript and display the html through a template. </p>  <h3>What Do I Need?</h3>  <ol>   <li>An Asp.Net MVC web application </li>    <li><a href="http://jquery.com/" target="_blank">jQuery</a> </li>    <li><a href="http://benjii.me/2010/08/jqax-jquery-plugin-the-jquery-plugin-version-of-the-jqax-ajax-wrapper/" target="_blank">jQax</a> – a wrapper around jQuery ajax </li>    <li><a href="http://aefxx.com/jquery-plugins/jqote2/" target="_blank">jQote</a> – a simple lightweight jQuery templating engine </li> </ol>  <h3>What Do I Do?</h3>  <p>Lets start at the web application because you probably already have something there. Pick a nice simple controller action you wish was ajaxy – say displaying some gig (also know as concert) info?</p>  <p>You probably have a view model you hand to your concert details page. Here is a simplified version of what I use:</p>  <pre class="prettyprint">public class GigViewModel
 {
 	public int GigID { get; set; }
 	public string StartDate { get; set; }
 	public string Name { get; set; }
 }   </pre>
 <p>I am using a string to represent the date to make the eventual javascript I have to write simpler.</p>
-<pre class="brush: csharp;">//
+<pre class="prettyprint">//
 // GET: /Gig/Details/5
 
 public ActionResult Details(int id)
@@ -153,7 +102,7 @@ public ActionResult Details(int id)
 <p>
   <br />I have here a pretty standard controller action it grabs some data from the database (the session stuff) dumps it into a view model and returns it to a view. What I’ve added is the Request.IsAjaxRequest() statement. This statement checks the headers of the incoming request for “XMLHttpRequest” meaning the request originated in javascript. If we have an ajax request I use the MVC method Json() to return a json representation of my view model instead of a view. The JsonRequestbehavior parameter allows this control to return json on a Get request.</p>
 <p>Now that the backend is set up to give us our json we need to write some javascript to request it. I am using jQax to make this a bit simpler but you could go vanilla jQuery if that floats your boat.</p>
-<pre class="brush: csharp;">var ajax = $.jQax();
+<pre class="prettyprint">var ajax = $.jQax();
 
 ajax.Get(&quot;/gig/1&quot;&quot;, null, function (data) {
 	alert(&quot;woo a json gig - &quot; + data)
@@ -164,7 +113,7 @@ ajax.Get(&quot;/gig/1&quot;&quot;, null, function (data) {
 <pre class="brush: js;">$.jqotetag&quot;#&quot;);</pre>
 <p>It is easiest to do this once on document load before you attempt to do any templates.</p>
 <p>jQote templates look pretty similar to MVC views using javascript rather than C#. They also work best when they live in a script tag like so:</p>
-<pre class="brush: xml;">&lt;script type=&quot;text/x-jqote-template&quot; id=&quot;GigDetailsTemplate&quot;&gt;
+<pre class="prettyprint">&lt;script type=&quot;text/x-jqote-template&quot; id=&quot;GigDetailsTemplate&quot;&gt;
 	&lt;div class=&quot;gigDetails&quot;&gt;
 		&lt;h2&gt;&lt;#= this.Name #&gt;&lt;/h2&gt;
 		&lt;span class=&quot;date&quot;&gt;&lt;#= this.StartDate #&gt;&lt;/span&gt;
@@ -184,8 +133,9 @@ ajax.Get(&quot;/gig/1&quot;, null, function (data) {
 
   <li>In your view models try to avoid DateTime – its pretty annoying trying to display javascript dates how you like. </li>
 </ul>
-	</div>
+	</article>
 </div>
+	
 <div id="page-navigation"> 
 	<div class="left">  </div> 
 	<div class="right">  </div> 
@@ -193,7 +143,22 @@ ajax.Get(&quot;/gig/1&quot;, null, function (data) {
 </div> 
 
 
+<div id="disqus_thread"></div>
 
+<script type="text/javascript">
+	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+	var disqus_shortname = 'lukencode'; // required: replace example with your forum shortname
+
+	/* * * DON'T EDIT BELOW THIS LINE * * */
+	(function() {
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 		</div>				
 
 		<footer>

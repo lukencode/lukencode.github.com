@@ -13,6 +13,7 @@
 
 	<link rel="profile" href="http://gmpg.org/xfn/11" />
     <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="/css/responsive.css" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="/css/prettify.css" type="text/css" media="screen, projection" />
 	<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
 	
@@ -40,25 +41,30 @@
 								
 		<div id="secondary" class="widget-area">
 			<aside id="me" class="widget">
-				<h4>Author</h4>	
-				
-				<img class="grav" src='http://en.gravatar.com/userimage/7397984/5de7392594b98c6b510f0691ca5e0638.jpeg' />
-				
-				<div class="about">
-					<strong>Luke Lowrey</strong>
-					<p>I drink beer and build web and mobile apps (in that order).</p>
+				<div class="info">
+					<h4>Author</h4>	
+					
+					<img class="grav" src='http://en.gravatar.com/userimage/7397984/5de7392594b98c6b510f0691ca5e0638.jpeg' />
+					
+					<div class="about">
+						<strong>Luke Lowrey</strong>
+						<p>I drink beer and build web and mobile apps (in that order).</p>
+					</div>
 				</div>
-				
+				<div class="short-info">
+					A programming blog by <strong>Luke Lowrey</strong>
+				</div>
 				<ul>
+					<li id="twitter-button"><a href="http://twitter.com/lukencode" class="twitter-follow-button" data-button="grey" data-text-color="#FFFFFF" data-link-color="#00AEFF">Follow @lukencode</a></li>
 					<li> <a href='/about'>About</a> </li>					
 					<li> <a href='/contact'>Contact</a> </li>
+					<li id="twitter-text"><a href="http://twitter.com/lukencode" >@lukencode</a></li>
 					<li>
 						<a href="/rss.xml">
 							<img src='http://lukencode.com/wp-content/uploads/2011/04/feed-icon.png' />
 							Subscribe
 						</a>
 					</li>
-					<li><a href="http://twitter.com/lukencode" class="twitter-follow-button" data-button="grey" data-text-color="#FFFFFF" data-link-color="#00AEFF">Follow @lukencode</a></li>
 				</ul>
 			</aside>
 		</div>			
@@ -66,71 +72,14 @@
 				
 	<div id="primary">
 		<div id="content">
-			<div class="entry-container">
-	<div class='entry'>
-		<h1> Fluent Email in .NET </h1>
-		<span class="postdate">e B, Y
-			
-				<li><a href="/tag/[">[</a></li>
-			
-				<li><a href="/tag/ "> </a></li>
-			
-				<li><a href="/tag/.">.</a></li>
-			
-				<li><a href="/tag/n">n</a></li>
-			
-				<li><a href="/tag/e">e</a></li>
-			
-				<li><a href="/tag/t">t</a></li>
-			
-				<li><a href="/tag/,">,</a></li>
-			
-				<li><a href="/tag/ "> </a></li>
-			
-				<li><a href="/tag/e">e</a></li>
-			
-				<li><a href="/tag/m">m</a></li>
-			
-				<li><a href="/tag/a">a</a></li>
-			
-				<li><a href="/tag/i">i</a></li>
-			
-				<li><a href="/tag/l">l</a></li>
-			
-				<li><a href="/tag/,">,</a></li>
-			
-				<li><a href="/tag/ "> </a></li>
-			
-				<li><a href="/tag/o">o</a></li>
-			
-				<li><a href="/tag/p">p</a></li>
-			
-				<li><a href="/tag/e">e</a></li>
-			
-				<li><a href="/tag/n">n</a></li>
-			
-				<li><a href="/tag/-">-</a></li>
-			
-				<li><a href="/tag/s">s</a></li>
-			
-				<li><a href="/tag/o">o</a></li>
-			
-				<li><a href="/tag/u">u</a></li>
-			
-				<li><a href="/tag/r">r</a></li>
-			
-				<li><a href="/tag/c">c</a></li>
-			
-				<li><a href="/tag/e">e</a></li>
-			
-				<li><a href="/tag/ "> </a></li>
-			
-				<li><a href="/tag/]">]</a></li>
-			
-		</span>
+			<div id="post">
+	<h1> Fluent Email in .NET </h1>
+	<div class="date">12, febuary 2011</div>
+	
+	<article>
 		<p>I have been working with <a href="http://lukencode.com/2010/04/08/synchronous-asynchronous-email-sender/">sending emails with System.Net.Mail</a> and had a few people mention they would like fluent interface. It sounded like a pretty cool idea and I also needed an excuse to learn git/github thus was born <a href="http://github.com/lukencode/FluentEmail" target="_blank">FluentEmail for .NET</a>.</p>
 <p>Here is a quick example of intended usage, the Smtp details if not provided using the .UsingClient(SmptClient client) method will be taken from the mailSettings config section.</p>
-<pre class="brush: csharp;">
+<pre class="prettyprint">
 var email = Email
             .From("john@email.com")
             .To("bob@email.com", "bob")
@@ -144,7 +93,7 @@ email.Send();
 email.SendAsync(MailDeliveredCallback);
 </pre>
 <p>The fluent interface is acheived by using a builder pattern. The .From method is static and returns the underlying email object for the other methods to build upon.</p>
-<pre class="brush: csharp;">
+<pre class="prettyprint">
 public class Email : IHideObjectMembers
 {
     private SmtpClient _client;
@@ -174,8 +123,9 @@ public class Email : IHideObjectMembers
 <p>Its early days at the moment but it does support multiple recipients, BCC and CC. Some of the things I would like to eventually include is support for bulk email sending (sending in batches) and easy support for different Smpt clients such as gmail.</p>
 <p>You can grab/fork the code at <a title="http://github.com/lukencode/FluentEmail" href="http://github.com/lukencode/FluentEmail">http://github.com/lukencode/FluentEmail</a>. Let me know if you have any comments or suggestions.</p>
 
-	</div>
+	</article>
 </div>
+	
 <div id="page-navigation"> 
 	<div class="left">  </div> 
 	<div class="right">  </div> 
@@ -183,7 +133,22 @@ public class Email : IHideObjectMembers
 </div> 
 
 
+<div id="disqus_thread"></div>
 
+<script type="text/javascript">
+	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+	var disqus_shortname = 'lukencode'; // required: replace example with your forum shortname
+
+	/* * * DON'T EDIT BELOW THIS LINE * * */
+	(function() {
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 		</div>				
 
 		<footer>

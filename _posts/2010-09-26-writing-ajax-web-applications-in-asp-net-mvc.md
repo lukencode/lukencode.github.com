@@ -11,7 +11,7 @@ tags:
 - mvc
 ---
 
-<p>Asp.Net MVC and jQuery have made it much easier to build awesome Gmail like ajax powered applications. I am going to run through the technique I used to do the ajax web services, call them in javascript and display the html through a template. </p>  <h3>What Do I Need?</h3>  <ol>   <li>An Asp.Net MVC web application </li>    <li><a href="http://jquery.com/" target="_blank">jQuery</a> </li>    <li><a href="http://benjii.me/2010/08/jqax-jquery-plugin-the-jquery-plugin-version-of-the-jqax-ajax-wrapper/" target="_blank">jQax</a> – a wrapper around jQuery ajax </li>    <li><a href="http://aefxx.com/jquery-plugins/jqote2/" target="_blank">jQote</a> – a simple lightweight jQuery templating engine </li> </ol>  <h3>What Do I Do?</h3>  <p>Lets start at the web application because you probably already have something there. Pick a nice simple controller action you wish was ajaxy – say displaying some gig (also know as concert) info?</p>  <p>You probably have a view model you hand to your concert details page. Here is a simplified version of what I use:</p>  <pre class="brush: csharp;">public class GigViewModel
+<p>Asp.Net MVC and jQuery have made it much easier to build awesome Gmail like ajax powered applications. I am going to run through the technique I used to do the ajax web services, call them in javascript and display the html through a template. </p>  <h3>What Do I Need?</h3>  <ol>   <li>An Asp.Net MVC web application </li>    <li><a href="http://jquery.com/" target="_blank">jQuery</a> </li>    <li><a href="http://benjii.me/2010/08/jqax-jquery-plugin-the-jquery-plugin-version-of-the-jqax-ajax-wrapper/" target="_blank">jQax</a> – a wrapper around jQuery ajax </li>    <li><a href="http://aefxx.com/jquery-plugins/jqote2/" target="_blank">jQote</a> – a simple lightweight jQuery templating engine </li> </ol>  <h3>What Do I Do?</h3>  <p>Lets start at the web application because you probably already have something there. Pick a nice simple controller action you wish was ajaxy – say displaying some gig (also know as concert) info?</p>  <p>You probably have a view model you hand to your concert details page. Here is a simplified version of what I use:</p>  <pre class="prettyprint">public class GigViewModel
 {
 	public int GigID { get; set; }
 	public string StartDate { get; set; }
@@ -20,7 +20,7 @@ tags:
 
 <p>I am using a string to represent the date to make the eventual javascript I have to write simpler.</p>
 
-<pre class="brush: csharp;">//
+<pre class="prettyprint">//
 // GET: /Gig/Details/5
 
 public ActionResult Details(int id)
@@ -41,7 +41,7 @@ public ActionResult Details(int id)
 
 <p>Now that the backend is set up to give us our json we need to write some javascript to request it. I am using jQax to make this a bit simpler but you could go vanilla jQuery if that floats your boat.</p>
 
-<pre class="brush: csharp;">var ajax = $.jQax();
+<pre class="prettyprint">var ajax = $.jQax();
 
 ajax.Get(&quot;/gig/1&quot;&quot;, null, function (data) {
 	alert(&quot;woo a json gig - &quot; + data)
@@ -59,7 +59,7 @@ ajax.Get(&quot;/gig/1&quot;&quot;, null, function (data) {
 
 <p>jQote templates look pretty similar to MVC views using javascript rather than C#. They also work best when they live in a script tag like so:</p>
 
-<pre class="brush: xml;">&lt;script type=&quot;text/x-jqote-template&quot; id=&quot;GigDetailsTemplate&quot;&gt;
+<pre class="prettyprint">&lt;script type=&quot;text/x-jqote-template&quot; id=&quot;GigDetailsTemplate&quot;&gt;
 	&lt;div class=&quot;gigDetails&quot;&gt;
 		&lt;h2&gt;&lt;#= this.Name #&gt;&lt;/h2&gt;
 		&lt;span class=&quot;date&quot;&gt;&lt;#= this.StartDate #&gt;&lt;/span&gt;

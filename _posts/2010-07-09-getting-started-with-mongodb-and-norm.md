@@ -116,7 +116,7 @@ tags:
 
 <p>&#160;</p>
 
-<pre class="brush: xml;">&lt;connectionStrings&gt;
+<pre class="prettyprint">&lt;connectionStrings&gt;
   &lt;add name=&quot;db&quot; connectionString=&quot;mongodb://localhost/testdb?strict=true&quot;/&gt;
 &lt;/connectionStrings&gt;</pre>
 
@@ -126,7 +126,7 @@ tags:
 
 <p>I am going to store a simple Trip class for a scheduling application. There are a couple of things to note about this code, first is the [MongoIdentifier] Attribute. Mongo requires collections have a unique identifier. When using NoRM the options you can use are: Guid/UUID, int, or ObjectId. The property must also be named either _id or Id. NoRM will handle generating the identifier when it is required. To keep my example simple I am using an integer. For more complete guidelines check the <a href="http://wiki.github.com/atheken/NoRM/bson-serializer" target="_blank">BSON Serializer page</a>.</p>
 
-<pre class="brush: csharp;">public class Trip
+<pre class="prettyprint">public class Trip
 {
     [MongoIdentifier]
     public int? Id { get; set; }
@@ -145,7 +145,7 @@ tags:
 
 <p>The code to store the Trip class is very simple. The session’s add method will automatically store the object in the database as well as assigning it an Id.</p>
 
-<pre class="brush: csharp;">var trip = new Trip() 
+<pre class="prettyprint">var trip = new Trip() 
 { 
     Name = &quot;test trip&quot;,
     Duration = 5,
@@ -167,7 +167,7 @@ using (var session = new MongoSession())
 
 <p>Finding the document with code is simple using the linq methods of MongoSession.</p>
 
-<pre class="brush: csharp;">using (var session = new MongoSession())
+<pre class="prettyprint">using (var session = new MongoSession())
 {
     var trip = session.Single&lt;Trip&gt;(t =&gt; t.Name == &quot;test trip&quot;);
 }</pre>

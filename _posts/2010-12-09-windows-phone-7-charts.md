@@ -12,7 +12,7 @@ tags:
 - wp7dev
 ---
 
-<p>One of the big features of my <a href="http://lukencode.com/2010/11/28/phonealytics-google-analytics-client-for-windows-phone-7/" target="_blank">Windows Phone 7 Google Analytics Client – Phonealytics</a> is the nice (I think) looking graphs. After briefly considering porting an existing Silverlight solution to wp7 I stumbled upon <a href="http://wpf.amcharts.com/quick" target="_blank">Quick Charts</a> by amCharts. Quick Charts is a lightweight and more importantly free chart control for Windows phone 7. It’s a bit light on options but very easy to get working and looks good. </p>  <p>The xaml for a line chart is pretty straightforward. You can see I am using the phone’s inbuilt styles partially because it looks awesome and partially because I am a terrible designer. The things to note here are setting the CategoryValueMemberPath to the name of the property in your model you want the graph to use as the label and in the LineGraph section setting the ValueMemberPath to the property you want to chart. The title property of the LineGraph renders on a small legend. One tip I have is setting IsEnabled to false when the graph is loading (or just in general) I got an exception tapping the graph before any data has been bound.</p>  <pre class="brush: xml;"><amcharts_windows_quickcharts:serialchart isenabled="False" datasource="{Binding GraphData}" x:name="chtMain" categoryvaluememberpath="Label" verticalalignment="Top">
+<p>One of the big features of my <a href="http://lukencode.com/2010/11/28/phonealytics-google-analytics-client-for-windows-phone-7/" target="_blank">Windows Phone 7 Google Analytics Client – Phonealytics</a> is the nice (I think) looking graphs. After briefly considering porting an existing Silverlight solution to wp7 I stumbled upon <a href="http://wpf.amcharts.com/quick" target="_blank">Quick Charts</a> by amCharts. Quick Charts is a lightweight and more importantly free chart control for Windows phone 7. It’s a bit light on options but very easy to get working and looks good. </p>  <p>The xaml for a line chart is pretty straightforward. You can see I am using the phone’s inbuilt styles partially because it looks awesome and partially because I am a terrible designer. The things to note here are setting the CategoryValueMemberPath to the name of the property in your model you want the graph to use as the label and in the LineGraph section setting the ValueMemberPath to the property you want to chart. The title property of the LineGraph renders on a small legend. One tip I have is setting IsEnabled to false when the graph is loading (or just in general) I got an exception tapping the graph before any data has been bound.</p>  <pre class="prettyprint"><amcharts_windows_quickcharts:serialchart isenabled="False" datasource="{Binding GraphData}" x:name="chtMain" categoryvaluememberpath="Label" verticalalignment="Top">
     
     <amcharts_windows_quickcharts:serialchart.foreground>
         <solidcolorbrush color="{StaticResource PhoneForegroundColor}" />
@@ -42,7 +42,7 @@ tags:
 
 <p>I use an ObservableCollection of the super simple ChartDataPoint class below, with just the top properties I set on the chart xaml above.</p>
 
-<pre class="brush: csharp;">public class ChartDataPoint
+<pre class="prettyprint">public class ChartDataPoint
 {
     public string Label { get; set; }
     public double Value { get; set; }

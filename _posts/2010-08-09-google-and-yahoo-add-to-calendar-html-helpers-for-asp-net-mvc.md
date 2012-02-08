@@ -16,7 +16,7 @@ If you want to play around with these parameters I recommend using google’s to
 I’ve gone ahead and wrapped them up into some Html helpers for Asp.Net MVC. I didn't go overboard with the options here so if you will probably want to tweak the code a bit.
 <script src="https://gist.github.com/536521.js"> </script>
 Calling the helpers is a little wieldy but gets the job done (yahoo is more of the same).
-<pre class="brush: csharp;">&lt;%= Html.GoogleCalendar("add to google calendar", "a test event!", DateTime.Now, null, "its a test", "testington", "websitename", "www.website.com") %&gt;</pre>
+<pre class="prettyprint">&lt;%= Html.GoogleCalendar("add to google calendar", "a test event!", DateTime.Now, null, "its a test", "testington", "websitename", "www.website.com") %&gt;</pre>
 Here are some rendered links I prepared earlier:
 
 <a href="http://www.google.com/calendar/b/0/render?action=TEMPLATE&amp;text=Global+Sound+System&amp;dates=20100903T200000Z/20100903T200000Z&amp;details=Global+Sound+System+at+The+Met&lt;br+/&gt;Featuring:+Global+Sound+System&amp;location=256 Wickham St,+Fortitude+Valley+Qld&amp;trp=false&amp;sprop=Gigpig.fm&amp;sprop=name:http://gigpig.fm/gig/2329/Global-Sound-System&amp;sf=true&amp;output=xml" target="_blank">Google Calendar Event</a>

@@ -11,13 +11,13 @@ Here is a little function I needed to use today for spliting a string into an ar
 
 Through the magic of extension methods I can split the string into chunks using this code.
 
-<pre class="brush: csharp;">
+<pre class="prettyprint">
             var splitItemDescription = item.Product.Description.SplitIntoChunks(40);
 </pre>
 
 Here is the code for the extension method, written in C#.
 
-<pre class="brush: csharp;">
+<pre class="prettyprint">
         public static string[] SplitIntoChunks(this string toSplit, int chunkSize)
         {
             int stringLength = toSplit.Length;

@@ -15,7 +15,7 @@ The database I am using is the binary version of the <a href="http://www.maxmind
 Max Mind provide some C# code for querying the binary database but it takes a little work to set up where as I never like doing work someone else has done for me. The library I use is the <a href="http://en.googlemaps.subgurim.net/" target="_blank">GoogleMaps.Subgurim.NET</a> which as well as from google map functions provides code to access the GeoLite City database.
 
 The code to call the Subgurim methods is super simple. Here I am returning the location class which is also included in the library – it has properties for longitude, latitude, country, city and a few other things. All that needs to be passed to it is the location of your database and the ip address you want to look up.
-<pre class="brush: csharp;">public static Location GetLocationFromIP(string ipAddress)
+<pre class="prettyprint">public static Location GetLocationFromIP(string ipAddress)
 {
     string databasePath = HttpContext.Current.Server.MapPath("~/app_data/geocitylite.dat");
     LookupService service = new LookupService(databasePath);
@@ -24,7 +24,7 @@ The code to call the Subgurim methods is super simple. Here I am returning the l
     return loc;
 }</pre>
 One way I like to use this code in Asp.Net MVC is including some properties in a base controller class that my controllers all inherit so I can access the current location on any controller. One thing to be aware of is the lookup will return null for the ip address 127.0.0.1 so you might want to hard code it for testing.
-<pre class="brush: csharp;">public class ControllerBase : Controller
+<pre class="prettyprint">public class ControllerBase : Controller
 {
     public string CurrentUserIPAddress
     {

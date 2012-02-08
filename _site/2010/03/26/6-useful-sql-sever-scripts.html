@@ -13,6 +13,7 @@
 
 	<link rel="profile" href="http://gmpg.org/xfn/11" />
     <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="/css/responsive.css" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="/css/prettify.css" type="text/css" media="screen, projection" />
 	<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
 	
@@ -40,25 +41,30 @@
 								
 		<div id="secondary" class="widget-area">
 			<aside id="me" class="widget">
-				<h4>Author</h4>	
-				
-				<img class="grav" src='http://en.gravatar.com/userimage/7397984/5de7392594b98c6b510f0691ca5e0638.jpeg' />
-				
-				<div class="about">
-					<strong>Luke Lowrey</strong>
-					<p>I drink beer and build web and mobile apps (in that order).</p>
+				<div class="info">
+					<h4>Author</h4>	
+					
+					<img class="grav" src='http://en.gravatar.com/userimage/7397984/5de7392594b98c6b510f0691ca5e0638.jpeg' />
+					
+					<div class="about">
+						<strong>Luke Lowrey</strong>
+						<p>I drink beer and build web and mobile apps (in that order).</p>
+					</div>
 				</div>
-				
+				<div class="short-info">
+					A programming blog by <strong>Luke Lowrey</strong>
+				</div>
 				<ul>
+					<li id="twitter-button"><a href="http://twitter.com/lukencode" class="twitter-follow-button" data-button="grey" data-text-color="#FFFFFF" data-link-color="#00AEFF">Follow @lukencode</a></li>
 					<li> <a href='/about'>About</a> </li>					
 					<li> <a href='/contact'>Contact</a> </li>
+					<li id="twitter-text"><a href="http://twitter.com/lukencode" >@lukencode</a></li>
 					<li>
 						<a href="/rss.xml">
 							<img src='http://lukencode.com/wp-content/uploads/2011/04/feed-icon.png' />
 							Subscribe
 						</a>
 					</li>
-					<li><a href="http://twitter.com/lukencode" class="twitter-follow-button" data-button="grey" data-text-color="#FFFFFF" data-link-color="#00AEFF">Follow @lukencode</a></li>
 				</ul>
 			</aside>
 		</div>			
@@ -66,26 +72,11 @@
 				
 	<div id="primary">
 		<div id="content">
-			<div class="entry-container">
-	<div class='entry'>
-		<h1> 6 Useful SQL Server Scripts </h1>
-		<span class="postdate">e B, Y
-			
-				<li><a href="/tag/[">[</a></li>
-			
-				<li><a href="/tag/ "> </a></li>
-			
-				<li><a href="/tag/s">s</a></li>
-			
-				<li><a href="/tag/q">q</a></li>
-			
-				<li><a href="/tag/l">l</a></li>
-			
-				<li><a href="/tag/ "> </a></li>
-			
-				<li><a href="/tag/]">]</a></li>
-			
-		</span>
+			<div id="post">
+	<h1> 6 Useful SQL Server Scripts </h1>
+	<div class="date">12, febuary 2011</div>
+	
+	<article>
 		<p>This is a post we had on the short lived blog.tboda.com with input from DK and <a href="http://benjii.me">Benjii</a>. People seemed to find it useful so I thought I’d give it second chance at life (plus one extra script).</p>
 <h3>Database Backup</h3>
 <p>This script is used to do regular backups of a given database when running as a scheduled sql job. It appends the date to each backup to prevent conflicts.</p>
@@ -199,8 +190,9 @@ STATS = 10</pre>
 <pre class="brush: sql">USE YOURDBNAME
 SELECT COUNT(*) from information_schema.tables
 WHERE table_type = 'base table'</pre>
-	</div>
+	</article>
 </div>
+	
 <div id="page-navigation"> 
 	<div class="left">  </div> 
 	<div class="right">  </div> 
@@ -208,7 +200,22 @@ WHERE table_type = 'base table'</pre>
 </div> 
 
 
+<div id="disqus_thread"></div>
 
+<script type="text/javascript">
+	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+	var disqus_shortname = 'lukencode'; // required: replace example with your forum shortname
+
+	/* * * DON'T EDIT BELOW THIS LINE * * */
+	(function() {
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 		</div>				
 
 		<footer>

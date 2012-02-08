@@ -25,7 +25,7 @@ The <a href="http://www.blueprintcss.org/tests/parts/elements.html" target="_bla
 Last but not least is Blueprint’s grid system. This I am not totally sold on but at the very least its useful for getting together a quick prototype. Essentially the system uses classes such as ‘container’, ‘span-10’ and ‘last’ to quickly and easily bust out complex layouts.
 
 Here is a basic example with a header, content, footer and sidebars.
-<pre class="brush: xml;">&lt;div class="container"&gt;
+<pre class="prettyprint">&lt;div class="container"&gt;
     &lt;div class="span-24 last"&gt;
         Header
     &lt;/div&gt;
@@ -43,7 +43,7 @@ Here is a basic example with a header, content, footer and sidebars.
 When building a public facing website its usually a good idea to combine and minify your CSS(and javascript) files into a single file. This of course is a huge pain in the ass. It is possible to use something like the Yahoo YUI Compressor and an MSBuild task to automate this but then you run into problems for things like debugging your CSS.
 
 Enter <a href="http://github.com/jetheredge/bundler" target="_blank"><strong>Bundler</strong></a>. Bundler essentially reduces combining and minifying of CSS and javascript into on tiny bit of code -
-<pre class="brush: csharp;">&lt;%= Bundle.Css()
+<pre class="prettyprint">&lt;%= Bundle.Css()
         .AddCss("~/css/reset.css")
         .AddCss("~/css/site.css")
         .RenderCss("~/css/combined.css") %&gt;</pre>
