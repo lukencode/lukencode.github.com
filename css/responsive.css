@@ -82,6 +82,25 @@
 		color:#168aff;
 	}
 	
+	#archive li
+	{	
+		padding:10px 3px;
+	}	
+	
+	#archive li .date a
+	{
+		float:none;
+		display:block;
+	}
+	
+	#archive li .date
+	{
+		clear:both;
+		float:none;
+		display:block;
+		padding-top:4px;
+	}
+	
 	#post h1
 	{
 		font-size:32px;
