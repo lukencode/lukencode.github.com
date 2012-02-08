@@ -43,7 +43,8 @@ input, select { vertical-align:middle; }
 
 img,
 object {
-     max-width: 99%;
+     max-width: 100%;
+	 height:auto;
 }
 
 /*
@@ -408,6 +409,11 @@ footer {
 
 #page-navigation
 {
+}
+
+#page-navigation .left, #page-navigation .right
+{
+	padding:5px 0;
 }
 
 .gist pre
