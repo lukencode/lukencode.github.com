@@ -110,12 +110,15 @@
 <p>Output:</p>
 <p><a href="http://lukencode.com/wp-content/uploads/2012/01/gridyo.png"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="gridyo" border="0" alt="gridyo" src="http://lukencode.com/wp-content/uploads/2012/01/gridyo_thumb.png" width="624" height="115"></a></p>
 <p>Pretty neat I think. It works with most things I’ve thrown at it including anonymous classes but not dynamic.</p>
-<p>The other class is called <strong>SparkExtensions</strong>. This class is a C# port of this <a href="https://github.com/holman/spark" target="_blank">cool little shell script</a>. The Spark() methods are extension methods on various IEnumerable collections (int, decimal, string, etc) they take the list and turn it into a cool little spark line graph similar to this: ▁▂▃▅▂▇. Here is a basic example:</p><pre class="prettyprint">public string Process(string[] args)
+<p>The other class is called <strong>SparkExtensions</strong>. This class is a C# port of this <a href="https://github.com/holman/spark" target="_blank">cool little shell script</a>. The Spark() methods are extension methods on various IEnumerable collections (int, decimal, string, etc) they take the list and turn it into a cool little spark line graph similar to this: ▁▂▃▅▂▇. Here is a basic example:</p>
+<pre class="prettyprint">
+public string Process(string[] args)
 {
     var list = new List&lt;int&gt;() { 5, 7, 3, 8, 9, 2, 12, 7, 6 };
 
     return list.Spark();
-}</pre>
+}
+</pre>
 <p>Hopefully these additions make building commands a little more painless. If you are using NetBash or better still have built some open source commands I'd love to hear from you. NetBash source can be found on <a href="https://github.com/lukencode/NetBash" target="_blank">Github</a> and downloaded using <a href="http://nuget.org/packages/NetBash" target="_blank">NuGet</a>.</p>
 	</article>
 </div>
