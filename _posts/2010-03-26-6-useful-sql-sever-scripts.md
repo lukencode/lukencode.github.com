@@ -11,7 +11,7 @@ tags:
 This is a post we had on the short lived blog.tboda.com with input from DK and <a href="http://benjii.me">Benjii</a>. People seemed to find it useful so I thought I’d give it second chance at life (plus one extra script).
 <h3>Database Backup</h3>
 This script is used to do regular backups of a given database when running as a scheduled sql job. It appends the date to each backup to prevent conflicts.
-<pre class="brush: sql">DECLARE @currentday varchar(10)
+<pre class="prettyprint">DECLARE @currentday varchar(10)
 set @currentday = datepart(day,getdate())
 IF LEN(@currentday) = 1
 BEGIN
@@ -33,7 +33,7 @@ NAME = N'myDatabase -Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 1
 GO</pre>
 <h3>Clear all Records</h3>
 This script basically 'resets' your database by removing all records from every table whilst keeping constraints intact and resetting identities.
-<pre class="brush: sql">--Disable Constraints &amp; Triggers
+<pre class="prettyprint">--Disable Constraints &amp; Triggers
 EXEC sp_MSforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL'
 EXEC sp_MSforeachtable 'ALTER TABLE ? DISABLE TRIGGER ALL'
 --Perform delete operation on all table for cleanup
@@ -46,7 +46,7 @@ EXEC sp_MSforeachtable 'IF OBJECTPROPERTY(OBJECT_ID(''?''), ''TableHasIdentity''
 BEGIN DBCC CHECKIDENT (''?'',RESEED,0) END'</pre>
 <h3>Distance between points</h3>
 Taking 2 sets of longitude/latitude points this function will calculate the distance between them and return it as a real.
-<pre class="brush: sql">CREATE FUNCTION [dbo].[DistanceBetween] (@Lat1 as real,
+<pre class="prettyprint">CREATE FUNCTION [dbo].[DistanceBetween] (@Lat1 as real,
 @Long1 as real, @Lat2 as real, @Long2 as real)
 RETURNS real
 AS
@@ -80,7 +80,7 @@ RETURN (@dDistance);
 END</pre>
 <h3>Get Table Size</h3>
 This is a SQL Server 2005 stored procedure that returns a table with details on the storage spaced used by all tables in the database.
-<pre class="brush: sql">CREATE PROCEDURE [dbo].[GetDBTableSize]
+<pre class="prettyprint">CREATE PROCEDURE [dbo].[GetDBTableSize]
 AS
 BEGIN
 SET NOCOUNT ON;
@@ -106,19 +106,19 @@ DROP TABLE #TempTable
 END</pre>
 <h3>Clear Transaction Logs</h3>
 A small script to clear the transaction logs of a given database. During development these can get pretty excessive.
-<pre class="brush: sql">BACKUP log [myDatabase] with truncate_only
+<pre class="prettyprint">BACKUP log [myDatabase] with truncate_only
 go
 DBCC SHRINKDATABASE ([myDatabase], 10, TRUNCATEONLY)
 go</pre>
 This will stop the transaction logs from growing too large.
 
 It is also a good idea to do regular backups of these logs (which shrinks them anyway)
-<pre class="brush: sql">BACKUP
+<pre class="prettyprint">BACKUP
 LOG [myDatabase] TO DISK = N'C:\Backups\myDatabase_log.trn' WITH
 NOFORMAT, NOINIT, NAME = N'myDatabase_log', SKIP, REWIND, NOUNLOAD,
 STATS = 10</pre>
 <h3>Number of Tables in Database</h3>
 Working on a rather monolithic finance system the other day I wanted to check out just how many un necessary tables they had. Here is how via <a href="http://www.sqlservercurry.com/2008/06/count-number-of-tables-in-sql-server.html">sqlservercurry</a>.
-<pre class="brush: sql">USE YOURDBNAME
+<pre class="prettyprint">USE YOURDBNAME
 SELECT COUNT(*) from information_schema.tables
 WHERE table_type = 'base table'</pre>

@@ -393,13 +393,13 @@ footer {
 	margin: 0 0 12px;
 }
 
-#post article h3
+#post article h3, #post article h2, #disqus_thread h3
 {
 	font-weight:normal;
 	font-size:26px;
 	border-bottom:1px solid #efefef;
 	padding:0 0 5px 0;
-	margin:7px 0 15px 0;
+	margin:10px 0 18px 0;
 }
 
 #post article pre, #post article img
@@ -425,7 +425,7 @@ footer {
 .number
 {
 	float:left;
-	padding:0 10px 10px 10px;
+	padding:10px 10px 15px 10px;
 	text-align:center;
 	color:#666;
 }
@@ -433,7 +433,7 @@ footer {
 .sign
 {
 	float:left;
-	padding:0 5px;
+	padding:10px 5px 0 5px;
 	text-align:center;
 	font-size:1.2em;
 	color:#666;

@@ -4,7 +4,7 @@ layout: layout
 
 <div id="post">
 	<h1> {{page.title}} </h1>
-	<div class="date">12, febuary 2011{{ post.date | date: "%d %B, %Y" }}</div>
+	<div class="date">{{ post.date | date: "%d %B, %Y" }}</div>
 	
 	<article>
 		{{ content }}

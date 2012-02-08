@@ -74,7 +74,7 @@
 		<div id="content">
 			<div id="post">
 	<h1> Writing AJAX web applications in Asp.Net MVC </h1>
-	<div class="date">12, febuary 2011</div>
+	<div class="date"></div>
 	
 	<article>
 		<p>Asp.Net MVC and jQuery have made it much easier to build awesome Gmail like ajax powered applications. I am going to run through the technique I used to do the ajax web services, call them in javascript and display the html through a template. </p>  <h3>What Do I Need?</h3>  <ol>   <li>An Asp.Net MVC web application </li>    <li><a href="http://jquery.com/" target="_blank">jQuery</a> </li>    <li><a href="http://benjii.me/2010/08/jqax-jquery-plugin-the-jquery-plugin-version-of-the-jqax-ajax-wrapper/" target="_blank">jQax</a> – a wrapper around jQuery ajax </li>    <li><a href="http://aefxx.com/jquery-plugins/jqote2/" target="_blank">jQote</a> – a simple lightweight jQuery templating engine </li> </ol>  <h3>What Do I Do?</h3>  <p>Lets start at the web application because you probably already have something there. Pick a nice simple controller action you wish was ajaxy – say displaying some gig (also know as concert) info?</p>  <p>You probably have a view model you hand to your concert details page. Here is a simplified version of what I use:</p>  <pre class="prettyprint">public class GigViewModel
