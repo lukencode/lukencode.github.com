@@ -38,7 +38,7 @@ tags:
 <div class="sign">*</div>  
 <div class="number"><strong>0.7</strong>     <br />Microsoft's Cut </div>  
 <div class="sign">=</div>  
-div class="number"><strong>$358.56</strong>     <br />total </div>  
+<div class="number"><strong>$358.56</strong>     <br />total </div>  
 
 <p class="clear">I probably shouldn't quit my day job any time soon. </p>  
 
