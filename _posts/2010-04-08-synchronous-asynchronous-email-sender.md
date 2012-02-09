@@ -8,12 +8,13 @@ tags:
 - email
 ---
 
-<strong>UPDATE:</strong> I am now using a <a href="http://lukencode.com/2010/04/11/fluent-email-in-net/">Fluent Email Class </a> that implements similar techniques.
+<strong>UPDATE:</strong> 
+I am now using a <a href="http://lukencode.com/2010/04/11/fluent-email-in-net/">Fluent Email Class </a> that implements similar techniques.
 
 I noticed quite a few search queries coming in for my post on <a title="c# email templates" href="http://lukencode.com/2010/03/23/user-control-email-templates-in-asp-net/">User Control Email Templates</a> so I thought I should post the code I am using to actually send the emails in that example. The class uses the SMTP configuration information in the web.config or app.config of the application. An example of the config is after the code.
 
 The code is pretty quick and dirty but if you are only sending one off emails it works fine.
-<pre class="brush: csharp">    public static class EmailSender
+<pre class="prettyprint">    public static class EmailSender
     {
         ///
         /// Sends an Email.
@@ -82,7 +83,7 @@ The code is pretty quick and dirty but if you are only sending one off emails it
 
 Here is an example of the mailSettings config section.
 
-<pre class="brush: xml">
+<pre class="prettyprint">
     &lt;system.net&gt;
       &lt;mailSettings&gt;
         &lt;smtp from=&quot;test@test.test&quot;&gt;
