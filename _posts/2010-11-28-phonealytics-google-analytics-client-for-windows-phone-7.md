@@ -1,6 +1,6 @@
 ---
 title: "Phonealytics – Google Analytics App for Windows Phone 7"
-date: 2010-11-28T20:02:33.0000000+10:00
+date: 2010-11-28
 layout: post
 categories:
 - Mobile

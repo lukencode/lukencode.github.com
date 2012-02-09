@@ -1,6 +1,6 @@
 ---
 title: Windows Phone (Mango) Contact Chooser Task
-date: 2011-12-01T21:16:00.0000000+10:00
+date: 2011-12-01
 layout: post
 categories:
 - Code

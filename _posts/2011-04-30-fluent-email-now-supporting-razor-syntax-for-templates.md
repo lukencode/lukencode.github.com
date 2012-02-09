@@ -1,6 +1,6 @@
 ---
 title: Fluent Email Now Supporting Razor Syntax For Templates
-date: 2011-04-30T16:26:01.0000000+10:00
+date: 2011-04-30
 layout: post
 categories:
 - Code

@@ -1,6 +1,6 @@
 ---
 title: Writing AJAX web applications in Asp.Net MVC
-date: 2010-09-26T19:18:04.0000000+10:00
+date: 2010-09-26
 layout: post
 categories:
 - Web

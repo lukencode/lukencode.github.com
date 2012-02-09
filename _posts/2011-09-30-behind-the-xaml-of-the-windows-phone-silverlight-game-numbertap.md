@@ -1,6 +1,6 @@
 ---
 title: "Behind the XAML of the Windows Phone Silverlight Game – Numbertap"
-date: 2011-09-30T01:19:29.0000000+10:00
+date: 2011-09-30
 layout: post
 categories:
 - Mobile

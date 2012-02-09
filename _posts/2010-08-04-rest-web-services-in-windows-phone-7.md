@@ -1,6 +1,6 @@
 ---
 title: Rest Web Services In Windows Phone 7
-date: 2010-08-04T20:30:38.0000000+10:00
+date: 2010-08-04
 layout: post
 categories:
 - Mobile

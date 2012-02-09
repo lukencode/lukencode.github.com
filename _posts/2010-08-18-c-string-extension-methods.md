@@ -1,6 +1,6 @@
 ---
 title: C# String Extension Methods
-date: 2010-08-18T23:04:09.0000000+10:00
+date: 2010-08-18
 layout: post
 categories:
 - Code

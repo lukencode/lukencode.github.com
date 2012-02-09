@@ -1,6 +1,6 @@
 ---
 title: Windows Phone 7 Charts
-date: 2010-12-09T21:25:06.0000000+10:00
+date: 2010-12-09
 layout: post
 categories:
 - Code

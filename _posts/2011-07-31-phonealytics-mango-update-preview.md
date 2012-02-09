@@ -1,6 +1,6 @@
 ---
 title: "Phonealytics “Mango” Update Preview"
-date: 2011-07-31T15:54:24.0000000+10:00
+date: 2011-07-31
 layout: post
 categories:
 - Mobile

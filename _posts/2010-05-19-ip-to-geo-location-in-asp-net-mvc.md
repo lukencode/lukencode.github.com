@@ -1,6 +1,6 @@
 ---
 title: IP to Geo Location in Asp.Net MVC
-date: 2010-05-19T23:37:42.0000000+10:00
+date: 2010-05-19
 layout: post
 categories:
 - Web

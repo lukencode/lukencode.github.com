@@ -1,6 +1,6 @@
 ---
 title: User Control Email Templates in asp.net
-date: 2010-03-23T18:04:46.0000000+10:00
+date: 2010-03-23
 layout: post
 categories:
 - Code

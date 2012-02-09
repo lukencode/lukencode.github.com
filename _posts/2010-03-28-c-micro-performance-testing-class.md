@@ -1,6 +1,6 @@
 ---
 title: C# Micro Performance Testing Class
-date: 2010-03-28T18:48:45.0000000+10:00
+date: 2010-03-28
 layout: post
 categories:
 - Code
