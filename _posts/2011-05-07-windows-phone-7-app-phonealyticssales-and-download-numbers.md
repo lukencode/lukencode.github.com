@@ -33,19 +33,30 @@ tags:
 
 <p><a href="http://lukencode.com/wp-content/uploads/2011/05/cumulative.png"><img title="cumulative" border="0" alt="cumulative" src="http://lukencode.com/wp-content/uploads/2011/05/cumulative_thumb.png" width="715" height="425" /></a></p>  <p>As you can see the downloads have remained fairly stable throughout the life of the app. I’d like to think that this means the app is pretty good and as new people are introduced to Windows Phone 7 the sales will continue to grow. Spikes in downloads generally coincided with me putting some effort into promoting updates. The free trial has been kept the downloads pretty steady and has a good conversion rate to the paid app. The price drop however hasn't had a great effect. </p>  <h3>Estimated Moneys</h3>  
 <div class="number"><strong>119</strong>     <br />at $2.99 </div>  
-<div class="sign">+</div>  <div class="number"><strong>159</strong>     <br />at $0.99</div>  
-<div class="sign">*</div>  <div class="number"><strong>0.7</strong>     <br />Microsoft's Cut </div>  
-<div class="sign">=</div>  <div class="number"><strong>$358.56</strong>     <br />total </div>  
+<div class="sign">+</div>  
+<div class="number"><strong>159</strong>     <br />at $0.99</div>  
+<div class="sign">*</div>  
+<div class="number"><strong>0.7</strong>     <br />Microsoft's Cut </div>  
+<div class="sign">=</div>  
+div class="number"><strong>$358.56</strong>     <br />total </div>  
 
 <p class="clear">I probably shouldn't quit my day job any time soon. </p>  
 
 <h3>Future Plans</h3>  
 
 <ul>   
-<li>As you may have noticed, the app hub reporting tools are very limited. First change I am making is implementing some decent analytics through <a href="http://www.localytics.com/" target="_blank">Localytics</a> to get a better idea of how many active users Phonealytics has and how they use the app. </li>    
+	<li>As you may have noticed, the app hub reporting tools are very limited. First change I am making is implementing some decent analytics through <a href="http://www.localytics.com/" target="_blank">Localytics</a> to get a better idea of how many active users Phonealytics has and how they use the app. </li>    
 <li>I am going to try prompting repeat users to rate and review the app using a library like <a href="http://dkdevelopment.net/2011/04/29/appevents-do-stuff-when-things-happen-wp7/" target="_blank">app events</a>. My plan is to track users who have accessed the core functionality a certain number of times (and not experienced any crashes) and prompt them to review the app. Hopefully by targeting people with a positive experience I can get the average score up over 4. </li>    
-<li>Adding a separate ad supported free version. This one is a bit of a gamble, the free version will essentially be the same as the paid version minus the live tile functionality. I will track users on the trial version using a similar method to get reviews and ask them if they would like to try the free version instead. </li>    <li>Lowering the price of the app to $0.99 made little difference in terms of sales so I will be upping the price to $1.99 – less than the original price but still an increase. </li>    
-<li>Continued updating of the app’s functionality. Though Phonealytics hasn’t been a financial success I have really enjoyed making it. I am planning some cool features around the Mango update API – most significant being multiple live tiles with more information on them. </li> </ul>  <h3>My Tips</h3>  <ul>   <li>Encourage feedback from your users, I use a real simple section on my settings page with a button that fires of an EmailComposeTask sent to me with Phonealytics as the subject.<a href="http://lukencode.com/wp-content/uploads/2011/05/feedback.png">
+<li>Adding a separate ad supported free version. This one is a bit of a gamble, the free version will essentially be the same as the paid version minus the live tile functionality. I will track users on the trial version using a similar method to get reviews and ask them if they would like to try the free version instead. </li>    
+<li>Lowering the price of the app to $0.99 made little difference in terms of sales so I will be upping the price to $1.99 – less than the original price but still an increase. </li>    
+<li>Continued updating of the app’s functionality. Though Phonealytics hasn’t been a financial success I have really enjoyed making it. I am planning some cool features around the Mango update API – most significant being multiple live tiles with more information on them. </li> 
+
+</ul>  
+
+<h3>My Tips</h3>  
+
+<ul>   
+<li>Encourage feedback from your users, I use a real simple section on my settings page with a button that fires of an EmailComposeTask sent to me with Phonealytics as the subject.<a href="http://lukencode.com/wp-content/uploads/2011/05/feedback.png">
 <img border="0" alt="feedback" src="http://lukencode.com/wp-content/uploads/2011/05/feedback_thumb.png" width="134" height="244" /></a> </li>    
 <li>People like the “metro” style. If you are not a designer (like myself) keep to its guidelines and you should end up with something decent looking. Don’t be afraid to add some colour though, you don’t want to look like a hello world sample. Basically follow everything Jeff Wilcox suggests in his <a href="http://www.jeff.wilcox.name/2011/03/metro-design-guide-v1/" target="_blank">Metro Design Guide</a>. </li>    
 <li>If you have a paid app be sure to include a trial. Make the trial is of some use and remind users a paid version exists. One thing I found to work well is showing the user an example of the functionality they are missing from the full version with a button linking to the marketplace to purchase it.<a href="http://lukencode.com/wp-content/uploads/2011/05/trial.png">
