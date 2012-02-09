@@ -36,36 +36,42 @@ If I were to guess I would say the vast majority of windows phone games are XNA 
 This is one are where windows phone is really starting to shine, nearly any control you would want UI wise that isn’t in the base SDK exists in a well documented and supported open source library. The two we like best are the official <a href="http://silverlight.codeplex.com/" target="_blank">Silverlight Toolkit</a> and the <a href="http://coding4fun.codeplex.com/" target="_blank">Coding4Fun Toolkit</a> both are available on NuGet.
 
 Silverlight toolkit is more or less a must have in every windows phone app. The most useful thing it brings to the table is really nice and super simple to implement page transitions. Here is an example of some XAML form the Numbertap about page to do turnstile transitions in and out:
+
 <pre class="prettyprint">
-<toolkit:transitionservice.navigationintransition>
-    <toolkit:navigationintransition>
-        <toolkit:navigationintransition.backward>
-            <toolkit:turnstiletransition mode="BackwardIn" />
-        </toolkit:navigationintransition.backward>
-        <toolkit:navigationintransition.forward>
-            <toolkit:turnstiletransition mode="ForwardIn" />
-        </toolkit:navigationintransition.forward>
-    </toolkit:navigationintransition>
-</toolkit:transitionservice.navigationintransition>
-<toolkit:transitionservice.navigationouttransition>
-    <toolkit:navigationouttransition>
-        <toolkit:navigationouttransition.backward>
-            <toolkit:turnstiletransition mode="BackwardOut" />
-        </toolkit:navigationouttransition.backward>
-        <toolkit:navigationouttransition.forward>
-            <toolkit:turnstiletransition mode="ForwardOut" />
-        </toolkit:navigationouttransition.forward>
-    </toolkit:navigationouttransition>
-</toolkit:transitionservice.navigationouttransition>
+&lt;toolkit:transitionservice.navigationintransition&gt;
+    &lt;toolkit:navigationintransition&gt;
+        &lt;toolkit:navigationintransition.backward&gt;
+            &lt;toolkit:turnstiletransition mode=&quot;BackwardIn&quot; /&gt;
+        &lt;/toolkit:navigationintransition.backward&gt;
+        &lt;toolkit:navigationintransition.forward&gt;
+            &lt;toolkit:turnstiletransition mode=&quot;ForwardIn&quot; /&gt;
+        &lt;/toolkit:navigationintransition.forward&gt;
+    &lt;/toolkit:navigationintransition&gt;
+&lt;/toolkit:transitionservice.navigationintransition&gt;
+&lt;toolkit:transitionservice.navigationouttransition&gt;
+    &lt;toolkit:navigationouttransition&gt;
+        &lt;toolkit:navigationouttransition.backward&gt;
+            &lt;toolkit:turnstiletransition mode=&quot;BackwardOut&quot; /&gt;
+        &lt;/toolkit:navigationouttransition.backward&gt;
+        &lt;toolkit:navigationouttransition.forward&gt;
+            &lt;toolkit:turnstiletransition mode=&quot;ForwardOut&quot; /&gt;
+        &lt;/toolkit:navigationouttransition.forward&gt;
+    &lt;/toolkit:navigationouttransition&gt;
+&lt;/toolkit:transitionservice.navigationouttransition&gt;
 </pre>
+
 The other Silverlight Toolkit feature I really like is the tilt effect, it really helps bring an application to life when elements react to touch. You can automatically add a “tilt” to all eligible controls (buttons, list items, etc) on a page by just adding this to your PhoneApplicationPage xaml.
+
 <pre class="prettyprint">toolkit:TiltEffect.IsTiltEnabled="True"</pre>
+
 Coding4Fun is the other toolkit we make heavy use of. It has a couple of good controls but the ones we really like are the prompts. The input prompt was clean way to prompt players on registration, as with all the Coding4Fun prompts the code is really simple.
+
 <pre class="prettyprint">var msg = new InputPrompt();
 msg.Title = "Create Player";
 msg.Message = "Please enter a player name";
 
 msg.Show();</pre>
+
 That code (plus a tiny bit extra to add the buttons) gives this result:
 
 <a href="http://lukencode.com/wp-content/uploads/2011/09/input-prompt.png"><img style="background-image: none; padding-left: 0px; padding-right: 0px; display: block; float: none; margin-left: auto; margin-right: auto; padding-top: 0px; border-width: 0px;" title="input-prompt" src="http://lukencode.com/wp-content/uploads/2011/09/input-prompt_thumb.png" alt="input-prompt" width="206" height="340" border="0" /></a>
@@ -81,6 +87,7 @@ I've already posted about how much I love <a href="http://restsharp.org/" target
 With mobile apps getting a good review is pretty much gold. As a user I am very unlikely to try any app with a sub 3/5 star rating. We wanted to give Numbertap the best chance we could at a decent rating by asking users (nicely) to rate the app. We didn’t just want to annoy any user either, we wanted to hit them up when we KNOW they are enjoying the game and they are at a point where they can jump out and give us a good score.
 
 To achieved this lofty goal we used a little library @d1k_is open sourced – <a href="https://github.com/dkarzon/AppEvents" target="_blank">AppEvents</a>. The syntax is a little funky so you should probably check out <a href="http://dkdevelopment.net/2011/04/29/appevents-do-stuff-when-things-happen-wp7/" target="_blank">dk’s blog post</a> for a full intro but essentially what we are doing here is running the method AskToRate() when the “games-played” event has been fired 5 or more times and the “rated” event has not occurred.
+
 <pre class="prettyprint">//in app.xaml.cs set up the rule
 AppEventsClient.New(Rule.When("rate-app",
                 el =&gt; el.Any(e =&gt; e.Name == "games-played" &amp;&amp; e.Occurrrences.Count &gt;= 5) &amp;&amp; !el.Any(e =&gt; e.Name == "rated"))
@@ -89,6 +96,7 @@ AppEventsClient.New(Rule.When("rate-app",
 
 //when a game has played fire the event
 AppEventsClient.Current.Fire("games-played");</pre>
+
 This little piece of code has helped us gain 170+ reviews with an average of about 4.5 / 5 so far (hopefully having a cool game helped).
 
 <strong>The Icon</strong>
@@ -102,6 +110,7 @@ Like the App we wanted the server side of Numbertap to be fast and simple, this 
 <strong>The Framework</strong>
 
 We know ASP.NET MVC so just like the Silverlight decision we rolled with what we knew. Turns out combining RestSharp, mvc and a shared class library for the API models makes REST based API’s really easy. Because both our app and server shares a class library for RestSharp models it means that we can easily update our web service responses and have that data available in the app. We return json over xml because json rules – this is how you do it from an MVC controller, this action returns some info on player rank and the current number of players in game:
+
 <pre class="prettyprint">[HttpPost]
 public ActionResult GameStats(LoginRequest loginRequest)
 {
@@ -114,6 +123,7 @@ public ActionResult GameStats(LoginRequest loginRequest)
 
     return Json(response, JsonRequestBehavior.AllowGet);
 }</pre>
+
 <strong>The Platform</strong>
 
 Being a multiplayer game Numbertap needed a server side component and where better to look for a server than the cloud? I bet you are thinking I’m going to talk about how awesome azure is right? WRONG! Bottom line is I looked at azure and I looked at the azure pricing table and quickly shut my browser and unplugged my computer before my head exploded. Azure is too hard for a simple developer like me, we wanted easy cloud and found it with <a href="https://appharbor.com/" target="_blank">App Harbour</a>. App Harbour in their own words is “Azure done right”. Deployment is super simple – pushing to a git repo will build your project, run your tests and deploy. We went with the $10 a month shared Sql Server DB and have the option to add instances to scale at any time BALLIN’.
