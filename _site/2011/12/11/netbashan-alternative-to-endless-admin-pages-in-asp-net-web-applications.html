@@ -96,7 +96,8 @@
 </pre>
 <p>The call to Init inserts a couple of routes for the handler, css and js files. You also need to somewhere in your _Layout.cshtml / MasterPage add the RenderIncludes function to write the css and script tags to the page.</p><pre class="prettyprint">NetBash.RenderIncludes()</pre>
 <p>The way it works is by searching your application using reflection for classes implementing IWebCommand with a WebCommand attribute. The WebCommand attribute defines a name for the command which is used to invoke it as well as a description displayed on help. The IWebCommand interface has a method called Process which passes in a string array of arguments in the same manor that a .NET console application’s main method would. When a command is entered on the front end an ajax request is made to the NetBash handler. The handler grabs the first word of the request text and matches it to a WebCommand with the same name then invokes Process and returns the result. Here is a very simple example command that returns the length of the arguments passed in:</p>
-<pre class="prettyprint">[WebCommand("length", "Returns number of characters in given arguments")]
+<pre class="prettyprint">
+[WebCommand(&quot;length&quot;, &quot;Returns number of characters in given arguments&quot;)]
 public class LengthCommand : IWebCommand
 {
     public bool ReturnHtml
@@ -106,9 +107,10 @@ public class LengthCommand : IWebCommand
 
     public string Process(string[] args)
     {
-        return string.Join(" ", args).Length.ToString();
+        return string.Join(&quot; &quot;, args).Length.ToString();
     }
-}</pre>
+}
+</pre>
 <p>Hopefully defining commands this way makes it both dead easy to implement while allowing flexibility to do something more complex (perhaps parsing the arguments with <a href="http://www.ndesk.org/Options" target="_blank">nDesk.Options</a>).</p>
 <p>It is pretty early days for the code so I probably wouldn’t recommend using it in a production situation at the moment. NetBash is available as a <a href="http://nuget.org/packages/NetBash" target="_blank">NuGet package</a> and the source on GitHub at <a href="https://github.com/lukencode/NetBash" target="_blank">lukencode/netbash</a>. I’d love to hear people opinions on the api (nothing is set in stone) as well as the UI which could use some work. I have some ideas for some useful commands (some mad stats with a .net version of <a href="https://github.com/holman/spark" target="_blank">spark</a>) also <a href="http://benjii.me/" target="_blank">Ben Cull</a> promises me he will write an asp.net membership command pack.</p>
 	</article>
