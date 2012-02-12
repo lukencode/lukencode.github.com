@@ -12,11 +12,10 @@ tags:
 <p>NetBash (drop in command line for asp.net web applications) was first released late last year with little to no response from the community. No big deal – I built it to scratch my own itch so it was at least going to be useful to me. Then, like clockwork I go on holidays for a week and a bit and it is featured on <a href="http://asp.net" target="_blank">Asp.net</a> and tweeted by close to 100 people. I have used the past few days to catch up with the bugs people have found (thanks heaps to those who forked and fixed bugs themselves) and get a new release out on <a href="http://nuget.org/packages/NetBash" target="_blank">NuGet</a>.</p> 
 
 <h3>Bug Fixes</h3> 
-<ul> 
-	<li>NetBash is now compatible with older versions of JQuery (1.5 at least). This was causing some issues with people using a fresh file – new project mvc app to test it out.  </li>
-	<li>Console now auto scrolls to bottom when opened.  </li>
-	<li>Now more compatible with older versions of IE. </li>
-</ul> 
+
+- NetBash is now compatible with older versions of JQuery (1.5 at least). This was causing some issues with people using a fresh file – new project mvc app to test it out.
+- Console now auto scrolls to bottom when opened.
+- Now more compatible with older versions of IE.
 
 <h3>Formatting Extensions</h3> 
 
