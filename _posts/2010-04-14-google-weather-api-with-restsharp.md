@@ -90,11 +90,13 @@ public class Forecast_Conditions
 These classes are then used by RestSharp to Deserialise the response. xml_api_reply is the root element and under it is weather. The weather class inherits from a List&lt;forecast_conditions&gt; because it can contain multiple elements as well as other properties. The DataElement class was created because of the way the xml has its data ie. &lt;city data="Brisbane, QLD"/&gt;  instead of &lt;city&gt;Brisbane, QLD&lt;/city&gt;.
 
 Now that we have setup the Response classes we can use get to the real code…
-<pre class="prettyprint">var client = new RestClient("http://www.google.com/ig/api");
+<pre class="prettyprint">
+var client = new RestClient(&quot;http://www.google.com/ig/api&quot;);
 var request = new RestRequest(Method.GET);
-request.AddParameter("weather", "Brisbane");
+request.AddParameter(&quot;weather&quot;, &quot;Brisbane&quot;);
 
-var response = client.Execute&lt;Models.xml_api_reply&gt;(request);</pre>
+var response = client.Execute&lt;Models.xml_api_reply&gt;(request);
+</pre>
 Pretty easy, and the response is a RestResponse&lt;T&gt; where T is my xml_api_reply class, this object then gives us access to anything we could need from the response including the content itself (response.Content) and the deserialised class (response.Data).
 
 And to find the current temperature:
