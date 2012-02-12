@@ -12,9 +12,10 @@ tags:
 
 I’ve decided recently to branch out from mainly web development into the mobile app space – starting with Google’s Android (because I own a Android phone). One of the first things I wanted to do was start calling webservices, specifically Google Analytics.
 
-Now I am pretty new to Android and Java in general but I feel I’ve come up with a nice simple way to make requests to web services and APIs (and plain html pages if you want). The class uses the <em>org.apache.http</em> library which is included in Android.
+Now I am pretty new to Android and Java in general but I feel I’ve come up with a nice simple way to make requests to web services and APIs (and plain html pages if you want). The class uses the org.apache.http library which is included in Android.
 
 This is the code for the class.
+
 <pre class="prettyprint">
 public class RestClient {
 
@@ -164,7 +165,9 @@ public class RestClient {
         return sb.toString();
     }
 }</pre>
+
 Here is an example of how I use the class to call the Google Analytics API. I use the AddParam methods to add query string / post values and the AddHeader method to add headers to the request. RequestMethod is a simple enum with GET and POST values.
+
 <pre class="prettyprint">RestClient client = new RestClient(LOGIN_URL);
 client.AddParam("accountType", "GOOGLE");
 client.AddParam("source", "tboda-widgalytics-0.1");
@@ -180,4 +183,5 @@ try {
 }
 
 String response = client.getResponse();</pre>
+
 The class also exposes the Http response code and message which are important when using some Restful APIs. I know could definitely improve/extend on this code and would love to hear from those more experienced in Java and Android than myself.
