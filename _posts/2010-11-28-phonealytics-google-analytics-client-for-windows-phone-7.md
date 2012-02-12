@@ -19,9 +19,7 @@ Phonealytics, as you may have guessed, is a Google Analytics client for Windows 
 
 <h3>The Official Line</h3>
 
-Phonealytics is a Google Analytics Client. With Phonealytics you get all the important traffic stats for your website available in your pocket.
-
-Phonealytics focuses on providing information at a glance and in line with your phones theme key features include:
+Phonealytics is a Google Analytics Client. With Phonealytics you get all the important traffic stats for your website available in your pocket. Phonealytics focuses on providing information at a glance and in line with your phones theme key features include:
 
 - Pin favourite sites to the app homepage for quick stats and access
 - Configure an automatically updating live tile for your phones home screen
