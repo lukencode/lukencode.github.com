@@ -21,14 +21,14 @@ This is what liquid templating looks like:
     title : SiteName
     ---
     
-    <ul id="archive">
+    &lt;ul id=&quot;archive&quot;&gt;
         {% for post in site.posts %}
-    		<li>
-    			<a href="{{ post.url }}">{{ post.title }}</a>
-    			<span class="date">{{ post.date | date: "%d %B, %Y" }}</span>
-    		</li>
+    		&lt;li&gt;
+    			&lt;a href=&quot;{{ post.url }}&quot;&gt;{{ post.title }}&lt;/a&gt;
+    			&lt;span class=&quot;date&quot;&gt;{{ post.date | date: &quot;%d %B, %Y&quot; }}&lt;/span&gt;
+    		&lt;/li&gt;
         {% endfor %}
-    </ul>
+    &lt;/ul&gt;
     
 {% endraw %}
 
