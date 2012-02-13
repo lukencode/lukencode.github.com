@@ -11,8 +11,32 @@
  </author></p>
 <p>
  <entry>
+   <title>Using Pretzel / Jekyll to host your blog on Github</title>
+   <link href="http://lukencode.com/2012/02/13/using-pretzel-jekyll-to-your-blog-on-github/"/>
+   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <id>http://lukencode.com</id>
+   <content type="html"><p>A couple of weeks ago after shamelessly promoting on of my blog post on a social network I received a troubling report that my pride and joy had contracted some type of virus.</p>
+<p><img src="/img/posts/virus.png" alt="Virus" title="MY GOD - ITS ALL MY FAULT" /></p>
+<p>This scary red screen (well a similar one) along with some performance issues and me getting bored with wordpress meant I was on the hunt for a new blog platform.  I was after was something fast and simple where I have control over the html and css generated.</p>
+<p><a href="https://github.com/mojombo/jekyll">Jekyll</a> is a &quot;blog-aware, static site generator in Ruby&quot;. It takes markdown and liquid (a templating language) text files and mashes them into a static html site. The &quot;blog-aware&quot; bit means Jekyll will take posts written in mark down and generate a url structure similar to what is seen on most blogs eg [year]/[month]/[day]/[title]. Static html sites have a couple of obvious advantages and disadvantages - they are easy to host, fast and difficult to hack (take that virus man!) but there is no admin interface for update posts.</p>
+<p>This Jekyll business was sounding wonderful but being the sheltered windows loving, 9-5 enterprise coding, <a href="http://blog.expensify.com/2011/03/25/ceo-friday-why-we-dont-hire-net-programmers/">unhireable</a> .NET developer that I am I threw it into the &quot;too hard basket&quot; and went back to whinging about wordpress.
+Lucky for me there is a gang of open source programmers (with .net flavour to them) that were setting out to build the windows equivalent of Jekyll code named - <a href="https://github.com/Code52/pretzel">Pretzel</a>. </p>
+<p>Pretzel, a .NET console app built in just one week builds static sites in a similar manner to Jekyll, with the jekyll engine more or less emulating it exactly. There are some other cool features in the pipeline such as a razor engine, js and css minification and less support.</p>
+<p>With my mind set on a fancy static blog I had one more problem to solve - hosting. It turns out Github allows you to do some really cool stuff with github pages AND github pages supports Jekyll all for free! Hosting my blog as a github repo + gh pages has another advantage my blog is safely stored on github servers with a full history. Updating the site is as easy as pushing updates or new pages to the repo. </p>
+<p>Here is what I did to get my blog up and running on github.</p>
+<ul>
+<li>Set up a repo named [username].github.com. This will tell github to publish any files on the master branch to http://[username].github.com.</li>
+<li>Add a text file named CNAME to your repo with each url you want mapped to the site on seperate lines.</li>
+<li>Profit!</li>
+</ul>
+<p>One thing to beware of is 404s. You need to add a plain 404.html page to your repo or 404s will be redirected to a github page (and not the one with the <a href="https://github.com/404">cool star wars one</a>).</p>
+<p>With my blog now essentially a git repo I am free to experiment a bit more with design. Without the cruft of a wordpress theme I have been able to drastically simplify the html and css and cut down the page size. I've also had a chance to experiment with responsive design - go on resize this window and let me know what you think. Next on the todo list is a redesigned home page, pages for my wp7 apps and some fancy javascript to load in my current github repos.</p>
+</content>
+ </entry>
+ 
+ <entry>
    <title>NetBash Updated – Formatting Helpers Added</title>
-   <link href="http://lukencode.com/2012/01/15/netbash-updatedformatting-helpers-added/"/>
+   <link href="http://lukencode.com/2012/01/14/netbash-updatedformatting-helpers-added/"/>
    <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>NetBash (drop in command line for asp.net web applications) was first released late last year with little to no response from the community. No big deal – I built it to scratch my own itch so it was at least going to be useful to me. Then, like clockwork I go on holidays for a week and a bit and it is featured on <a href="http://asp.net" target="_blank">Asp.net</a> and tweeted by close to 100 people. I have used the past few days to catch up with the bugs people have found (thanks heaps to those who forked and fixed bugs themselves) and get a new release out on <a href="http://nuget.org/packages/NetBash" target="_blank">NuGet</a>.</p> 
@@ -866,7 +890,7 @@ h2 {
    <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>I’ve decided recently to branch out from mainly web development into the mobile app space – starting with Google’s Android (because I own a Android phone). One of the first things I wanted to do was start calling webservices, specifically Google Analytics.</p>
-<p>Now I am pretty new to Android and Java in general but I feel I’ve come up with a nice simple way to make requests to web services and APIs (and plain html pages if you want). The class uses the <em>org.apache.http</em> library which is included in Android.</p>
+<p>Now I am pretty new to Android and Java in general but I feel I’ve come up with a nice simple way to make requests to web services and APIs (and plain html pages if you want). The class uses the org.apache.http library which is included in Android.</p>
 <p>This is the code for the class.</p>
 <pre class="prettyprint">
 public class RestClient {

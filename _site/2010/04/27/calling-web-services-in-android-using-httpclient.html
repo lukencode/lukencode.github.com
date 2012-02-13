@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html> 
@@ -28,6 +27,21 @@
 	<script src="/js/prettify.js" type="text/javascript"></script>
 	
 	<meta name="google-site-verification" content="e6fQUO7vqSIw6sdQQeiUPs4JPc8VghE_9u72V2NXv4U" /> 	
+	
+	<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-9813084-8']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
 </head>		
 	
 <body onload="prettyPrint()">
@@ -79,7 +93,7 @@
 	
 	<article>
 		<p>I’ve decided recently to branch out from mainly web development into the mobile app space – starting with Google’s Android (because I own a Android phone). One of the first things I wanted to do was start calling webservices, specifically Google Analytics.</p>
-<p>Now I am pretty new to Android and Java in general but I feel I’ve come up with a nice simple way to make requests to web services and APIs (and plain html pages if you want). The class uses the <em>org.apache.http</em> library which is included in Android.</p>
+<p>Now I am pretty new to Android and Java in general but I feel I’ve come up with a nice simple way to make requests to web services and APIs (and plain html pages if you want). The class uses the org.apache.http library which is included in Android.</p>
 <p>This is the code for the class.</p>
 <pre class="prettyprint">
 public class RestClient {

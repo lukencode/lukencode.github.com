@@ -1,6 +1,6 @@
 ---
 title: "NetBash Updated – Formatting Helpers Added"
-date: 2012-01-15T11:51:19.0000000+10:00
+date: 2012-01-14
 layout: post
 categories:
 - Code
