@@ -19,15 +19,15 @@ This is what liquid templating looks like:
     title : SiteName
     ---
     
-    &lt;ul id=&quot;archive&quot;&gt;
+    <ul id="archive">
         {% for post in site.posts %}
-    		&lt;li&gt;
-    			&lt;a href=&quot;{{ post.url }}&quot;&gt;{{ post.title }}&lt;/a&gt;
-    			&lt;span class=&quot;date&quot;&gt;{{ post.date | date: &quot;%d %B, %Y&quot; }}&lt;/span&gt;
-    		&lt;/li&gt;
+    		<li>
+    			<a href="{{ post.url }}">{{ post.title }}</a>
+    			<span class="date">{{ post.date | date: "%d %B, %Y" }}</span>
+    		</li>
         {% endfor %}
-    &lt;/ul&gt;
-
+    </ul>
+    
 The text inbetween the --- up the top is a [YAML](http://www.yaml.org/) header - any files with a yaml header will be processed as special files. The variables being set are for things like the layout to be used, permalink or page title.
 
 A simple post written in markdown might looks something like this:
