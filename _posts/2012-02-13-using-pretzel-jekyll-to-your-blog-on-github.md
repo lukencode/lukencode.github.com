@@ -14,7 +14,7 @@ This scary red screen (well a similar one) along with some performance issues an
 
 This is what liquid templating looks like:
 
-{% raw %}
+{% literal %}
 
     ---
     layout : layout
@@ -30,7 +30,7 @@ This is what liquid templating looks like:
         {% endfor %}
     &lt;/ul&gt;
     
-{% endraw %}
+{% endliteral %}
 
 The text inbetween the --- up the top is a [YAML](http://www.yaml.org/) header - any files with a yaml header will be processed as special files. The variables being set are for things like the layout to be used, permalink or page title.
 
