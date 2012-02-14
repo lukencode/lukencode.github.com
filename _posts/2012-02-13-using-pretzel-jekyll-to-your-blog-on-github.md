@@ -59,6 +59,8 @@ Here is what I did to get my blog up and running on github.
 
 - Set up a repo named [username].github.com. This will tell github to publish any files on the master branch to http://[username].github.com.
 - Add a text file named CNAME to your repo with each url you want mapped to the site on separate lines.
+- Import my wordpress posts using pretzel. To do this you just need to download the xml export of your wordpress blog and run <pre>pretzel import -t=wordpress -f=[path to xml]</pre>. This will import your posts as markdown files in the _post folder.
+- Import my blog comments to disqus and embed their javascript widget on my post pages. Disqus provides a wordpress plugin that will import existing posts - remember to do this before you shut down your wordpress blog. 
 - Profit!
 
 One thing to beware of is 404s. You need to add a plain 404.html page to your repo or 404s will be redirected to a github page (and not the one with the [cool star wars one](https://github.com/404)).
