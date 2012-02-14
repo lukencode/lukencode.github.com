@@ -55,7 +55,9 @@ BEGIN DBCC CHECKIDENT (''?'',RESEED,0) END'</pre>
 
 Taking 2 sets of longitude/latitude points this function will calculate the distance between them and return it as a real.
 
-<pre class="prettyprint">CREATE FUNCTION [dbo].[DistanceBetween] (@Lat1 as real,
+<pre class="prettyprint">
+
+CREATE FUNCTION [dbo].[DistanceBetween] (@Lat1 as real,
 @Long1 as real, @Lat2 as real, @Long2 as real)
 RETURNS real
 AS
@@ -81,12 +83,14 @@ SET @a = SQUARE (SIN (@dLatitude / 2.0)) + COS (@dLat1InRad)
 DECLARE @c as real;
 SET @c = 2.0 * ATN2 (SQRT (@a), SQRT (1.0 - @a));
 DECLARE @kEarthRadius as real;
-/* SET kEarthRadius = 3956.0 miles */
-SET @kEarthRadius = 6376.5;        /* kms */
+-- SET kEarthRadius = 3956.0 miles
+SET @kEarthRadius = 6376.5; -- kms
 DECLARE @dDistance as real;
 SET @dDistance = @kEarthRadius * @c;
 RETURN (@dDistance);
-END</pre>
+END
+
+</pre>
 
 <h3>Get Table Size</h3>
 
