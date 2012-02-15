@@ -20,23 +20,23 @@ Here is the code for the extension method, written in C#.
 <pre class="prettyprint">
 public static string[] SplitIntoChunks(this string toSplit, int chunkSize)
 {
-            int stringLength = toSplit.Length;
+     int stringLength = toSplit.Length;
 
-            int chunksRequired = (int)Math.Ceiling((decimal)stringLength / (decimal)chunkSize);
-            var stringArray = new string[chunksRequired];
+     int chunksRequired = (int)Math.Ceiling((decimal)stringLength / (decimal)chunkSize);
+     var stringArray = new string[chunksRequired];
 
-            int lengthRemaining = stringLength;
+     int lengthRemaining = stringLength;
 
-            for (int i = 0; i < chunksRequired; i++)
-            {
-                int lengthToUse = Math.Min(lengthRemaining, chunkSize);
-                int startIndex = chunkSize * i;
-                stringArray[i] = toSplit.Substring(startIndex, lengthToUse);
+     for (int i = 0; i < chunksRequired; i++)
+     {
+         int lengthToUse = Math.Min(lengthRemaining, chunkSize);
+         int startIndex = chunkSize * i;
+         stringArray[i] = toSplit.Substring(startIndex, lengthToUse);
             
-                lengthRemaining = lengthRemaining - lengthToUse;
-            }
+         lengthRemaining = lengthRemaining - lengthToUse;
+     }
             
-            return stringArray;
+     return stringArray;
 }
 </pre>
 
