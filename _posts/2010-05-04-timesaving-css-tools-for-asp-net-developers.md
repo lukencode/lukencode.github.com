@@ -56,7 +56,9 @@ In my words LESS allows you to write CSS more like you would normally write code
 For the two readers who have gotten this far <em>and</em> clicked through the link will notice LESS CSS is targeted at ruby and not at .Net. However our good friend from step 2 – Bundler (or <a href="http://www.dotlesscss.com/" target="_blank">dotlesscss</a>) will automatically parse CSS files ending with .less using the LESS CSS language.
 
 Variables behave exactly as you would expect them to and are awesome for making sure you don’t keep repeating yourself with things like colours.
-<pre class="brush: css;">@brand_color: #4D926F;
+
+<pre class="brush: css;">
+@brand_color: #4D926F;
 
 #header {
   color: @brand_color;
@@ -64,9 +66,13 @@ Variables behave exactly as you would expect them to and are awesome for making 
 
 h2 {
   color: @brand_color;
-}</pre>
+}
+</pre>
+
 The other feature I really love is mixins. Mixins behave in a way like functions that take parameters as input and return a set of CSS properties based off those parameters. CSS 3 rounded corners are a good example of this.
-<pre class="brush: css;">.rounded_corners (@radius: 5px) {
+
+<pre class="brush: css;">
+.rounded_corners (@radius: 5px) {
   -moz-border-radius: @radius;
   -webkit-border-radius: @radius;
   border-radius: @radius;
@@ -74,5 +80,7 @@ The other feature I really love is mixins. Mixins behave in a way like functions
 
 #header {
   .rounded_corners;
-}</pre>
+}
+</pre>
+
 LESS has a number of other cool features you can check out on the <a href="http://lesscss.org/docs" target="_blank">documentation</a>.
