@@ -51,7 +51,9 @@ A simple post written in markdown might looks something like this:
 This Jekyll business was sounding wonderful but being the sheltered windows loving, 9-5 enterprise coding, [unhireable](http://blog.expensify.com/2011/03/25/ceo-friday-why-we-dont-hire-net-programmers/) .NET developer that I am I threw it into the "too hard basket" and went back to whinging about wordpress.
 Lucky for me there is a gang of open source programmers (with .net flavour to them) that were setting out to build the windows equivalent of Jekyll code named - [Pretzel](https://github.com/Code52/pretzel). 
 
-Pretzel is a .NET console app built in just one week builds static sites in a similar manner to Jekyll, with the jekyll mode more or less emulating it exactly. There are some other cool features in the pipeline such as a razor engine, js and css minification and less support.
+Pretzel is a .NET console app built in just one week builds static sites in a similar manner to Jekyll, with the jekyll mode more or less emulating it exactly. There are some other cool features in the pipeline such as a razor engine, js and css minification and less support. Pretzel has a couple of commands - "create" builds the basic site structure, "bake" converts your site to static html and "taste" runs an embedded web server and watches for file changes to preview your site. I personally like to use "taste" like this while I am working on my site for instant updates:
+
+     pretzel taste -p=8080 -e=jekyll
 
 With my mind set on a fancy static blog I had one more problem to solve - hosting. It turns out Github allows you to do some really cool stuff with github pages AND github pages supports Jekyll all for free! Hosting my blog as a github repo + [gh pages](http://pages.github.com/) has another advantage my blog is safely stored on github servers with a full history. Updating the site is as easy as pushing updates or new pages to the repo. 
 
@@ -59,6 +61,8 @@ Here is what I did to get my blog up and running on github.
 
 - Set up a repo named [username].github.com. This will tell github to publish any files on the master branch to http://[username].github.com.
 - Add a text file named CNAME to your repo with each url you want mapped to the site on separate lines.
+- Import my wordpress posts using pretzel. To do this you just need to download the xml export of your wordpress blog and run the import command. This will import your posts as markdown files in the _post folder. <pre>pretzel import -t=wordpress -f=[path to xml]</pre>
+- Import my blog comments to disqus and embed their javascript widget on my post pages. Disqus provides a wordpress plugin that will import existing posts - remember to do this before you shut down your wordpress blog. 
 - Profit!
 
 One thing to beware of is 404s. You need to add a plain 404.html page to your repo or 404s will be redirected to a github page (and not the one with the [cool star wars one](https://github.com/404)).

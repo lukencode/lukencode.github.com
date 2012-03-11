@@ -1,6 +1,6 @@
 ---
 title: Split String Into Array of Chunks
-date: 2010-04-21T14:57:17.0000000+10:00
+date: 2010-04-21
 layout: post
 categories:
 - Code
@@ -12,32 +12,30 @@ Here is a little function I needed to use today for spliting a string into an ar
 Through the magic of extension methods I can split the string into chunks using this code.
 
 <pre class="prettyprint">
-            var splitItemDescription = item.Product.Description.SplitIntoChunks(40);
+var splitItemDescription = item.Product.Description.SplitIntoChunks(40);
 </pre>
 
 Here is the code for the extension method, written in C#.
 
-<pre class="prettyprint">
-        public static string[] SplitIntoChunks(this string toSplit, int chunkSize)
-        {
-            int stringLength = toSplit.Length;
-
-            int chunksRequired = (int)Math.Ceiling((decimal)stringLength / (decimal)chunkSize);
-            var stringArray = new string[chunksRequired];
-
-            int lengthRemaining = stringLength;
-
-            for (int i = 0; i < chunksRequired; i++)
-            {
-                int lengthToUse = Math.Min(lengthRemaining, chunkSize);
-                int startIndex = chunkSize * i;
-                stringArray[i] = toSplit.Substring(startIndex, lengthToUse);
-
-                lengthRemaining = lengthRemaining - lengthToUse;
-            }
-
-            return stringArray;
-        }
-</pre>
+     public static string[] SplitIntoChunks(this string toSplit, int chunkSize)
+     {
+          int stringLength = toSplit.Length;
+     
+          int chunksRequired = (int)Math.Ceiling((decimal)stringLength / (decimal)chunkSize);
+          var stringArray = new string[chunksRequired];
+     
+          int lengthRemaining = stringLength;
+     
+          for (int i = 0; i < chunksRequired; i++)
+          {
+              int lengthToUse = Math.Min(lengthRemaining, chunkSize);
+              int startIndex = chunkSize * i;
+              stringArray[i] = toSplit.Substring(startIndex, lengthToUse);
+                 
+              lengthRemaining = lengthRemaining - lengthToUse;
+          }
+                 
+          return stringArray;
+     }
 
 The method takes into account strings of which the length is not a factor of the chunk size being used by using what is remaing of the string for the last element of the array.

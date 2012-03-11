@@ -9,8 +9,11 @@ tags:
 ---
 
 This is a post we had on the short lived blog.tboda.com with input from DK and <a href="http://benjii.me">Benjii</a>. People seemed to find it useful so I thought I’d give it second chance at life (plus one extra script).
+
 <h3>Database Backup</h3>
+
 This script is used to do regular backups of a given database when running as a scheduled sql job. It appends the date to each backup to prevent conflicts.
+
 <pre class="prettyprint">DECLARE @currentday varchar(10)
 set @currentday = datepart(day,getdate())
 IF LEN(@currentday) = 1
@@ -31,8 +34,11 @@ SET @fileName = 'c:\Backups\Database\myDatabase_' + @currentyear
 BACKUP DATABASE myDatabase TO DISK = @fileName WITH NOFORMAT, INIT,
 NAME = N'myDatabase -Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10
 GO</pre>
+
 <h3>Clear all Records</h3>
+
 This script basically 'resets' your database by removing all records from every table whilst keeping constraints intact and resetting identities.
+
 <pre class="prettyprint">--Disable Constraints &amp; Triggers
 EXEC sp_MSforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL'
 EXEC sp_MSforeachtable 'ALTER TABLE ? DISABLE TRIGGER ALL'
@@ -44,9 +50,14 @@ EXEC sp_MSforeachtable 'ALTER TABLE ? ENABLE TRIGGER ALL'
 --Reset Identity on tables with identity column
 EXEC sp_MSforeachtable 'IF OBJECTPROPERTY(OBJECT_ID(''?''), ''TableHasIdentity'') = 1
 BEGIN DBCC CHECKIDENT (''?'',RESEED,0) END'</pre>
+
 <h3>Distance between points</h3>
+
 Taking 2 sets of longitude/latitude points this function will calculate the distance between them and return it as a real.
-<pre class="prettyprint">CREATE FUNCTION [dbo].[DistanceBetween] (@Lat1 as real,
+
+<pre class="prettyprint">
+
+CREATE FUNCTION [dbo].[DistanceBetween] (@Lat1 as real,
 @Long1 as real, @Lat2 as real, @Long2 as real)
 RETURNS real
 AS
@@ -72,14 +83,19 @@ SET @a = SQUARE (SIN (@dLatitude / 2.0)) + COS (@dLat1InRad)
 DECLARE @c as real;
 SET @c = 2.0 * ATN2 (SQRT (@a), SQRT (1.0 - @a));
 DECLARE @kEarthRadius as real;
-/* SET kEarthRadius = 3956.0 miles */
-SET @kEarthRadius = 6376.5;        /* kms */
+-- SET kEarthRadius = 3956.0 miles
+SET @kEarthRadius = 6376.5; -- kms
 DECLARE @dDistance as real;
 SET @dDistance = @kEarthRadius * @c;
 RETURN (@dDistance);
-END</pre>
+END
+
+</pre>
+
 <h3>Get Table Size</h3>
+
 This is a SQL Server 2005 stored procedure that returns a table with details on the storage spaced used by all tables in the database.
+
 <pre class="prettyprint">CREATE PROCEDURE [dbo].[GetDBTableSize]
 AS
 BEGIN
@@ -113,12 +129,16 @@ go</pre>
 This will stop the transaction logs from growing too large.
 
 It is also a good idea to do regular backups of these logs (which shrinks them anyway)
+
 <pre class="prettyprint">BACKUP
 LOG [myDatabase] TO DISK = N'C:\Backups\myDatabase_log.trn' WITH
 NOFORMAT, NOINIT, NAME = N'myDatabase_log', SKIP, REWIND, NOUNLOAD,
 STATS = 10</pre>
+
 <h3>Number of Tables in Database</h3>
+
 Working on a rather monolithic finance system the other day I wanted to check out just how many un necessary tables they had. Here is how via <a href="http://www.sqlservercurry.com/2008/06/count-number-of-tables-in-sql-server.html">sqlservercurry</a>.
+
 <pre class="prettyprint">USE YOURDBNAME
 SELECT COUNT(*) from information_schema.tables
 WHERE table_type = 'base table'</pre>
