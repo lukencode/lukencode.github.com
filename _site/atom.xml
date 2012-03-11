@@ -1,7 +1,7 @@
 <p>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
 <feed xmlns="http://www.w3.org/2005/Atom"></p>
 <p><title>lukencode</title>
- <link href="http://lukencode/atom.xml" rel="self"/>
+ <link href="http://lukencode.com/atom.xml" rel="self"/>
  <link href="http://lukencode.com/"/>
  <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
  <id>http://lukencode.com/</id>
@@ -10,30 +10,6 @@
    <email>lukenlowrey@gmail.com</email>
  </author></p>
 <p>
- <entry>
-   <title>Using Pretzel / Jekyll to host your blog on Github</title>
-   <link href="http://lukencode.com/2012/02/13/using-pretzel-jekyll-to-your-blog-on-github/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
-   <id>http://lukencode.com</id>
-   <content type="html"><p>A couple of weeks ago after shamelessly promoting on of my blog post on a social network I received a troubling report that my pride and joy had contracted some type of virus.</p>
-<p><img src="/img/posts/virus.png" alt="Virus" title="MY GOD - ITS ALL MY FAULT" /></p>
-<p>This scary red screen (well a similar one) along with some performance issues and me getting bored with wordpress meant I was on the hunt for a new blog platform.  I was after was something fast and simple where I have control over the html and css generated.</p>
-<p><a href="https://github.com/mojombo/jekyll">Jekyll</a> is a &quot;blog-aware, static site generator in Ruby&quot;. It takes markdown and liquid (a templating language) text files and mashes them into a static html site. The &quot;blog-aware&quot; bit means Jekyll will take posts written in mark down and generate a url structure similar to what is seen on most blogs eg [year]/[month]/[day]/[title]. Static html sites have a couple of obvious advantages and disadvantages - they are easy to host, fast and difficult to hack (take that virus man!) but there is no admin interface for update posts.</p>
-<p>This Jekyll business was sounding wonderful but being the sheltered windows loving, 9-5 enterprise coding, <a href="http://blog.expensify.com/2011/03/25/ceo-friday-why-we-dont-hire-net-programmers/">unhireable</a> .NET developer that I am I threw it into the &quot;too hard basket&quot; and went back to whinging about wordpress.
-Lucky for me there is a gang of open source programmers (with .net flavour to them) that were setting out to build the windows equivalent of Jekyll code named - <a href="https://github.com/Code52/pretzel">Pretzel</a>. </p>
-<p>Pretzel, a .NET console app built in just one week builds static sites in a similar manner to Jekyll, with the jekyll engine more or less emulating it exactly. There are some other cool features in the pipeline such as a razor engine, js and css minification and less support.</p>
-<p>With my mind set on a fancy static blog I had one more problem to solve - hosting. It turns out Github allows you to do some really cool stuff with github pages AND github pages supports Jekyll all for free! Hosting my blog as a github repo + gh pages has another advantage my blog is safely stored on github servers with a full history. Updating the site is as easy as pushing updates or new pages to the repo. </p>
-<p>Here is what I did to get my blog up and running on github.</p>
-<ul>
-<li>Set up a repo named [username].github.com. This will tell github to publish any files on the master branch to http://[username].github.com.</li>
-<li>Add a text file named CNAME to your repo with each url you want mapped to the site on seperate lines.</li>
-<li>Profit!</li>
-</ul>
-<p>One thing to beware of is 404s. You need to add a plain 404.html page to your repo or 404s will be redirected to a github page (and not the one with the <a href="https://github.com/404">cool star wars one</a>).</p>
-<p>With my blog now essentially a git repo I am free to experiment a bit more with design. Without the cruft of a wordpress theme I have been able to drastically simplify the html and css and cut down the page size. I've also had a chance to experiment with responsive design - go on resize this window and let me know what you think. Next on the todo list is a redesigned home page, pages for my wp7 apps and some fancy javascript to load in my current github repos.</p>
-</content>
- </entry>
- 
  <entry>
    <title>NetBash Updated – Formatting Helpers Added</title>
    <link href="http://lukencode.com/2012/01/14/netbash-updatedformatting-helpers-added/"/>
@@ -861,7 +837,8 @@ public static Location GetLocationFromIP(string ipAddress)
 <p>In my words LESS allows you to write CSS more like you would normally write code allowing you to keep your CSS files DRY (don’t repeat yourself… dammit I just repeated myself). It achieves this by using this variables, mixins which are kind of like functions and a few other nifty features.</p>
 <p>For the two readers who have gotten this far <em>and</em> clicked through the link will notice LESS CSS is targeted at ruby and not at .Net. However our good friend from step 2 – Bundler (or <a href="http://www.dotlesscss.com/" target="_blank">dotlesscss</a>) will automatically parse CSS files ending with .less using the LESS CSS language.</p>
 <p>Variables behave exactly as you would expect them to and are awesome for making sure you don’t keep repeating yourself with things like colours.</p>
-<pre class="brush: css;">@brand_color: #4D926F;
+<pre class="brush: css;">
+@brand_color: #4D926F;
 
 #header {
   color: @brand_color;
@@ -869,9 +846,11 @@ public static Location GetLocationFromIP(string ipAddress)
 
 h2 {
   color: @brand_color;
-}</pre>
+}
+</pre>
 <p>The other feature I really love is mixins. Mixins behave in a way like functions that take parameters as input and return a set of CSS properties based off those parameters. CSS 3 rounded corners are a good example of this.</p>
-<pre class="brush: css;">.rounded_corners (@radius: 5px) {
+<pre class="brush: css;">
+.rounded_corners (@radius: 5px) {
   -moz-border-radius: @radius;
   -webkit-border-radius: @radius;
   border-radius: @radius;
@@ -879,7 +858,8 @@ h2 {
 
 #header {
   .rounded_corners;
-}</pre>
+}
+</pre>
 <p>LESS has a number of other cool features you can check out on the <a href="http://lesscss.org/docs" target="_blank">documentation</a>.</p>
 </content>
  </entry>
@@ -1069,31 +1049,31 @@ String response = client.getResponse();</pre>
    <content type="html"><p>Here is a little function I needed to use today for spliting a string into an array of strings of a given length rather than by a particular character. I ran into a situation where the database columns I wanted to insert some text into were split over a number of columns eg &quot;DescriptionLine1&quot;, &quot;DescriptionLine2&quot;, &quot;DescriptionLine3&quot;.</p>
 <p>Through the magic of extension methods I can split the string into chunks using this code.</p>
 <pre class="prettyprint">
-            var splitItemDescription = item.Product.Description.SplitIntoChunks(40);
+var splitItemDescription = item.Product.Description.SplitIntoChunks(40);
 </pre>
 <p>Here is the code for the extension method, written in C#.</p>
-<pre class="prettyprint">
-        public static string[] SplitIntoChunks(this string toSplit, int chunkSize)
-        {
-            int stringLength = toSplit.Length;
+<pre><code> public static string[] SplitIntoChunks(this string toSplit, int chunkSize)
+ {
+      int stringLength = toSplit.Length;
 
-            int chunksRequired = (int)Math.Ceiling((decimal)stringLength / (decimal)chunkSize);
-            var stringArray = new string[chunksRequired];
+      int chunksRequired = (int)Math.Ceiling((decimal)stringLength / (decimal)chunkSize);
+      var stringArray = new string[chunksRequired];
 
-            int lengthRemaining = stringLength;
+      int lengthRemaining = stringLength;
 
-            for (int i = 0; i < chunksRequired; i++)
-            {
-                int lengthToUse = Math.Min(lengthRemaining, chunkSize);
-                int startIndex = chunkSize * i;
-                stringArray[i] = toSplit.Substring(startIndex, lengthToUse);
+      for (int i = 0; i &lt; chunksRequired; i++)
+      {
+          int lengthToUse = Math.Min(lengthRemaining, chunkSize);
+          int startIndex = chunkSize * i;
+          stringArray[i] = toSplit.Substring(startIndex, lengthToUse);
 
-                lengthRemaining = lengthRemaining - lengthToUse;
-            }
+          lengthRemaining = lengthRemaining - lengthToUse;
+      }
 
-            return stringArray;
-        }
-</pre>
+      return stringArray;
+ }
+</code></pre>
+
 <p>The method takes into account strings of which the length is not a factor of the chunk size being used by using what is remaing of the string for the last element of the array.</p>
 </content>
  </entry>
@@ -1466,7 +1446,9 @@ EXEC sp_MSforeachtable 'IF OBJECTPROPERTY(OBJECT_ID(''?''), ''TableHasIdentity''
 BEGIN DBCC CHECKIDENT (''?'',RESEED,0) END'</pre>
 <h3>Distance between points</h3>
 <p>Taking 2 sets of longitude/latitude points this function will calculate the distance between them and return it as a real.</p>
-<pre class="prettyprint">CREATE FUNCTION [dbo].[DistanceBetween] (@Lat1 as real,
+<pre class="prettyprint">
+
+CREATE FUNCTION [dbo].[DistanceBetween] (@Lat1 as real,
 @Long1 as real, @Lat2 as real, @Long2 as real)
 RETURNS real
 AS
@@ -1492,12 +1474,14 @@ SET @a = SQUARE (SIN (@dLatitude / 2.0)) + COS (@dLat1InRad)
 DECLARE @c as real;
 SET @c = 2.0 * ATN2 (SQRT (@a), SQRT (1.0 - @a));
 DECLARE @kEarthRadius as real;
-/* SET kEarthRadius = 3956.0 miles */
-SET @kEarthRadius = 6376.5;        /* kms */
+-- SET kEarthRadius = 3956.0 miles
+SET @kEarthRadius = 6376.5; -- kms
 DECLARE @dDistance as real;
 SET @dDistance = @kEarthRadius * @c;
 RETURN (@dDistance);
-END</pre>
+END
+
+</pre>
 <h3>Get Table Size</h3>
 <p>This is a SQL Server 2005 stored procedure that returns a table with details on the storage spaced used by all tables in the database.</p>
 <pre class="prettyprint">CREATE PROCEDURE [dbo].[GetDBTableSize]
@@ -1550,9 +1534,7 @@ WHERE table_type = 'base table'</pre></content>
    <id>http://lukencode.com</id>
    <content type="html"><p>Just about every project i work on needs to send customized emails and everytime I hate doing it. Inspired by some answers in this <a href="http://stackoverflow.com/questions/122784/hidden-net-base-class-library-classes/122967">stackoverflow question</a> I thought I'd give a simple .ascx based email template system a dig.</p>
 <p>First thing I did was set up a base class for template controls to inherit from. This class inherits from UserControl and has the methods to render the control to a string. It also has methods and properties to set up &quot;tags&quot; to replace in the email body.</p>
-<pre class="prettyprint">/// &lt;summary&gt;
-/// Base class for user control to inherit so it can be used as an email template
-/// &lt;/summary&gt;
+<pre class="prettyprint">
 public class EmailTemplateBase : UserControl
 {
     public EmailTemplateBase()
@@ -1583,9 +1565,9 @@ public class EmailTemplateBase : UserControl
         // Get full body text
         return sb.ToString();
     }
-}</pre>
+}
+</pre>
 <p>Below is a simple example from the project I am working on it is used for sending feedback emails  This template is really simple but because the rendering uses the same page cycle as a regular control you can style and render the template how ever you like.</p>
-<pre class="prettyprint">&lt;%@ Control Language="C#" ClassName="Feedback" Inherits="Common.Email.EmailTemplateBase" %&gt;</pre>
 <pre class="prettyprint">&lt;p&gt;
    Feedback from System sent &lt;%= GetTagValue("sent")%&gt;
 &lt;/p&gt;
@@ -1600,9 +1582,8 @@ public class EmailTemplateBase : UserControl
      &lt;%= GetTagValue("message").Replace(Environment.NewLine, "&lt;br /&gt;")%&gt;
 &lt;/p&gt;</pre>
 <p>I created a class to easily load and use the email templates within my code by passing the location of the template on the server.</p>
-<pre class="prettyprint">/// &lt;summary&gt;
-/// Uses a .ascx file as an email template
-/// &lt;/summary&gt;
+<pre class="prettyprint">
+
 public class EmailTemplate
 {
     private readonly EmailTemplateBase _template;
@@ -1623,9 +1604,11 @@ public class EmailTemplate
     {
         return _template.RenderTemplate();
     }
-}</pre>
+}
+</pre>
 <p>Below is how I use the templates in my code, sending using a basic <a title="c# email sender" href="http://lukencode.com/2010/04/08/synchronous-asynchronous-email-sender/">email sender</a> class I have (or better still <a title=".net fluent emal" href="http://lukencode.com/2010/04/11/fluent-email-in-net/">fluent email</a>).</p>
-<pre class="prettyprint">var template = new Common.Email.EmailTemplate("~/Emails/Templates/Feedback.ascx");
+<pre class="prettyprint">
+var template = new Common.Email.EmailTemplate("~/Emails/Templates/Feedback.ascx");
 template.Tags.Add("sender", sender);
 template.Tags.Add("sent", sent);
 template.Tags.Add("subject", subject);

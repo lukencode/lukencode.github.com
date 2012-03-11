@@ -94,9 +94,7 @@
 	<article>
 		<p>Just about every project i work on needs to send customized emails and everytime I hate doing it. Inspired by some answers in this <a href="http://stackoverflow.com/questions/122784/hidden-net-base-class-library-classes/122967">stackoverflow question</a> I thought I'd give a simple .ascx based email template system a dig.</p>
 <p>First thing I did was set up a base class for template controls to inherit from. This class inherits from UserControl and has the methods to render the control to a string. It also has methods and properties to set up &quot;tags&quot; to replace in the email body.</p>
-<pre class="prettyprint">/// &lt;summary&gt;
-/// Base class for user control to inherit so it can be used as an email template
-/// &lt;/summary&gt;
+<pre class="prettyprint">
 public class EmailTemplateBase : UserControl
 {
     public EmailTemplateBase()
@@ -127,9 +125,9 @@ public class EmailTemplateBase : UserControl
         // Get full body text
         return sb.ToString();
     }
-}</pre>
+}
+</pre>
 <p>Below is a simple example from the project I am working on it is used for sending feedback emails  This template is really simple but because the rendering uses the same page cycle as a regular control you can style and render the template how ever you like.</p>
-<pre class="prettyprint">&lt;%@ Control Language="C#" ClassName="Feedback" Inherits="Common.Email.EmailTemplateBase" %&gt;</pre>
 <pre class="prettyprint">&lt;p&gt;
    Feedback from System sent &lt;%= GetTagValue("sent")%&gt;
 &lt;/p&gt;
@@ -144,9 +142,8 @@ public class EmailTemplateBase : UserControl
      &lt;%= GetTagValue("message").Replace(Environment.NewLine, "&lt;br /&gt;")%&gt;
 &lt;/p&gt;</pre>
 <p>I created a class to easily load and use the email templates within my code by passing the location of the template on the server.</p>
-<pre class="prettyprint">/// &lt;summary&gt;
-/// Uses a .ascx file as an email template
-/// &lt;/summary&gt;
+<pre class="prettyprint">
+
 public class EmailTemplate
 {
     private readonly EmailTemplateBase _template;
@@ -167,9 +164,11 @@ public class EmailTemplate
     {
         return _template.RenderTemplate();
     }
-}</pre>
+}
+</pre>
 <p>Below is how I use the templates in my code, sending using a basic <a title="c# email sender" href="http://lukencode.com/2010/04/08/synchronous-asynchronous-email-sender/">email sender</a> class I have (or better still <a title=".net fluent emal" href="http://lukencode.com/2010/04/11/fluent-email-in-net/">fluent email</a>).</p>
-<pre class="prettyprint">var template = new Common.Email.EmailTemplate("~/Emails/Templates/Feedback.ascx");
+<pre class="prettyprint">
+var template = new Common.Email.EmailTemplate("~/Emails/Templates/Feedback.ascx");
 template.Tags.Add("sender", sender);
 template.Tags.Add("sent", sent);
 template.Tags.Add("subject", subject);
