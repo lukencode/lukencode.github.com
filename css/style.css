@@ -1,4 +1,3 @@
-
 /*
  *
  * Reset
@@ -406,6 +405,11 @@ footer {
 #post article pre, #post article img
 {
 	margin: 20px 0;
+}
+
+#share
+{
+	padding:10px 0;	
 }
 
 #page-navigation
