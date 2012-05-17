@@ -25,6 +25,8 @@
 	<script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
 	
 	<script src="/js/prettify.js" type="text/javascript"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+	<script src="/js/jobfork.js" type="text/javascript"></script>
 	
 	<meta name="google-site-verification" content="e6fQUO7vqSIw6sdQQeiUPs4JPc8VghE_9u72V2NXv4U" /> 	
 	
@@ -81,6 +83,14 @@
 						</a>
 					</li>
 				</ul>
+				
+				<div class="jobfork">
+					<h4><a href="http://jobfork.com.au" target="_blank">JobFork.com.au</a></h4>
+					<p>
+						Awesome job board for Australian developers - built by me.
+					</p>
+				</div>
+				
 			</aside>
 		</div>			
 	</div>
@@ -109,6 +119,11 @@ void contactChooser_OnSelected(object sender, ContactChooserEventArgs e)
 <p>Under the covers it is a bit of a different story. The display relies on the <a href="http://silverlight.codeplex.com/" target="_blank">Silverlight Toolkit’s</a> LongListSelector (which is awesome) and uses code pretty similar to that described by my good friend Benjii in his post: <a href="http://benjii.me/2011/10/how-to-use-the-long-list-selector-for-windows-phone-mango/" target="_blank">How to Use the Long List Selector for Windows Phone Mango</a>. The code to encapsulate the page is kind of a mish mash of code adapted(/stolen) from the source of the <a href="http://coding4fun.codeplex.com/" target="_blank">Coding4Fun</a> toolkit (also awesome). That said it seems to work well in my app and in my very limited testing.</p>
 <p>The code for the library lives on github at <a href="https://github.com/lukencode/ContactChooser" target="_blank"><strong>lukencode/ContactChooser</strong></a> and is free and open source fork it, try it out, tell me how I suck then submit a pull request fixing the aforementioned suck! A couple of things that would be cool to see added would be some nice transition animations in and out and some more control over how the chooser looks.</p>
 	</article>
+</div>
+
+<div id="share">
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="lukencode" data-size="lukencode" data-related="jobfork">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 </div>
 	
 <div id="page-navigation"> 
