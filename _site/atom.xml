@@ -1,19 +1,82 @@
-<p>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-<feed xmlns="http://www.w3.org/2005/Atom"></p>
-<p><title>lukencode</title>
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title>lukencode</title>
  <link href="http://lukencode.com/atom.xml" rel="self"/>
  <link href="http://lukencode.com/"/>
- <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+ <updated>19/05/2012 11:10:52 AM</updated>
  <id>http://lukencode.com/</id>
  <author>
    <name>Luke Lowrey</name>
    <email>lukenlowrey@gmail.com</email>
- </author></p>
-<p>
+ </author>
+
+ 
+ <entry>
+   <title>Using Pretzel / Jekyll to host your blog on Github</title>
+   <link href="http://lukencode.com/2012/02/13/using-pretzel-jekyll-to-your-blog-on-github/"/>
+   <updated>13/02/2012 12:00:00 AM</updated>
+   <id>http://lukencode.com</id>
+   <content type="html"><p>A couple of weeks ago after shamelessly promoting on of my blog post on a social network I received a troubling report that my pride and joy had contracted some type of virus.</p>
+<p><img src="/img/posts/virus.png" alt="Virus" title="MY GOD - ITS ALL MY FAULT" /></p>
+<p>This scary red screen (well a similar one) along with some performance issues and me getting bored with wordpress meant I was on the hunt for a new blog platform.  I was after was something fast and simple where I have control over the html and css generated.</p>
+<p><a href="https://github.com/mojombo/jekyll">Jekyll</a> is a &quot;blog-aware, static site generator in Ruby&quot;. It takes markdown and liquid (a templating language) text files and mashes them into a static html site. The &quot;blog-aware&quot; bit means Jekyll will take posts written in mark down and generate a url structure similar to what is seen on most blogs eg [year]/[month]/[day]/[title]. Static html sites have a couple of obvious advantages and disadvantages - they are easy to host, fast and difficult to hack (take that virus man!) but there is no admin interface for update posts.</p>
+<p>This is what liquid templating looks like:</p>
+<p>{% literal %}</p>
+<pre><code>---
+layout : layout
+title : SiteName
+---
+
+&lt;ul id=&quot;archive&quot;&gt;
+    {% for post in site.posts %}
+        &lt;li&gt;
+            &lt;a href=&quot;{{ post.url }}&quot;&gt;{{ post.title }}&lt;/a&gt;
+            &lt;span class=&quot;date&quot;&gt;{{ post.date | date: &quot;%d %B, %Y&quot; }}&lt;/span&gt;
+        &lt;/li&gt;
+    {% endfor %}
+&lt;/ul&gt;
+</code></pre>
+
+<p>{% endliteral %}</p>
+<p>The text inbetween the --- up the top is a <a href="http://www.yaml.org/">YAML</a> header - any files with a yaml header will be processed as special files. The variables being set are for things like the layout to be used, permalink or page title.</p>
+<p>A simple post written in markdown might looks something like this:</p>
+<pre><code>--- 
+layout: post
+title: &quot;My First Post&quot;
+author: &quot;Author&quot;
+comments: true
+---
+
+## Hello world...
+
+This is my first post on the site!
+</code></pre>
+
+<p>This Jekyll business was sounding wonderful but being the sheltered windows loving, 9-5 enterprise coding, <a href="http://blog.expensify.com/2011/03/25/ceo-friday-why-we-dont-hire-net-programmers/">unhireable</a> .NET developer that I am I threw it into the &quot;too hard basket&quot; and went back to whinging about wordpress.
+Lucky for me there is a gang of open source programmers (with .net flavour to them) that were setting out to build the windows equivalent of Jekyll code named - <a href="https://github.com/Code52/pretzel">Pretzel</a>. </p>
+<p>Pretzel is a .NET console app built in just one week builds static sites in a similar manner to Jekyll, with the jekyll mode more or less emulating it exactly. There are some other cool features in the pipeline such as a razor engine, js and css minification and less support. Pretzel has a couple of commands - &quot;create&quot; builds the basic site structure, &quot;bake&quot; converts your site to static html and &quot;taste&quot; runs an embedded web server and watches for file changes to preview your site. I personally like to use &quot;taste&quot; like this while I am working on my site for instant updates:</p>
+<pre><code> pretzel taste -p=8080 -e=jekyll
+</code></pre>
+
+<p>With my mind set on a fancy static blog I had one more problem to solve - hosting. It turns out Github allows you to do some really cool stuff with github pages AND github pages supports Jekyll all for free! Hosting my blog as a github repo + <a href="http://pages.github.com/">gh pages</a> has another advantage my blog is safely stored on github servers with a full history. Updating the site is as easy as pushing updates or new pages to the repo. </p>
+<p>Here is what I did to get my blog up and running on github.</p>
+<ul>
+<li>Set up a repo named [username].github.com. This will tell github to publish any files on the master branch to http://[username].github.com.</li>
+<li>Add a text file named CNAME to your repo with each url you want mapped to the site on separate lines.</li>
+<li>Import my wordpress posts using pretzel. To do this you just need to download the xml export of your wordpress blog and run the import command. This will import your posts as markdown files in the _post folder. <pre>pretzel import -t=wordpress -f=[path to xml]</pre></li>
+<li>Import my blog comments to disqus and embed their javascript widget on my post pages. Disqus provides a wordpress plugin that will import existing posts - remember to do this before you shut down your wordpress blog. </li>
+<li>Profit!</li>
+</ul>
+<p>One thing to beware of is 404s. You need to add a plain 404.html page to your repo or 404s will be redirected to a github page (and not the one with the <a href="https://github.com/404">cool star wars one</a>).</p>
+<p>This blog now essentially a git repo you can take a look at the source for my blog at <a href="https://github.com/lukencode/lukencode.github.com">lukencode/lukencode.github.com</a>. Without the cruft of a wordpress theme I have been able to drastically simplify the html and css and cut down the page size. I've also had a chance to experiment with responsive design - go on resize this window and let me know what you think. Next on the todo list is a redesigned home page, pages for my wp7 apps and some fancy javascript to load in my current github repos.</p>
+</content>
+ </entry>
+ 
  <entry>
    <title>NetBash Updated – Formatting Helpers Added</title>
    <link href="http://lukencode.com/2012/01/14/netbash-updatedformatting-helpers-added/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>14/01/2012 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>NetBash (drop in command line for asp.net web applications) was first released late last year with little to no response from the community. No big deal – I built it to scratch my own itch so it was at least going to be useful to me. Then, like clockwork I go on holidays for a week and a bit and it is featured on <a href="http://asp.net" target="_blank">Asp.net</a> and tweeted by close to 100 people. I have used the past few days to catch up with the bugs people have found (thanks heaps to those who forked and fixed bugs themselves) and get a new release out on <a href="http://nuget.org/packages/NetBash" target="_blank">NuGet</a>.</p> 
 <h3>Bug Fixes</h3> 
@@ -71,7 +134,7 @@ public string Process(string[] args)
  <entry>
    <title>NetBash – An Alternative to Endless Admin Pages in Asp.Net Web Applications</title>
    <link href="http://lukencode.com/2011/12/11/netbashan-alternative-to-endless-admin-pages-in-asp-net-web-applications/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>11/12/2011 9:14:54 PM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>One thing that always annoys me when working on a web app is having to write those inevitable pages full of admin functions some of which are just a single button. When hacking up one such page I had a thought - a plug in library providing a command line for your web app might save me a lot of time. <a href="https://github.com/lukencode/NetBash" target="_blank">NetBash</a> is what I came up with.</p> <p><a href="http://lukencode.com/wp-content/uploads/2011/12/netbash.png"><img alt="netbash" src="http://lukencode.com/wp-content/uploads/2011/12/netbash_thumb.png" width="1028" height="561"></a></p> 
 <p>As you can see from the screenshot NetBash is basically a miniature command line complete with that sweet lime green on black theme that lives in your web app. It can be expanded, minimised and hidden with keyboard shortcuts (<a href="https://github.com/madrobby/keymaster" target="_blank">keymaster</a> ftw) and remembers recent command history using localStorage. NetBash works in a similar way to the <a href="http://code.google.com/p/mvc-mini-profiler/" target="_blank">MVC Mini Profiler</a> meaning that it can be installed with minimal effort on your part (just a NuGet package) and follows you around your site. This is the setup:</p>
@@ -115,7 +178,7 @@ public class LengthCommand : IWebCommand
  <entry>
    <title>Windows Phone (Mango) Contact Chooser Task</title>
    <link href="http://lukencode.com/2011/12/01/windows-phone-mango-contact-chooser-task/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>1/12/2011 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>When creating the amazing, incredible and life changing app for managing money you borrow and lend <a href="http://www.windowsphone.com/en-US/apps/7745a9a4-6926-4767-9e61-837fdd1faba5" target="_blank">Metrowe</a> I was pretty annoyed to discover that in the Mango SDK there are choosers for selecting emails: <em>EmailAddressChooserTask</em><strong> </strong>and phone numbers: <em>PhoneNumberChooserTask </em>but not just plain selecting a contact. The problem with the other choosers is the email address will exclude contacts without an email and similarly the phone number chooser and phone numbers. After much complaining decided to develop my own contact chooser (quite closely based off <a href="http://blog.naviso.fr/wordpress/?p=851" target="_blank">this french one</a>) matching the OS version as closely as possible. This is what it ended up looking like:</p> <p><a href="http://lukencode.com/wp-content/uploads/2011/12/contact-chooser.png"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="contact-chooser" border="0" alt="contact-chooser" src="http://lukencode.com/wp-content/uploads/2011/12/contact-chooser_thumb.png" width="333" height="553"></a></p> <p>Seamless huh? I’ve managed to get the calling code for this down to something nice a simple which pretty much matches the built in choosers:</p>
 <pre class="prettyprint">
@@ -138,7 +201,7 @@ void contactChooser_OnSelected(object sender, ContactChooserEventArgs e)
  <entry>
    <title>Behind the XAML of the Windows Phone Silverlight Game – Numbertap</title>
    <link href="http://lukencode.com/2011/09/30/behind-the-xaml-of-the-windows-phone-silverlight-game-numbertap/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>30/09/2011 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p><a href="http://numbertap.com/" target="_blank">Numbertap</a> is a Windows Phone game built by me and a few mates (<a href="http://twitter.com/benjii22" target="_blank">@benjii22</a>, <a href="http://twitter.com/d1k_is" target="_blank">@d1k_is</a> and <a href="http://twitter.com/fishkopter" target="_blank">@fishkopter</a>). It is alive and well in the marketplace right now in the games section. When people ask this is what we tell people Numbertap is:</p>
 <blockquote>
@@ -236,7 +299,7 @@ public ActionResult GameStats(LoginRequest loginRequest)
  <entry>
    <title>Phonealytics “Mango” Update Preview</title>
    <link href="http://lukencode.com/2011/07/31/phonealytics-mango-update-preview/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>31/07/2011 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>I have been talking up some substantial updates to the live tiles used in my Windows Phone Google Analytics app <a href="http://social.zune.net/redirect?type=phoneApp&amp;id=11416a38-28f6-df11-9264-00237de2db9e" target="_blank">Phonealytics</a> for some time now. Over the weekend I finally got round to getting started implementing them. The result is a button you can press on your site’s profile page (the first page you get to when you press a site) to pin a live tile of that site to your home screen. </p>  <p><a href="http://lukencode.com/wp-content/uploads/2011/07/fullview1.png"><img style="background-image: none; border-bottom: 0px; border-left: 0px; margin: 10px 20px 10px 30px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top: 0px; border-right: 0px; padding-top: 0px" title="fullview" border="0" alt="fullview" align="left" src="http://lukencode.com/wp-content/uploads/2011/07/fullview_thumb1.png" width="250" height="455" /></a><a href="http://lukencode.com/wp-content/uploads/2011/07/joined.png"><img style="margin: 20px 0px 10px; display: inline; float: left" title="Phonealytics Live Tiles" alt="Phonealytics Live Tiles" align="left" src="http://lukencode.com/wp-content/uploads/2011/07/joined_thumb.png" width="583" height="199" /></a></p>  <p style="clear: both">You can pin as many tiles as you like (although I think the background process might struggle with 5+) with the tiles taking the settings for date range (day, week, month, year) of Phonealytics when pinned. The tiles themselves show a bit more data than the current ones with the front of the tile showing visits and % change, the tile will occasionally flip to reveal the bounce rate and time on site. Pressing a tile from the home screen will take you directly the the details of that site in Phonealytics.</p>  <p><a href="http://lukencode.com/wp-content/uploads/2011/07/new_profile.png"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="Pin Tile" border="0" alt="Pin Tile" src="http://lukencode.com/wp-content/uploads/2011/07/new_profile_thumb.png" width="254" height="421" /></a></p>  <p>These new live tiles are updated entirely from your phone so should be <strong>much</strong> more reliable than the current tile. The update will be submitted as soon as Microsoft allows mango app updates and hopefully should be ready to go as your phone is updated to mango. The new tiles will definitely be available on the paid version of Phonealytics and possibly will come to the free version eventually now that I don’t need to run a server for them. I am planning on making them a bit more interesting visually to stand out a tad from the sea of [“PhoneAccent”] on everybody’s home screen, any suggestions for the look of the tiles (or anything else) would be awesome.</p>  <p>For those of you who haven’t got the app you can pick it up from the <a href="http://social.zune.net/redirect?type=phoneApp&amp;id=11416a38-28f6-df11-9264-00237de2db9e" target="_blank">zune marketplace</a> or grab the <a href="http://windowsphone.com/s?appid=21baf298-210a-4fe1-9a89-6314ae62151f" target="_blank">free version</a>.</p></content>
  </entry>
@@ -244,7 +307,7 @@ public ActionResult GameStats(LoginRequest loginRequest)
  <entry>
    <title>Windows Phone 7 App Phonealytics – Sales and Download Numbers</title>
    <link href="http://lukencode.com/2011/05/07/windows-phone-7-app-phonealyticssales-and-download-numbers/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>7/05/2011 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p><a href="http://lukencode.com/2010/11/28/phonealytics-google-analytics-client-for-windows-phone-7/" target="_blank">Phonealytics</a> is my Windows Phone 7 Google Analytics client. Phonealytics is currently selling for $0.99 in the marketplace with a free trial. Its major features include a live tile updating with a single sites stats, good performance and simple to use “metro” interface. Here I will be giving a rough and rundown of how it has performed along with the changes I have made and am planning. Due to my poor records keeping and Microsoft’s limited app hub reporting the numbers might be off here and there but should be close enough.</p>  
 <h3>Total Numbers</h3>  
@@ -289,7 +352,7 @@ public ActionResult GameStats(LoginRequest loginRequest)
  <entry>
    <title>Fluent Email Now Supporting Razor Syntax For Templates</title>
    <link href="http://lukencode.com/2011/04/30/fluent-email-now-supporting-razor-syntax-for-templates/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>30/04/2011 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>A while back I wrote Fluent Email, a little .NET wrapper for sending emails with System.Net.Mail using a fluent interface. After relentless requests (there was at least 2) to publish the library on <a href="http://nuget.org/" target="_blank">NuGet.org</a> I eventually caved in. You can add Fluent Email to your project using Nuget’s built in library package manager or the following package console command.</p>  <p><a href="http://nuget.org/List/Packages/fluent-email" target="_blank"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top: 0px; border-right: 0px; padding-top: 0px" title="nuget-fluent-email" border="0" alt="PM&gt; Install-Package fluent-email" src="http://lukencode.com/wp-content/uploads/2011/04/nuget-fluent-email.png" width="589" height="70" /></a></p>  <p>The library is pretty simple buts makes the code for sending emails easy to use and read.</p>  <pre class="prettyprint">var email = Email
             .From(&quot;john@email.com&quot;)
@@ -321,7 +384,7 @@ var email = Email
  <entry>
    <title>Windows Phone 7 Charts</title>
    <link href="http://lukencode.com/2010/12/09/windows-phone-7-charts/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>9/12/2010 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>One of the big features of my <a href="http://lukencode.com/2010/11/28/phonealytics-google-analytics-client-for-windows-phone-7/" target="_blank">Windows Phone 7 Google Analytics Client – Phonealytics</a> is the nice (I think) looking graphs. After briefly considering porting an existing Silverlight solution to wp7 I stumbled upon <a href="http://wpf.amcharts.com/quick" target="_blank">Quick Charts</a> by amCharts. Quick Charts is a lightweight and more importantly free chart control for Windows phone 7. It’s a bit light on options but very easy to get working and looks good. </p>  <p>The xaml for a line chart is pretty straightforward. You can see I am using the phone’s inbuilt styles partially because it looks awesome and partially because I am a terrible designer. The things to note here are setting the CategoryValueMemberPath to the name of the property in your model you want the graph to use as the label and in the LineGraph section setting the ValueMemberPath to the property you want to chart. The title property of the LineGraph renders on a small legend. One tip I have is setting IsEnabled to false when the graph is loading (or just in general) I got an exception tapping the graph before any data has been bound.</p>  
 <pre class="prettyprint">
@@ -386,7 +449,7 @@ valuememberpath=&quot;Value&quot; datasource=&quot;{Binding PieData}&quot;&gt;
  <entry>
    <title>Phonealytics – Google Analytics App for Windows Phone 7</title>
    <link href="http://lukencode.com/2010/11/28/phonealytics-google-analytics-client-for-windows-phone-7/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>28/11/2010 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>Phonealytics, as you may have guessed, is a Google Analytics client for Windows Phone 7. Phonealytics focuses on speed, getting information at a glance and blending in with your phone’s OS and style.  The app is priced at $2.99 USD and is available (almost) worldwide. Get the Phonealytics app from the Zune marketplace <a href="http://social.zune.net/redirect?type=phoneApp&amp;id=11416a38-28f6-df11-9264-00237de2db9e">here</a>.</p>
 <p><a href="http://social.zune.net/redirect?type=phoneApp&amp;id=11416a38-28f6-df11-9264-00237de2db9e"></a><a href="http://social.zune.net/redirect?type=phoneApp&amp;id=11416a38-28f6-df11-9264-00237de2db9e" target="_blank"><img title="99x99" src="http://catalog.zune.net/v3.2/en-US/image/e7dd38b8-c673-45be-89e9-0dbeec7da8cc?width=1280&amp;height=720&amp;resize=true" border="0" alt="99x99" width="103" height="103" align="left" /></a></p>
@@ -413,7 +476,7 @@ valuememberpath=&quot;Value&quot; datasource=&quot;{Binding PieData}&quot;&gt;
  <entry>
    <title>Writing AJAX web applications in Asp.Net MVC</title>
    <link href="http://lukencode.com/2010/09/26/writing-ajax-web-applications-in-asp-net-mvc/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>26/09/2010 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>Asp.Net MVC and jQuery have made it much easier to build awesome Gmail like ajax powered applications. I am going to run through the technique I used to do the ajax web services, call them in javascript and display the html through a template. </p>  <h3>What Do I Need?</h3>  <ol>   <li>An Asp.Net MVC web application </li>    <li><a href="http://jquery.com/" target="_blank">jQuery</a> </li>    <li><a href="http://benjii.me/2010/08/jqax-jquery-plugin-the-jquery-plugin-version-of-the-jqax-ajax-wrapper/" target="_blank">jQax</a> – a wrapper around jQuery ajax </li>    <li><a href="http://aefxx.com/jquery-plugins/jqote2/" target="_blank">jQote</a> – a simple lightweight jQuery templating engine </li> </ol>  <h3>What Do I Do?</h3>  <p>Lets start at the web application because you probably already have something there. Pick a nice simple controller action you wish was ajaxy – say displaying some gig (also know as concert) info?</p>  <p>You probably have a view model you hand to your concert details page. Here is a simplified version of what I use:</p>  <pre class="prettyprint">public class GigViewModel
 {
@@ -476,7 +539,7 @@ ajax.Get(&quot;/gig/1&quot;, null, function (data) {
  <entry>
    <title>C# String Extension Methods</title>
    <link href="http://lukencode.com/2010/08/18/c-string-extension-methods/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>18/08/2010 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>Ah extension methods... where would we be without them? Writing slightly more code to perform common functions that's where! I am fairly sure everyone has their own set of string extensions so I though I'd share what I currently have then you guys can shoot it down and direct me to / yell at me something more useful. Everybody wins!</p>
 <div style="clear: both;"><script src="https://gist.github.com/534556.js"> </script></div>
@@ -486,7 +549,7 @@ ajax.Get(&quot;/gig/1&quot;, null, function (data) {
  <entry>
    <title>Google and Yahoo Add to Calendar Html Helpers for Asp.net MVC</title>
    <link href="http://lukencode.com/2010/08/09/google-and-yahoo-add-to-calendar-html-helpers-for-asp-net-mvc/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>9/08/2010 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>I’ve been working on implementing some iCal functionality for the my <a href="http://gigpig.fm" target="_blank">gig guide website – Gigpig</a> so users could easily add concert dates to their calendars. This works fine and dandy if you have some desktop program to handle iCal files. I have however been informed that the cool kids roll with Google Calendar (and some strange people with Yahoo?!). I dug around a bit and found you can easily prompt users to add events to these calendars using a link to the calendar with the event details in the query string.</p>
 <p>If you want to play around with these parameters I recommend using google’s tools to <a href="http://www.google.com/googlecalendar/event_publisher_guide.html#public" target="_blank">create a button for google calendar</a> and following the guide on <a href="http://chris.photobooks.com/tests/calendar/Notes.html" target="_blank">this site</a> for yahoo.</p>
@@ -503,7 +566,7 @@ Calling the helpers is a little wieldy but gets the job done (yahoo is more of t
  <entry>
    <title>Rest Web Services In Windows Phone 7</title>
    <link href="http://lukencode.com/2010/08/04/rest-web-services-in-windows-phone-7/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>4/08/2010 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>I’ve been messing around with some Window Phone 7 development lately and thought I would share how I have been calling web services with RestSharp (I’ve written a little about RestSharp previously using the <a href="http://lukencode.com/2010/04/14/google-weather-api-with-restsharp/" target="_blank">google weather api</a>). </p>  <p><a href="http://restsharp.org" target="_blank"><img style="border-bottom: 0px; border-left: 0px; display: inline; margin-left: 0px; border-top: 0px; margin-right: 0px; border-right: 0px" title="restsharp" border="0" alt="restsharp" align="right" src="http://lukencode.com/wp-content/uploads/2010/08/restsharp.png" width="240" height="57" /></a> For those who don’t know <a href="http://restsharp.org" target="_blank">RestSharp</a> is a REST client for .NET which has recently added silverlight and Windows Phone 7 support. RestSharp has some really great features to simplify calling web services including:</p>  <ul>   <li>Automatic XML and JSON deserialization </li>    <li>Fuzzy name matching ('product_id' in XML/JSON will match property named 'ProductId') </li>    <li>Automatic detection of type of content returned </li>    <li>GET, POST, PUT, HEAD, OPTIONS, DELETE supported </li> </ul>  <p>Windows Phone 7 basically enforces (with good reason) async web requests – luckily RestSharp has our back on that front. I’m going to use some example code from the Google Reader app I’ve been playing around with – <a href="http://lukencode.com/2010/07/29/windows-phone-7-google-reader-app-gread-work-in-progress/" target="_blank">GREAD</a>. Here is a simple example of asynchronously calling a web service using RestSharp to authenticate with with google accounts:</p>  <pre class="prettyprint">var client = new RestClient(&quot;https://www.google.com&quot;);
 
@@ -567,7 +630,7 @@ protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventA
  <entry>
    <title>Windows Phone 7 Google Reader App (GREAD) Work In Progress</title>
    <link href="http://lukencode.com/2010/07/29/windows-phone-7-google-reader-app-gread-work-in-progress/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>29/07/2010 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>I’ve spent the last couple of days playing around with some Windows Phone 7 development. I decided to create a simple Google reader client as a practice app that later on down the track might at least be useful to me. Considering I have no background in Silverlight (mainly just web applications) I think I’ve managed to come quite a long way in a short amount of time. </p>  <div style="padding-bottom: 0px; margin: 0px auto; padding-left: 0px; width: 637px; padding-right: 0px; display: block; float: none; padding-top: 0px" id="scid:66721397-FF69-4ca6-AEC4-17E6B3208830:8f284cef-2448-4db0-8757-dcac1fb8328a" class="wlWriterEditableSmartContent"><a style="border:0px" href="http://cid-f01a240b2645ac50.skydrive.live.com/redir.aspx?page=browse&amp;resid=F01A240B2645AC50!106&amp;type=5"><img style="border:0px" alt="View GREAD" src="http://lukencode.com/wp-content/uploads/2010/07/InlineRepresentationd420332b7adc45dda78014e8c8d29201.jpg" /></a><div style="width:637px;text-align:right;" ><a href="http://cid-f01a240b2645ac50.skydrive.live.com/redir.aspx?page=browse&amp;resid=F01A240B2645AC50!106&amp;type=5">View Full Album</a></div></div>  <p>&#160;</p>  <p>The app current pulls in the given users unread counts and labels on the home screen with the labels located a swoosh to the right. From there you can jump straight to view a story or drill down into one of your labels.</p>  <p>Before I go too much further I would like to try get some feedback/ideas on what people want from a Google reader client (if anything). </p>  <p>The design is obviously a little dodgy at the moment my main plan here is to try utilized the wp7 concept of horizontal space. I am waiting for the official panorama/pivot controls and will look to implement those. </p>  <p>Features wise at the moment all the client does is query the Google reader api for feeds an stories. I am going to implement the core reader functionality – read and unread, starring and notes as well as some type of social sharing.&#160; I’d like to know how important offline reading / caching is to people so I can decide how much effort I need to put into that side of the application.</p>  <p>If you have any ideas let me know in the comments or on twitter - <a href="http://twitter.com/lukencode" target="_blank">@lukencode</a>.</p></content>
  </entry>
@@ -575,7 +638,7 @@ protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventA
  <entry>
    <title>Getting Started With MongoDB and NoRM</title>
    <link href="http://lukencode.com/2010/07/09/getting-started-with-mongodb-and-norm/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>9/07/2010 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>I just realised - I hate writing SQL. I hate it, I hate it, I hate it. I have also recently noticed a growing trend in SQL alternatives or “nosql” with open source C# drivers. Today I put one and one together and decided to try out one of these – MongoDB using the C# driver NoRM. Why this idea didn't occur to me earlier I will never know.</p>  <h3>What is MongoDB?</h3>  <p><a href="http://www.mongodb.org/" target="_blank"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; margin-left: 0px; border-left-width: 0px; margin-right: 0px" title="logo-mongodb" border="0" alt="logo-mongodb" align="right" src="http://lukencode.com/wp-content/uploads/2010/07/logomongodb.png" width="221" height="94" /></a> <a href="http://www.mongodb.org/" target="_blank">MongoDB</a> is one of a growing number of nosql databases. In short these databases are non relational and schema free. I won’t attempt to give a full rundown of the pros and cons of nosql but the stated benefits are generally saleability, performance and simplicity.</p>  <p>MongoDB is a document orientated database storing data on disk as binary json. Some key features include indexing, rich queries, map reduce and horizontal scalability. </p>  <p>The Mongo website sums it all up much better than I do so you should probably just go there:</p>  <blockquote>   <p>MongoDB bridges the gap between key-value stores (which are fast and highly scalable) and traditional RDBMS systems (which provide rich queries and deep functionality).</p>    <p>MongoDB (from &quot;hu<strong>mongo</strong>us&quot;) is a scalable, high-performance, <a href="http://www.mongodb.org/display/DOCS/Source+Code">open source</a>, document-oriented database.</p> </blockquote>  <p>For installation instructions for Mongo I recommend taking a look at the <a href="http://www.mongodb.org/display/DOCS/Quickstart+Windows">Windows Quickstart guide</a>.</p>  <h3>What (or who) is NoRM?</h3>  <p><a href="http://wiki.github.com/atheken/NoRM/" target="_blank"><img style="border-bottom: 0px; border-left: 0px; display: inline; margin-left: 0px; border-top: 0px; margin-right: 0px; border-right: 0px" title="normLogo" border="0" alt="normLogo" align="right" src="http://lukencode.com/wp-content/uploads/2010/07/normLogo.png" width="244" height="99" /></a> <a href="http://wiki.github.com/atheken/NoRM/" target="_blank">NoRM</a> is an open source .Net library for connecting to MongoDB. Its main drawcards for me are:</p>  <ul>   <li>NoRM is strongly typed. It uses plain .net classes when querying and updating the database. </li>    <li>Uses linq for queries </li>    <li>Simple and convention based. NoRM makes it really simple to get persistence up and running as I will soon demonstrate. </li> </ul>  <p>To get NoRM head over to <a title="http://github.com/atheken/NoRM" href="http://github.com/atheken/NoRM">http://github.com/atheken/NoRM</a>.</p>  <h3>Using NoRM in C#</h3>  <p>I’m going to be using NoRM with a pretty standard session pattern. My MongoSession will implement the following ISession interface which uses linq expressions for queries.</p>  
 <pre class="prettyprint">public interface ISession : IDisposable
@@ -730,7 +793,7 @@ using (var session = new MongoSession())
  <entry>
    <title>IP to Geo Location in Asp.Net MVC</title>
    <link href="http://lukencode.com/2010/05/19/ip-to-geo-location-in-asp-net-mvc/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>19/05/2010 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>I have been working on a couple of projects recently (like the new and improved version of <a href="http://gigpig.fm" target="_blank">Gigpig</a> which is coming soon!) which could really benefit from some automagic geolocation lookups for visitors. In the case of Gigpig I wanted to filter what gigs users could see based on where they were in the world.</p>
 <p>The database I am using is the binary version of the <a href="http://www.maxmind.com/app/geolitecity" target="_blank">Max Mind GeoLite City</a> free location database. The database essentially maps IP address ranges to cities and countries.  The binary format, I am informed is the fastest version however there is a csv file you can download and import into your database of choice.</p>
@@ -797,7 +860,7 @@ public static Location GetLocationFromIP(string ipAddress)
  <entry>
    <title>Timesaving CSS Tools for ASP.Net Developers</title>
    <link href="http://lukencode.com/2010/05/04/timesaving-css-tools-for-asp-net-developers/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>4/05/2010 11:35:21 PM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>Are you a developer?</p>
 <p>Are you a lazy developer?</p>
@@ -867,7 +930,7 @@ h2 {
  <entry>
    <title>Calling Web Services in Android using HttpClient</title>
    <link href="http://lukencode.com/2010/04/27/calling-web-services-in-android-using-httpclient/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>27/04/2010 9:02:21 PM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>I’ve decided recently to branch out from mainly web development into the mobile app space – starting with Google’s Android (because I own a Android phone). One of the first things I wanted to do was start calling webservices, specifically Google Analytics.</p>
 <p>Now I am pretty new to Android and Java in general but I feel I’ve come up with a nice simple way to make requests to web services and APIs (and plain html pages if you want). The class uses the org.apache.http library which is included in Android.</p>
@@ -1044,7 +1107,7 @@ String response = client.getResponse();</pre>
  <entry>
    <title>Split String Into Array of Chunks</title>
    <link href="http://lukencode.com/2010/04/21/split-string-into-array-of-chunks/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>21/04/2010 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>Here is a little function I needed to use today for spliting a string into an array of strings of a given length rather than by a particular character. I ran into a situation where the database columns I wanted to insert some text into were split over a number of columns eg &quot;DescriptionLine1&quot;, &quot;DescriptionLine2&quot;, &quot;DescriptionLine3&quot;.</p>
 <p>Through the magic of extension methods I can split the string into chunks using this code.</p>
@@ -1081,7 +1144,7 @@ var splitItemDescription = item.Product.Description.SplitIntoChunks(40);
  <entry>
    <title>Google Weather API with RestSharp</title>
    <link href="http://lukencode.com/2010/04/14/google-weather-api-with-restsharp/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>14/04/2010 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>Guest post by <a href="http://github.com/dkarzon">DK</a>!</p>
 <p>The <a href="http://www.googleapihelp.com/2009/08/google-weather-api.html">Google Weather API</a> is a grand service for developers to get weather data for any location with ease.</p>
@@ -1177,7 +1240,7 @@ var response = client.Execute&lt;Models.xml_api_reply&gt;(request);
  <entry>
    <title>Fluent Email in .NET</title>
    <link href="http://lukencode.com/2010/04/11/fluent-email-in-net/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>11/04/2010 6:33:01 PM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>I have been working with <a href="http://lukencode.com/2010/04/08/synchronous-asynchronous-email-sender/">sending emails with System.Net.Mail</a> and had a few people mention they would like fluent interface. It sounded like a pretty cool idea and I also needed an excuse to learn git/github thus was born <a href="http://github.com/lukencode/FluentEmail" target="_blank">FluentEmail for .NET</a>.</p>
 <p>Here is a quick example of intended usage, the Smtp details if not provided using the .UsingClient(SmptClient client) method will be taken from the mailSettings config section.</p>
@@ -1230,7 +1293,7 @@ public class Email : IHideObjectMembers
  <entry>
    <title>Simple C# Synchronous / Asynchronous Email Sender</title>
    <link href="http://lukencode.com/2010/04/08/synchronous-asynchronous-email-sender/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>8/04/2010 10:47:51 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p><strong>UPDATE:</strong> 
 I am now using a <a href="http://lukencode.com/2010/04/11/fluent-email-in-net/">Fluent Email Class </a> that implements similar techniques.</p>
@@ -1320,7 +1383,7 @@ public static class EmailSender
  <entry>
    <title>C# Micro Performance Testing Class</title>
    <link href="http://lukencode.com/2010/03/28/c-micro-performance-testing-class/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>28/03/2010 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>I often find myself wondering which version of a method would run more efficiently so for my own amusement I built this little class so I could easily test various method's performance. I understand this is no substitute for real profiling but it is handy to do some quick comparisons.</p>
 <pre class="prettyprint">public class PerformanceTester
@@ -1406,7 +1469,7 @@ Console.Writeline(string.Format("Executed in {0} milliseconds", tester.AverageTi
  <entry>
    <title>6 Useful SQL Server Scripts</title>
    <link href="http://lukencode.com/2010/03/26/6-useful-sql-sever-scripts/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>26/03/2010 7:10:49 PM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>This is a post we had on the short lived blog.tboda.com with input from DK and <a href="http://benjii.me">Benjii</a>. People seemed to find it useful so I thought I’d give it second chance at life (plus one extra script).</p>
 <h3>Database Backup</h3>
@@ -1530,7 +1593,7 @@ WHERE table_type = 'base table'</pre></content>
  <entry>
    <title>User Control Email Templates in asp.net</title>
    <link href="http://lukencode.com/2010/03/23/user-control-email-templates-in-asp-net/"/>
-   <updated>Liquid syntax error: Error - Filter 'date' does not have a default value for 'format' and no value was supplied</updated>
+   <updated>23/03/2010 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>Just about every project i work on needs to send customized emails and everytime I hate doing it. Inspired by some answers in this <a href="http://stackoverflow.com/questions/122784/hidden-net-base-class-library-classes/122967">stackoverflow question</a> I thought I'd give a simple .ascx based email template system a dig.</p>
 <p>First thing I did was set up a base class for template controls to inherit from. This class inherits from UserControl and has the methods to render the control to a string. It also has methods and properties to set up &quot;tags&quot; to replace in the email body.</p>
@@ -1620,5 +1683,6 @@ EmailSender.Send(from, fromName, to, toName, subject, body);</pre>
 <p>I could probably try encapsulate a bit more of the email sending inside my template (toName, toAddress etc) to clean this up a bit so feel free to tell me how come I suck.</p>
 </content>
  </entry>
- </p>
-<p></feed></p>
+ 
+ 
+</feed>
