@@ -1,6 +1,6 @@
 ---
 layout : layout
-title : SiteName
+title : lukencode
 ---
 
 <ul id="archive">
