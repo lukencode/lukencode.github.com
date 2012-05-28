@@ -4,13 +4,47 @@
  <title>lukencode</title>
  <link href="http://lukencode.com/atom.xml" rel="self"/>
  <link href="http://lukencode.com/"/>
- <updated>19/05/2012 11:10:52 AM</updated>
+ <updated>28/05/2012 8:30:47 PM</updated>
  <id>http://lukencode.com/</id>
  <author>
    <name>Luke Lowrey</name>
    <email>lukenlowrey@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>Quick and Dirty Currency Formatting in C#</title>
+   <link href="http://lukencode.com/2012/05/28/quick-and-dirty-csharp-currency-helper/"/>
+   <updated>28/05/2012 12:00:00 AM</updated>
+   <id>http://lukencode.com</id>
+   <content type="html"><p>A project I have been working on recently stores amounts of money along with the currency they are in. I was getting sick of the old <code>amount + currency_code</code> style of display and decided to see if I could hack together something that looks a bit nicer. Turns out you can use the built in .NET culture info and <code>string.Format</code> to format decimals into any currency. </p>
+<p>The code queries the cultures using linq to find a culture matching the given currency code it then uses passes the culture into string.Format and asks it to format as currency (&quot;C&quot;). I wrapped it all up in an extension method and added a default return if the culture is not found. The code seems to work fine but I can't really vouch for its performance or coverage of currencies other than to say &quot;it works on my machine&quot;.</p>
+<pre class="prettyprint">
+public static string FormatCurrency(this decimal amount, string currencyCode)
+{
+	var culture = (from c in CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+					let r = new RegionInfo(c.LCID)
+					where r != null
+					&& r.ISOCurrencySymbol.ToUpper() == currencyCode.ToUpper()
+					select c).FirstOrDefault();
+
+	if (culture == null)
+		return amount.ToString("0.00");
+
+	return string.Format(culture, "{0:C}", amount);
+}
+</pre>
+<p>Here are the results of calling FormatCurrency for a few different currency codes:</p>
+<pre class="prettyprint">
+decimal amount = 100;
+
+amount.FormatCurrency("AUD");  //$100.00
+amount.FormatCurrency("GBP");  //£100.00
+amount.FormatCurrency("EUR");  //100,00 €
+amount.FormatCurrency("VND");  //100,00 ₫
+amount.FormatCurrency("IRN");  //₹ 100.00
+</pre></content>
+ </entry>
  
  <entry>
    <title>Using Pretzel / Jekyll to host your blog on Github</title>
