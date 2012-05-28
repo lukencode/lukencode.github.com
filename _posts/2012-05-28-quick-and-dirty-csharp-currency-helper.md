@@ -14,13 +14,13 @@ public static string FormatCurrency(this decimal amount, string currencyCode)
 	var culture = (from c in CultureInfo.GetCultures(CultureTypes.SpecificCultures)
 					let r = new RegionInfo(c.LCID)
 					where r != null
-					&& r.ISOCurrencySymbol.ToUpper() == currencyCode.ToUpper()
+					&amp;&amp; r.ISOCurrencySymbol.ToUpper() == currencyCode.ToUpper()
 					select c).FirstOrDefault();
 
 	if (culture == null)
-		return amount.ToString("0.00");
+		return amount.ToString(&quot;0.00&quot;);
 
-	return string.Format(culture, "{0:C}", amount);
+	return string.Format(culture, &quot;{0:C}&quot;, amount);
 }
 </pre>
     
