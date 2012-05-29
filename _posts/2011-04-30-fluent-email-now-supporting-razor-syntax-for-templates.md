@@ -10,20 +10,23 @@ tags:
 - nuget
 ---
 
-<p>A while back I wrote Fluent Email, a little .NET wrapper for sending emails with System.Net.Mail using a fluent interface. After relentless requests (there was at least 2) to publish the library on <a href="http://nuget.org/" target="_blank">NuGet.org</a> I eventually caved in. You can add Fluent Email to your project using Nuget’s built in library package manager or the following package console command.</p>  <p><a href="http://nuget.org/List/Packages/fluent-email" target="_blank"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top: 0px; border-right: 0px; padding-top: 0px" title="nuget-fluent-email" border="0" alt="PM&gt; Install-Package fluent-email" src="http://lukencode.com/wp-content/uploads/2011/04/nuget-fluent-email.png" width="589" height="70" /></a></p>  <p>The library is pretty simple buts makes the code for sending emails easy to use and read.</p>  <pre class="prettyprint">var email = Email
+<p>A while back I wrote Fluent Email, a little .NET wrapper for sending emails with System.Net.Mail using a fluent interface. After relentless requests (there was at least 2) to publish the library on <a href="http://nuget.org/" target="_blank">NuGet.org</a> I eventually caved in. You can add Fluent Email to your project using Nuget’s built in library package manager or the following package console command.</p>  <p><a href="http://nuget.org/List/Packages/fluent-email" target="_blank"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top: 0px; border-right: 0px; padding-top: 0px" title="nuget-fluent-email" border="0" alt="PM&gt; Install-Package fluent-email" src="http://lukencode.com/wp-content/uploads/2011/04/nuget-fluent-email.png" width="589" height="70" /></a></p>  <p>The library is pretty simple buts makes the code for sending emails easy to use and read.</p>  
+
+<pre class="prettyprint">var email = Email
             .From(&quot;john@email.com&quot;)
             .To(&quot;bob@email.com&quot;, &quot;bob&quot;)
             .Subject(&quot;hows it going bob&quot;)
             .Body(&quot;yo dawg, sup?&quot;);
 
-//send normally
-email.Send();
-
-//send asynchronously
-email.SendAsync((sender, e) =&gt;
-{
-    Console.WriteLine(&quot;Email Sent&quot;);
-});</pre>
+            //send normally
+            email.Send();
+            
+            //send asynchronously
+            email.SendAsync((sender, e) =&gt;
+            {
+                Console.WriteLine(&quot;Email Sent&quot;);
+            });
+</pre>
 
 <p>There are a few other methods not shown here that work in a similar way for adding the usual email suspects such as CC, BCC&#160; and ReplyTo.</p>
 
