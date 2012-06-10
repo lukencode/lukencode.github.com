@@ -4,7 +4,7 @@
  <title>lukencode</title>
  <link href="http://lukencode.com/atom.xml" rel="self"/>
  <link href="http://lukencode.com/"/>
- <updated>10/06/2012 1:38:32 PM</updated>
+ <updated>10/06/2012 1:41:20 PM</updated>
  <id>http://lukencode.com/</id>
  <author>
    <name>Luke Lowrey</name>
@@ -23,16 +23,16 @@
 <pre class="prettyprint">
 public interface ITemplateRenderer
 {
-	string Parse<T>(string template, T model);
+	string Parse&lt;T&gt;(string template, T model);
 }
 </pre>
 <p>The default renderer uses the awesome <a href="http://nuget.org/packages/RazorEngine">RazorEngine</a> to implement the interface:</p>
 <pre class="prettyprint">
 public class RazorRenderer : ITemplateRenderer
 {
-	public string Parse<T>(string template, T model)
+	public string Parse&lt;T&gt;(string template, T model)
 	{
-		return Razor.Parse<T>(template, model);
+		return Razor.Parse&lt;T&gt;(template, model);
 	}
 }
 </pre>

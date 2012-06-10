@@ -13,7 +13,7 @@ The interface itself is really basic and has just one method:
 <pre class="prettyprint">
 public interface ITemplateRenderer
 {
-	string Parse<T>(string template, T model);
+	string Parse&lt;T&gt;(string template, T model);
 }
 </pre>
 	
@@ -22,9 +22,9 @@ The default renderer uses the awesome [RazorEngine](http://nuget.org/packages/Ra
 <pre class="prettyprint">
 public class RazorRenderer : ITemplateRenderer
 {
-	public string Parse<T>(string template, T model)
+	public string Parse&lt;T&gt;(string template, T model)
 	{
-		return Razor.Parse<T>(template, model);
+		return Razor.Parse&lt;T&gt;(template, model);
 	}
 }
 </pre>
