@@ -8,14 +8,14 @@ A project I have been working on recently stores amounts of money along with the
 
 The code queries the cultures using linq to find a culture matching the given currency code it then uses passes the culture into string.Format and asks it to format as currency ("C"). I wrapped it all up in an extension method and added a default return if the culture is not found. The code seems to work fine but I can't really vouch for its performance or coverage of currencies other than to say "it works on my machine".
 
-<pre class="prettyprint">
+<pre>
 public static string FormatCurrency(this decimal amount, string currencyCode)
 {
 	var culture = (from c in CultureInfo.GetCultures(CultureTypes.SpecificCultures)
-					let r = new RegionInfo(c.LCID)
-					where r != null
-					&amp;&amp; r.ISOCurrencySymbol.ToUpper() == currencyCode.ToUpper()
-					select c).FirstOrDefault();
+			let r = new RegionInfo(c.LCID)
+			where r != null
+			&amp;&amp; r.ISOCurrencySymbol.ToUpper() == currencyCode.ToUpper()
+			select c).FirstOrDefault();
 
 	if (culture == null)
 		return amount.ToString(&quot;0.00&quot;);
@@ -26,7 +26,7 @@ public static string FormatCurrency(this decimal amount, string currencyCode)
     
 Here are the results of calling FormatCurrency for a few different currency codes:
 
-<pre class="prettyprint">
+<pre>
 decimal amount = 100;
 
 amount.FormatCurrency("AUD");  //$100.00
