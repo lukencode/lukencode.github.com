@@ -4,7 +4,7 @@
  <title>lukencode</title>
  <link href="http://lukencode.com/atom.xml" rel="self"/>
  <link href="http://lukencode.com/"/>
- <updated>10/06/2012 1:33:18 PM</updated>
+ <updated>10/06/2012 1:37:16 PM</updated>
  <id>http://lukencode.com/</id>
  <author>
    <name>Luke Lowrey</name>
@@ -20,29 +20,32 @@
    <content type="html"><p>Fluent Email is a simple wrapper for System.Net.Mail that provides a fluent interface for constructing and sending emails in .Net. It also provides a Razor based template rendering engine. After getting a couple of requests for different renderers I decided to provide an interface in Fluent Email for templating that anyone can implement.</p>
 <p>The updated version of fluent email is available as always on <a href="http://nuget.org/packages/fluent-email">nuget</a> and you can find the source on <a href="https://github.com/lukencode">github</a>.</p>
 <p>The interface itself is really basic and has just one method:</p>
-<p><code>csharp
-public interface ITemplateRenderer
+<pre><code>public interface ITemplateRenderer
 {
-	string Parse&lt;T&gt;(string template, T model);
-}</code></p>
+    string Parse&lt;T&gt;(string template, T model);
+}
+</code></pre>
+
 <p>The default renderer uses the awesome <a href="http://nuget.org/packages/RazorEngine">RazorEngine</a> to implement the interface:</p>
-<p><code>csharp
-public class RazorRenderer : ITemplateRenderer
+<pre><code>public class RazorRenderer : ITemplateRenderer
 {
-	public string Parse&lt;T&gt;(string template, T model)
-	{
-		return Razor.Parse&lt;T&gt;(template, model);
-	}
-}</code></p>
+    public string Parse&lt;T&gt;(string template, T model)
+    {
+        return Razor.Parse&lt;T&gt;(template, model);
+    }
+}
+</code></pre>
+
 <p>If you want to use your own renderer all you need to do is implement the ITemplateRenderer interface and call the UsingTemplateEngine method when constructing an email:</p>
-<p><code>csharp
-var email = Email
-			.FromDefault()
-			.To(&quot;test@test.test&quot;)
-			.Subject(&quot;awesome new fluent email features&quot;)
-			.UsingTemplateEngine(new CustomTemplateRenderer())
-			.UsingTemplate(template, new { Name = &quot;LUKE&quot; })
-			.Send();</code></p>
+<pre><code>var email = Email
+            .FromDefault()
+            .To(&quot;test@test.test&quot;)
+            .Subject(&quot;awesome new fluent email features&quot;)
+            .UsingTemplateEngine(new CustomTemplateRenderer())
+            .UsingTemplate(template, new { Name = &quot;LUKE&quot; })
+            .Send();
+</code></pre>
+
 <p>Here are a couple of the different engines I have seen people using for fluent email (not yet implementing the new interface but hopefully soon).  If you have your own implementation leave a comment with a link and I will add it too the list.</p>
 <ul>
 <li>Markdown support - Nguyen Ly has some markdown support sitting in his <a href="https://github.com/lyphtec/FluentEmail">fluent email fork on github</a></li>
@@ -427,20 +430,22 @@ public ActionResult GameStats(LoginRequest loginRequest)
    <link href="http://lukencode.com/2011/04/30/fluent-email-now-supporting-razor-syntax-for-templates/"/>
    <updated>30/04/2011 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
-   <content type="html"><p>A while back I wrote Fluent Email, a little .NET wrapper for sending emails with System.Net.Mail using a fluent interface. After relentless requests (there was at least 2) to publish the library on <a href="http://nuget.org/" target="_blank">NuGet.org</a> I eventually caved in. You can add Fluent Email to your project using Nuget’s built in library package manager or the following package console command.</p>  <p><a href="http://nuget.org/List/Packages/fluent-email" target="_blank"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top: 0px; border-right: 0px; padding-top: 0px" title="nuget-fluent-email" border="0" alt="PM&gt; Install-Package fluent-email" src="http://lukencode.com/wp-content/uploads/2011/04/nuget-fluent-email.png" width="589" height="70" /></a></p>  <p>The library is pretty simple buts makes the code for sending emails easy to use and read.</p>  <pre class="prettyprint">var email = Email
+   <content type="html"><p>A while back I wrote Fluent Email, a little .NET wrapper for sending emails with System.Net.Mail using a fluent interface. After relentless requests (there was at least 2) to publish the library on <a href="http://nuget.org/" target="_blank">NuGet.org</a> I eventually caved in. You can add Fluent Email to your project using Nuget’s built in library package manager or the following package console command.</p>  <p><a href="http://nuget.org/List/Packages/fluent-email" target="_blank"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top: 0px; border-right: 0px; padding-top: 0px" title="nuget-fluent-email" border="0" alt="PM&gt; Install-Package fluent-email" src="http://lukencode.com/wp-content/uploads/2011/04/nuget-fluent-email.png" width="589" height="70" /></a></p>  <p>The library is pretty simple buts makes the code for sending emails easy to use and read.</p>  
+<pre class="prettyprint">var email = Email
             .From(&quot;john@email.com&quot;)
             .To(&quot;bob@email.com&quot;, &quot;bob&quot;)
             .Subject(&quot;hows it going bob&quot;)
             .Body(&quot;yo dawg, sup?&quot;);
 
-//send normally
-email.Send();
-
-//send asynchronously
-email.SendAsync((sender, e) =&gt;
-{
-    Console.WriteLine(&quot;Email Sent&quot;);
-});</pre>
+            //send normally
+            email.Send();
+            
+            //send asynchronously
+            email.SendAsync((sender, e) =&gt;
+            {
+                Console.WriteLine(&quot;Email Sent&quot;);
+            });
+</pre>
 <p>There are a few other methods not shown here that work in a similar way for adding the usual email suspects such as CC, BCC&#160; and ReplyTo.</p>
 <p>I had also been playing around with some form of templating when I came across <a href="http://razorengine.codeplex.com/" target="_blank">RazorEngine</a>. RazorEngine is an awesome library that brings the razor syntax (from MVC3) to other applications. In Fluent Email we use RazorEngine to make email templates as simple as this:</p>
 <pre class="prettyprint">var template = &quot;Dear @Model.Name, You are totally @Model.Compliment.&quot;;
@@ -705,7 +710,15 @@ protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventA
    <link href="http://lukencode.com/2010/07/29/windows-phone-7-google-reader-app-gread-work-in-progress/"/>
    <updated>29/07/2010 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
-   <content type="html"><p>I’ve spent the last couple of days playing around with some Windows Phone 7 development. I decided to create a simple Google reader client as a practice app that later on down the track might at least be useful to me. Considering I have no background in Silverlight (mainly just web applications) I think I’ve managed to come quite a long way in a short amount of time. </p>  <div style="padding-bottom: 0px; margin: 0px auto; padding-left: 0px; width: 637px; padding-right: 0px; display: block; float: none; padding-top: 0px" id="scid:66721397-FF69-4ca6-AEC4-17E6B3208830:8f284cef-2448-4db0-8757-dcac1fb8328a" class="wlWriterEditableSmartContent"><a style="border:0px" href="http://cid-f01a240b2645ac50.skydrive.live.com/redir.aspx?page=browse&amp;resid=F01A240B2645AC50!106&amp;type=5"><img style="border:0px" alt="View GREAD" src="http://lukencode.com/wp-content/uploads/2010/07/InlineRepresentationd420332b7adc45dda78014e8c8d29201.jpg" /></a><div style="width:637px;text-align:right;" ><a href="http://cid-f01a240b2645ac50.skydrive.live.com/redir.aspx?page=browse&amp;resid=F01A240B2645AC50!106&amp;type=5">View Full Album</a></div></div>  <p>&#160;</p>  <p>The app current pulls in the given users unread counts and labels on the home screen with the labels located a swoosh to the right. From there you can jump straight to view a story or drill down into one of your labels.</p>  <p>Before I go too much further I would like to try get some feedback/ideas on what people want from a Google reader client (if anything). </p>  <p>The design is obviously a little dodgy at the moment my main plan here is to try utilized the wp7 concept of horizontal space. I am waiting for the official panorama/pivot controls and will look to implement those. </p>  <p>Features wise at the moment all the client does is query the Google reader api for feeds an stories. I am going to implement the core reader functionality – read and unread, starring and notes as well as some type of social sharing.&#160; I’d like to know how important offline reading / caching is to people so I can decide how much effort I need to put into that side of the application.</p>  <p>If you have any ideas let me know in the comments or on twitter - <a href="http://twitter.com/lukencode" target="_blank">@lukencode</a>.</p></content>
+   <content type="html"><p>I’ve spent the last couple of days playing around with some Windows Phone 7 development. I decided to create a simple Google reader client as a practice app that later on down the track might at least be useful to me. Considering I have no background in Silverlight (mainly just web applications) I think I’ve managed to come quite a long way in a short amount of time. </p>  
+<div style="padding-bottom: 0px; margin: 0px auto; padding-left: 0px; width: 637px; padding-right: 0px; display: block; float: none; padding-top: 0px" id="scid:66721397-FF69-4ca6-AEC4-17E6B3208830:8f284cef-2448-4db0-8757-dcac1fb8328a" class="wlWriterEditableSmartContent">
+<a style="border:0px" href="http://cid-f01a240b2645ac50.skydrive.live.com/redir.aspx?page=browse&amp;resid=F01A240B2645AC50!106&amp;type=5"><img style="border:0px" alt="View GREAD" src="http://lukencode.com/wp-content/uploads/2010/07/InlineRepresentationd420332b7adc45dda78014e8c8d29201.jpg" /></a>
+<div style="width:637px;text-align:right;" ><a href="http://cid-f01a240b2645ac50.skydrive.live.com/redir.aspx?page=browse&amp;resid=F01A240B2645AC50!106&amp;type=5">View Full Album</a></div></div>  
+<p>&nbsp;</p>
+<p>The app current pulls in the given users unread counts and labels on the home screen with the labels located a swoosh to the right. From there you can jump straight to view a story or drill down into one of your labels.</p>  
+<p>Before I go too much further I would like to try get some feedback/ideas on what people want from a Google reader client (if anything). </p>  <p>The design is obviously a little dodgy at the moment my main plan here is to try utilized the wp7 concept of horizontal space. I am waiting for the official panorama/pivot controls and will look to implement those. </p>  
+<p>Features wise at the moment all the client does is query the Google reader api for feeds an stories. I am going to implement the core reader functionality – read and unread, starring and notes as well as some type of social sharing.&#160; I’d like to know how important offline reading / caching is to people so I can decide how much effort I need to put into that side of the application.</p>  
+<p>If you have any ideas let me know in the comments or on twitter - <a href="http://twitter.com/lukencode" target="_blank">@lukencode</a>.</p></content>
  </entry>
  
  <entry>
