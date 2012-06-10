@@ -4,7 +4,7 @@
  <title>lukencode</title>
  <link href="http://lukencode.com/atom.xml" rel="self"/>
  <link href="http://lukencode.com/"/>
- <updated>10/06/2012 1:37:16 PM</updated>
+ <updated>10/06/2012 1:38:32 PM</updated>
  <id>http://lukencode.com/</id>
  <author>
    <name>Luke Lowrey</name>
@@ -20,32 +20,32 @@
    <content type="html"><p>Fluent Email is a simple wrapper for System.Net.Mail that provides a fluent interface for constructing and sending emails in .Net. It also provides a Razor based template rendering engine. After getting a couple of requests for different renderers I decided to provide an interface in Fluent Email for templating that anyone can implement.</p>
 <p>The updated version of fluent email is available as always on <a href="http://nuget.org/packages/fluent-email">nuget</a> and you can find the source on <a href="https://github.com/lukencode">github</a>.</p>
 <p>The interface itself is really basic and has just one method:</p>
-<pre><code>public interface ITemplateRenderer
+<pre class="prettyprint">
+public interface ITemplateRenderer
 {
-    string Parse&lt;T&gt;(string template, T model);
+	string Parse<T>(string template, T model);
 }
-</code></pre>
-
+</pre>
 <p>The default renderer uses the awesome <a href="http://nuget.org/packages/RazorEngine">RazorEngine</a> to implement the interface:</p>
-<pre><code>public class RazorRenderer : ITemplateRenderer
+<pre class="prettyprint">
+public class RazorRenderer : ITemplateRenderer
 {
-    public string Parse&lt;T&gt;(string template, T model)
-    {
-        return Razor.Parse&lt;T&gt;(template, model);
-    }
+	public string Parse<T>(string template, T model)
+	{
+		return Razor.Parse<T>(template, model);
+	}
 }
-</code></pre>
-
+</pre>
 <p>If you want to use your own renderer all you need to do is implement the ITemplateRenderer interface and call the UsingTemplateEngine method when constructing an email:</p>
-<pre><code>var email = Email
-            .FromDefault()
-            .To(&quot;test@test.test&quot;)
-            .Subject(&quot;awesome new fluent email features&quot;)
-            .UsingTemplateEngine(new CustomTemplateRenderer())
-            .UsingTemplate(template, new { Name = &quot;LUKE&quot; })
-            .Send();
-</code></pre>
-
+<pre class="prettyprint">
+var email = Email
+		.FromDefault()
+		.To("test@test.test")
+		.Subject("awesome new fluent email features")
+		.UsingTemplateEngine(new CustomTemplateRenderer())
+		.UsingTemplate(template, new { Name = "LUKE" })
+		.Send();
+</pre>
 <p>Here are a couple of the different engines I have seen people using for fluent email (not yet implementing the new interface but hopefully soon).  If you have your own implementation leave a comment with a link and I will add it too the list.</p>
 <ul>
 <li>Markdown support - Nguyen Ly has some markdown support sitting in his <a href="https://github.com/lyphtec/FluentEmail">fluent email fork on github</a></li>
