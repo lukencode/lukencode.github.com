@@ -1,7 +1,7 @@
 ---
 title: "Http Web Services in Javascript Windows 8 Metro Apps" 
 layout: post
-published: false
+published: true
 ---
 I have been doing some Windows 8 development recently and decided to work with html, css and javascript rather than c# and xaml. I am mainly a .net guy and was a little worried about how javascript would work for a few things including consuming rest web services. I've written a few posts on web services for [.net](http://lukencode.com/2010/04/14/google-weather-api-with-restsharp/), [android](http://lukencode.com/2010/04/27/calling-web-services-in-android-using-httpclient/) and [windows phone](http://lukencode.com/2010/08/04/rest-web-services-in-windows-phone-7/) and as it turns out Windows 8 javascript is easier than all of them.
 
