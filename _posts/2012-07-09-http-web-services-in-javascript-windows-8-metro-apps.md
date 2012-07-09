@@ -27,7 +27,7 @@ WinJS.xhr({
             type: "post",
             url: "www.example.com",
         }).done(function (result) {
-        	console.log(result.responseText)
+            console.log(result.responseText)
         });
 </pre>
             
@@ -38,7 +38,7 @@ In the previous example the done function has a parameter "result". This is the 
 Most web services will require you to provide paramters. These might be query string params for get requests, form values for post or setting specific headers. To set query string or form parameters you can set the data property on the xhr options objects. To get the parameters in the right format I use a little helper function called formatParams. This function takes a javascript object and converts each property into a key/value parameter.
 
 <pre class="prettyprint">
-var params = {
+var p = {
             key: &quot;1234&quot;
         };
 
@@ -46,22 +46,22 @@ var params = {
 WinJS.xhr({
             type: &quot;get&quot;,
             url: &quot;www.example.com&quot;,
-            data: formatParams(params)
+            data: formatParams(p)
         });
             
 //post request
 WinJS.xhr({
             type: &quot;post&quot;,
             url: &quot;www.example.com&quot;,
-            data: formatParams(params),
+            data: formatParams(p),
             headers: { &quot;Content-type&quot;: &quot;application/x-www-form-urlencoded&quot; }
         });
             
-function formatParams(params) {
+function formatParams(p) {
     var queryStr = &quot;&quot;;
 
-    for (var propertyName in params) {
-        var val = params[propertyName];
+    for (var propertyName in p) {
+        var val = p[propertyName];
         queryStr += propertyName + &quot;=&quot; + encodeURI(val) + &quot;&amp;&quot;;
     }
 
