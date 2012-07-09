@@ -76,10 +76,10 @@ For the post request I set the content type header to x-www-form-urlencoded. You
 Assuming your web service returns json the biggest advantage javascript has it it handles it natively. There is no need for building a matching class or messing about with dictionaries it just works. All you need to do is call JSON.parse on your response text.
 
 <pre class="prettyprint">
-    WinJS.xhr({
-                type: "post",
-                url: url,
-            }).done(function (result) {
-            	var json = JSON.parse(result.responseText);
-            });
+WinJS.xhr({
+            type: "post",
+            url: url,
+        }).done(function (result) {
+        	var json = JSON.parse(result.responseText);
+        });
 </pre>
