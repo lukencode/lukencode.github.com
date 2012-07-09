@@ -38,35 +38,35 @@ In the previous example the done function has a parameter "result". This is the 
 Most web services will require you to provide paramters. These might be query string params for get requests, form values for post or setting specific headers. To set query string or form parameters you can set the data property on the xhr options objects. To get the parameters in the right format I use a little helper function called formatParams. This function takes a javascript object and converts each property into a key/value parameter.
 
 <pre class="prettyprint">
-    var params = {
-                key: "1234"
-            };
+var params = {
+            key: &quot;1234&quot;
+        };
 
-	//get request
-    WinJS.xhr({
-                type: "get",
-                url: "www.example.com",
-                data: formatParams(params)
-            });
+//get request
+WinJS.xhr({
+            type: &quot;get&quot;,
+            url: &quot;www.example.com&quot;,
+            data: formatParams(params)
+        });
             
-	//post request
-    WinJS.xhr({
-                type: "post",
-                url: "www.example.com",
-                data: formatParams(params),
-                headers: { "Content-type": "application/x-www-form-urlencoded" }
-            });
+//post request
+WinJS.xhr({
+            type: &quot;post&quot;,
+            url: &quot;www.example.com&quot;,
+            data: formatParams(params),
+            headers: { &quot;Content-type&quot;: &quot;application/x-www-form-urlencoded&quot; }
+        });
             
-    function formatParams(params) {
-        var queryStr = "";
+function formatParams(params) {
+    var queryStr = &quot;&quot;;
 
-        for (var propertyName in params) {
-            var val = params[propertyName];
-            queryStr += propertyName + "=" + encodeURI(val) + "&";
-        }
-
-        return queryStr.slice(0, -1);
+    for (var propertyName in params) {
+        var val = params[propertyName];
+        queryStr += propertyName + &quot;=&quot; + encodeURI(val) + &quot;&amp;&quot;;
     }
+
+    return queryStr.slice(0, -1);
+}
 </pre>
 
 For the post request I set the content type header to x-www-form-urlencoded. You can set any other headers you need using this same format.
