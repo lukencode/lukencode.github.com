@@ -22,12 +22,14 @@ You can make a post request by changing the type to "post".
             
 WinJS.xhr wraps the request in something called a [promise](http://msdn.microsoft.com/en-us/library/windows/apps/br211867.aspx). Promises in WinJS is an abstraction to help out with asynchronous requests. In short a promise is like a schedule or work to be done on a value that has yet to be computed, in the case of web services we are waiting on the response from the server. Using promises you can chain calls to the then and done methods. These methods will fire after the promise has been completed. You can chain multiple then methods together or just use done to wait until the end. 
 
-    WinJS.xhr({
-                type: "post",
-                url: "www.example.com",
-            }).done(function (result) {
-            	console.log(result.responseText)
-            });
+<pre class="prettyprint">
+WinJS.xhr({
+            type: "post",
+            url: "www.example.com",
+        }).done(function (result) {
+        	console.log(result.responseText)
+        });
+</pre>
             
 In the previous example the done function has a parameter "result". This is the data returned from the webservice, you can also access a number of other properties such as result.status. You can also provide an error function as the second parameter to the done and then functions.
 
@@ -35,6 +37,7 @@ In the previous example the done function has a parameter "result". This is the 
 
 Most web services will require you to provide paramters. These might be query string params for get requests, form values for post or setting specific headers. To set query string or form parameters you can set the data property on the xhr options objects. To get the parameters in the right format I use a little helper function called formatParams. This function takes a javascript object and converts each property into a key/value parameter.
 
+<pre class="prettyprint">
     var params = {
                 key: "1234"
             };
@@ -64,6 +67,7 @@ Most web services will require you to provide paramters. These might be query st
 
         return queryStr.slice(0, -1);
     }
+</pre>
 
 For the post request I set the content type header to x-www-form-urlencoded. You can set any other headers you need using this same format.
 
@@ -71,9 +75,11 @@ For the post request I set the content type header to x-www-form-urlencoded. You
 
 Assuming your web service returns json the biggest advantage javascript has it it handles it natively. There is no need for building a matching class or messing about with dictionaries it just works. All you need to do is call JSON.parse on your response text.
 
+<pre class="prettyprint">
     WinJS.xhr({
                 type: "post",
                 url: url,
             }).done(function (result) {
             	var json = JSON.parse(result.responseText);
             });
+</pre>
