@@ -9,10 +9,12 @@ I have been doing some Windows 8 development recently and decided to work with h
 
 The best way to call your web services is using the [WinJS.xhr function](http://msdn.microsoft.com/en-us/library/windows/apps/br229787.aspx). This function is basically a wrapper for the lower level XMLHttpRequest object. The function takes an options object with a number of optional properties. A basic xhr get request looks like this:
 
-    WinJS.xhr({
-               type: "get",
-               url: "www.example.com"
-            });
+<pre class="prettyprint">
+WinJS.xhr({
+           type: "get",
+           url: "www.example.com"
+        });
+</pre>
             
 You can make a post request by changing the type to "post".
           
