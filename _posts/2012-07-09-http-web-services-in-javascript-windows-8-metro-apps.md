@@ -3,11 +3,11 @@ title: "Http Web Services in Javascript Windows 8 Metro Apps"
 layout: post
 published: false
 ---
-I have been doing some Windows 8 development recently and decided to work with html, css and javascript rather than  c# and xaml. I am mainly a .net guy and was a little worried about working with javascript for a few things including consuming rest web services. I've written a few posts on web services for .net, android and windows phone and as it turns out Windows 8 javascript is easier than all of them.
+I have been doing some Windows 8 development recently and decided to work with html, css and javascript rather than c# and xaml. I am mainly a .net guy and was a little worried about how javascript would work for a few things including consuming rest web services. I've written a few posts on web services for [.net](http://lukencode.com/2010/04/14/google-weather-api-with-restsharp/), [android](http://lukencode.com/2010/04/27/calling-web-services-in-android-using-httpclient/) and [windows phone](http://lukencode.com/2010/08/04/rest-web-services-in-windows-phone-7/) and as it turns out Windows 8 javascript is easier than all of them.
 
 ###A Basic Web Request
 
-The best way to call your web services is using the WinJS.xhr function. This function is basically a wrapper for the lower level XMLHttpRequest object. The function takes an options object with a number of optional properties. A basic xhr get request looks like this:
+The best way to call your web services is using the [WinJS.xhr function](http://msdn.microsoft.com/en-us/library/windows/apps/br229787.aspx). This function is basically a wrapper for the lower level XMLHttpRequest object. The function takes an options object with a number of optional properties. A basic xhr get request looks like this:
 
     WinJS.xhr({
                type: "get",
@@ -18,11 +18,11 @@ You can make a post request by changing the type to "post".
           
 ###Using Promises
             
-WinJS.xhr wraps the request in something called a promise. Promises in WinJS is an abstraction to help out with asynchronous requests. In short a promise is like a schedule or work to be done on a value that has yet to be computed, in the case of web services we are waiting on the response from the server. Using promises you can chain calls to the then and done methods. These methods will fire after the promise has been completed. You can chain multiple then methods together or just use done to wait until the end. 
+WinJS.xhr wraps the request in something called a [promise](http://msdn.microsoft.com/en-us/library/windows/apps/br211867.aspx). Promises in WinJS is an abstraction to help out with asynchronous requests. In short a promise is like a schedule or work to be done on a value that has yet to be computed, in the case of web services we are waiting on the response from the server. Using promises you can chain calls to the then and done methods. These methods will fire after the promise has been completed. You can chain multiple then methods together or just use done to wait until the end. 
 
     WinJS.xhr({
                 type: "post",
-                url: url,
+                url: "www.example.com",
             }).done(function (result) {
             	console.log(result.responseText)
             });
