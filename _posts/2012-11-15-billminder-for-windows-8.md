@@ -9,7 +9,7 @@ tags:
 published: true
 ---
 
-[![logo](http://wscont1.apps.microsoft.com/winstore/1x/6108fd88-128e-42bd-8654-8f9fc1f43438/Icon.43147.png)](http://apps.microsoft.com/webpdp/en-US/app/billminder/016419f6-fa32-463b-8265-a8d26f3bb0c0)
+[![logo](https://vgvmkw.blu.livefilestore.com/y1p6KlRXkg0I2Ubz-J1joUmABHfucRPxoqLfIdicdyVZe1qSQ_ZYwb3yCQfwXx9GO0bvy2hXQQCYOCBplkqpJdNr97ZOwzZTfeX/biglogo.png?psid=1)](http://apps.microsoft.com/webpdp/en-US/app/billminder/016419f6-fa32-463b-8265-a8d26f3bb0c0)
 
 Billminder, my first windows 8 app has [finally hit the store](http://apps.microsoft.com/webpdp/en-US/app/billminder/016419f6-fa32-463b-8265-a8d26f3bb0c0). This is how I describe it in my wanky store description:
 
