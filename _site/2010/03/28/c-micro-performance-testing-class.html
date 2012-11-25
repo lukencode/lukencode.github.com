@@ -44,6 +44,13 @@
 
 </script>
 
+<!-- HitTail Code -->
+<script type="text/javascript">
+	(function(){ var ht = document.createElement('script');ht.async = true;
+	  ht.type='text/javascript';ht.src = '//94180.hittail.com/mlt.js';
+	  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ht, s);})();
+</script>						
+
 </head>		
 	
 <body onload="prettyPrint()">
@@ -104,7 +111,8 @@
 	
 	<article>
 		<p>I often find myself wondering which version of a method would run more efficiently so for my own amusement I built this little class so I could easily test various method's performance. I understand this is no substitute for real profiling but it is handy to do some quick comparisons.</p>
-<pre class="prettyprint">public class PerformanceTester
+<pre class="prettyprint">
+public class PerformanceTester
 {
     public TimeSpan TotalTime { get; private set; }
     public TimeSpan AverageTime { get; private set; }
@@ -176,12 +184,15 @@
         TotalTime = total;
         AverageTime = new TimeSpan(total.Ticks/iterations);
     }
-}</pre>
+}
+</pre>
 <p>Here is how you can use it.</p>
-<pre class="prettyprint">//usage
+<pre class="prettyprint">
+//usage
 var tester = new PerformanceTester(() =&gt; SomeMethod());
 tester.MeasureExecTimeWithMetrics(1000);
-Console.Writeline(string.Format("Executed in {0} milliseconds", tester.AverageTime.TotalMilliseconds));</pre>
+Console.Writeline(string.Format("Executed in {0} milliseconds", tester.AverageTime.TotalMilliseconds));
+</pre>
 	</article>
 </div>
 

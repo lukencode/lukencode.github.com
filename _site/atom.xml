@@ -4,13 +4,108 @@
  <title>lukencode</title>
  <link href="http://lukencode.com/atom.xml" rel="self"/>
  <link href="http://lukencode.com/"/>
- <updated>10/06/2012 1:41:27 PM</updated>
+ <updated>25/11/2012 10:06:20 PM</updated>
  <id>http://lukencode.com/</id>
  <author>
    <name>Luke Lowrey</name>
    <email>lukenlowrey@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>Billminder for Windows 8</title>
+   <link href="http://lukencode.com/2012/11/15/billminder-for-windows-8/"/>
+   <updated>15/11/2012 6:33:01 PM</updated>
+   <id>http://lukencode.com</id>
+   <content type="html"><p><a href="http://apps.microsoft.com/webpdp/en-US/app/billminder/016419f6-fa32-463b-8265-a8d26f3bb0c0"><img src="https://vgvmkw.blu.livefilestore.com/y1p6KlRXkg0I2Ubz-J1joUmABHfucRPxoqLfIdicdyVZe1qSQ_ZYwb3yCQfwXx9GO0bvy2hXQQCYOCBplkqpJdNr97ZOwzZTfeX/biglogo.png?psid=1" alt="logo" /></a></p>
+<p>Billminder, my first windows 8 app has <a href="http://apps.microsoft.com/webpdp/en-US/app/billminder/016419f6-fa32-463b-8265-a8d26f3bb0c0">finally hit the store</a>. This is how I describe it in my wanky store description:</p>
+<p>Billminder is a minimalist and elegant solution for controlling your expenses. With innovative infographic style display you can see at a glance how much you have to pay. Billminder features a live tile showing the next 30 days of bills so you will never miss a payment.</p>
+<h4>Features</h4>
+<ul>
+<li>Elegant minimalist interface</li>
+<li>Infographic overview of where your money goes</li>
+<li>Live tile that automatically updates with upcoming bills</li>
+<li>Add one off and re-occurring bills</li>
+<li>Keep organised with custom categories</li>
+</ul>
+<p><img src="http://wscont1.apps.microsoft.com/winstore/1x/6108fd88-128e-42bd-8654-8f9fc1f43438/Screenshot.43147.1000001.jpg" alt="Year View" /></p>
+<p><img src="http://wscont2.apps.microsoft.com/winstore/1x/6108fd88-128e-42bd-8654-8f9fc1f43438/Screenshot.43147.1000002.jpg" alt="Month View" /></p>
+<p>From a developers point of view Billminder is a html/js app. Coming from a mainly C# (but with plenty of web experience) background I actually javascript really refreshing. The time it takes to get something on the screen feels much reduced compared to the strict MVVM structure I have used in the past. I used a number of really great libraries including <a href="http://aaronpowell.github.com/db.js/">db.js</a> for data storage, <a href="http://d3js.org/">d3.js</a> for cool visualisations and <a href="http://momentjs.com/">moment.js</a> for working with dates. I should have some posts on specifics up in the nearish future so if you see something in the app you want and you want to know how it works let me know.</p>
+<p>If you like the app obviously you should buy it and rate it 5 stars but you could also <strong><a href="http://apptivate.ms/apps/1284/billminder">vote for it on apptivate.ms</a></strong> - an awesome competition for Windows 8 developers.</p>
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Http Web Services in Javascript Windows 8 Metro Apps</title>
+   <link href="http://lukencode.com/2012/07/09/http-web-services-in-javascript-windows-8-metro-apps/"/>
+   <updated>9/07/2012 12:00:00 AM</updated>
+   <id>http://lukencode.com</id>
+   <content type="html"><p>I have been doing some Windows 8 development recently and decided to work with html, css and javascript rather than c# and xaml. I am mainly a .net guy and was a little worried about how javascript would work for a few things including consuming rest web services. I've written a few posts on web services for <a href="http://lukencode.com/2010/04/14/google-weather-api-with-restsharp/">.net</a>, <a href="http://lukencode.com/2010/04/27/calling-web-services-in-android-using-httpclient/">android</a> and <a href="http://lukencode.com/2010/08/04/rest-web-services-in-windows-phone-7/">windows phone</a> and as it turns out Windows 8 javascript is easier than all of them.</p>
+<h3>A Basic Web Request</h3>
+<p>The best way to call your web services is using the <a href="http://msdn.microsoft.com/en-us/library/windows/apps/br229787.aspx">WinJS.xhr function</a>. This function is basically a wrapper for the lower level XMLHttpRequest object. The function takes an options object with a number of optional properties. A basic xhr get request looks like this:</p>
+<pre class="prettyprint">
+WinJS.xhr({
+           type: "get",
+           url: "www.example.com"
+        });
+</pre>
+<p>You can make a post request by changing the type to &quot;post&quot;.</p>
+<h3>Using Promises</h3>
+<p>WinJS.xhr wraps the request in something called a <a href="http://msdn.microsoft.com/en-us/library/windows/apps/br211867.aspx">promise</a>. Promises in WinJS is an abstraction to help out with asynchronous requests. In short a promise is like a schedule or work to be done on a value that has yet to be computed, in the case of web services we are waiting on the response from the server. Using promises you can chain calls to the then and done methods. These methods will fire after the promise has been completed. You can chain multiple then methods together or just use done to wait until the end. </p>
+<pre class="prettyprint">
+WinJS.xhr({
+            type: "post",
+            url: "www.example.com",
+        }).done(function (result) {
+            console.log(result.responseText)
+        });
+</pre>
+<p>In the previous example the done function has a parameter &quot;result&quot;. This is the data returned from the webservice, you can also access a number of other properties such as result.status. You can also provide an error function as the second parameter to the done and then functions.</p>
+<h3>Setting Request Parameters</h3>
+<p>Most web services will require you to provide paramters. These might be query string params for get requests, form values for post or setting specific headers. To set query string or form parameters you can set the data property on the xhr options objects. To get the parameters in the right format I use a little helper function called formatParams. This function takes a javascript object and converts each property into a key/value parameter.</p>
+<pre class="prettyprint">
+var p = {
+            key: &quot;1234&quot;
+        };
+
+//get request
+WinJS.xhr({
+            type: &quot;get&quot;,
+            url: &quot;www.example.com&quot;,
+            data: formatParams(p)
+        });
+            
+//post request
+WinJS.xhr({
+            type: &quot;post&quot;,
+            url: &quot;www.example.com&quot;,
+            data: formatParams(p),
+            headers: { &quot;Content-type&quot;: &quot;application/x-www-form-urlencoded&quot; }
+        });
+            
+function formatParams(p) {
+    var queryStr = &quot;&quot;;
+
+    for (var propertyName in p) {
+        var val = p[propertyName];
+        queryStr += propertyName + &quot;=&quot; + encodeURI(val) + &quot;&amp;&quot;;
+    }
+
+    return queryStr.slice(0, -1);
+}
+</pre>
+<p>For the post request I set the content type header to x-www-form-urlencoded. You can set any other headers you need using this same format.</p>
+<h3>Consuming JSON</h3>
+<p>Assuming your web service returns json the biggest advantage javascript has it it handles it natively. There is no need for building a matching class or messing about with dictionaries it just works. All you need to do is call JSON.parse on your response text.</p>
+<pre class="prettyprint">
+WinJS.xhr({
+            type: "post",
+            url: url,
+        }).done(function (result) {
+        	var json = JSON.parse(result.responseText);
+        });
+</pre></content>
+ </entry>
  
  <entry>
    <title>Fluent Email now supporting custom template renderers</title>
@@ -212,7 +307,8 @@ public string Process(string[] args)
    <link href="http://lukencode.com/2011/12/11/netbashan-alternative-to-endless-admin-pages-in-asp-net-web-applications/"/>
    <updated>11/12/2011 9:14:54 PM</updated>
    <id>http://lukencode.com</id>
-   <content type="html"><p>One thing that always annoys me when working on a web app is having to write those inevitable pages full of admin functions some of which are just a single button. When hacking up one such page I had a thought - a plug in library providing a command line for your web app might save me a lot of time. <a href="https://github.com/lukencode/NetBash" target="_blank">NetBash</a> is what I came up with.</p> <p><a href="http://lukencode.com/wp-content/uploads/2011/12/netbash.png"><img alt="netbash" src="http://lukencode.com/wp-content/uploads/2011/12/netbash_thumb.png" width="1028" height="561"></a></p> 
+   <content type="html"><p>One thing that always annoys me when working on a web app is having to write those inevitable pages full of admin functions some of which are just a single button. When hacking up one such page I had a thought - a plug in library providing a command line for your web app might save me a lot of time. <a href="https://github.com/lukencode/NetBash">NetBash</a> is what I came up with.</p> 
+<p><a href="http://lukencode.com/wp-content/uploads/2011/12/netbash.png"><img alt="netbash" src="http://lukencode.com/wp-content/uploads/2011/12/netbash_thumb.png" width="1028" height="561"></a></p> 
 <p>As you can see from the screenshot NetBash is basically a miniature command line complete with that sweet lime green on black theme that lives in your web app. It can be expanded, minimised and hidden with keyboard shortcuts (<a href="https://github.com/madrobby/keymaster" target="_blank">keymaster</a> ftw) and remembers recent command history using localStorage. NetBash works in a similar way to the <a href="http://code.google.com/p/mvc-mini-profiler/" target="_blank">MVC Mini Profiler</a> meaning that it can be installed with minimal effort on your part (just a NuGet package) and follows you around your site. This is the setup:</p>
 <pre class="prettyprint">protected void Application_Start()
 {
@@ -1472,7 +1568,8 @@ public static class EmailSender
    <updated>28/03/2010 12:00:00 AM</updated>
    <id>http://lukencode.com</id>
    <content type="html"><p>I often find myself wondering which version of a method would run more efficiently so for my own amusement I built this little class so I could easily test various method's performance. I understand this is no substitute for real profiling but it is handy to do some quick comparisons.</p>
-<pre class="prettyprint">public class PerformanceTester
+<pre class="prettyprint">
+public class PerformanceTester
 {
     public TimeSpan TotalTime { get; private set; }
     public TimeSpan AverageTime { get; private set; }
@@ -1544,12 +1641,15 @@ public static class EmailSender
         TotalTime = total;
         AverageTime = new TimeSpan(total.Ticks/iterations);
     }
-}</pre>
+}
+</pre>
 <p>Here is how you can use it.</p>
-<pre class="prettyprint">//usage
+<pre class="prettyprint">
+//usage
 var tester = new PerformanceTester(() =&gt; SomeMethod());
 tester.MeasureExecTimeWithMetrics(1000);
-Console.Writeline(string.Format("Executed in {0} milliseconds", tester.AverageTime.TotalMilliseconds));</pre></content>
+Console.Writeline(string.Format("Executed in {0} milliseconds", tester.AverageTime.TotalMilliseconds));
+</pre></content>
  </entry>
  
  <entry>
