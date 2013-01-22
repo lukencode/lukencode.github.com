@@ -52,7 +52,7 @@ tags:
 <li>Continued updating of the app’s functionality. Though Phonealytics hasn’t been a financial success I have really enjoyed making it. I am planning some cool features around the Mango update API – most significant being multiple live tiles with more information on them. </li> 
 
 </ul>  
-
+ 
 <h3>My Tips</h3>  
 
 <ul>   
