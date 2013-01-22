@@ -4,7 +4,7 @@
  <title>lukencode</title>
  <link href="http://lukencode.com/atom.xml" rel="self"/>
  <link href="http://lukencode.com/"/>
- <updated>25/11/2012 10:26:34 PM</updated>
+ <updated>22/01/2013 10:26:53 PM</updated>
  <id>http://lukencode.com/</id>
  <author>
    <name>Luke Lowrey</name>
@@ -1283,7 +1283,9 @@ try {
 
 String response = client.getResponse();</pre>
 <p>The class also exposes the Http response code and message which are important when using some Restful APIs. I know could definitely improve/extend on this code and would love to hear from those more experienced in Java and Android than myself.</p>
-</content>
+<div>
+<script src="http://pollfu.com/public/js/embed.v1.js" data-id="8"></script>
+</div></content>
  </entry>
  
  <entry>
