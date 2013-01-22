@@ -186,4 +186,4 @@ String response = client.getResponse();</pre>
 
 The class also exposes the Http response code and message which are important when using some Restful APIs. I know could definitely improve/extend on this code and would love to hear from those more experienced in Java and Android than myself.
 
-<script src="http://pollfu.com/public/js/embed.v1.js" data-id="8"> </script>
+{% literal %}<script src="http://pollfu.com/public/js/embed.v1.js" data-id="8"> </script>{% endliteral %}
