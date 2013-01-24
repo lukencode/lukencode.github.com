@@ -9,7 +9,7 @@ Recently I've been hacking together a little [online poll creator - pollfu](http
 
 This is the core of what I came up with:
 
-<pre class="pretty-print">
+<pre class="prettyprint">
 (function () {
 
     var scriptName = &quot;embed.js&quot;; //name of this script, used to get reference to own tag
