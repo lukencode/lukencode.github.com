@@ -163,7 +163,8 @@ public class RestClient {
         }
         return sb.toString();
     }
-}</pre>
+}
+</pre>
 
 Here is an example of how I use the class to call the Google Analytics API. I use the AddParam methods to add query string / post values and the AddHeader method to add headers to the request. RequestMethod is a simple enum with GET and POST values.
 
@@ -181,10 +182,11 @@ try {
     e.printStackTrace();
 }
 
-String response = client.getResponse();</pre>
+String response = client.getResponse();
+</pre>
 
 The class also exposes the Http response code and message which are important when using some Restful APIs. I know could definitely improve/extend on this code and would love to hear from those more experienced in Java and Android than myself.
 
 <div>
-<script src="http://pollfu.com/public/js/embed.v1.js" data-id="8"> </script>
+	<script src="http://pollfu.com/public/js/embed.v1.js" data-id="8"> </script>
 </div>

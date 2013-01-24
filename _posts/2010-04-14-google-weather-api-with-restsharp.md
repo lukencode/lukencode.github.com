@@ -1,4 +1,4 @@
----
+﻿---
 title: Google Weather API with RestSharp
 date: 2010-04-14
 layout: post
@@ -11,15 +11,14 @@ tags:
 
 Guest post by <a href="http://github.com/dkarzon">DK</a>!
 
-The <a href="http://www.googleapihelp.com/2009/08/google-weather-api.html">Google Weather API</a> is a grand service for developers to get weather data for any location with ease.
-
-<a href="http://restsharp.org/">RestSharp</a> is a open source .NET REST Client…
+The <a href="http://www.googleapihelp.com/2009/08/google-weather-api.html">Google Weather API</a> is a grand service for developers to get weather data for any location with ease. <a href="http://restsharp.org/">RestSharp</a> is a open source .NET REST Client…
 
 Been doing some work getting weather information from Google Weather and I thought I might take the time to explain how I used Restsharp with this API. I started with the xml from the API itself.
 
 <a title="http://www.google.com/ig/api?weather=Brisbane+au" href="http://www.google.com/ig/api?weather=Brisbane+au">http://www.google.com/ig/api?weather=Brisbane+au</a>
 <blockquote>
-<pre class="prettyprint">&lt;xml_api_reply version="1"&gt;
+<pre class="prettyprint">
+&lt;xml_api_reply version="1"&gt;
     &lt;weather&gt;
         &lt;forecast_information&gt;
             &lt;city data="Brisbane, QLD"/&gt;
@@ -47,10 +46,12 @@ Been doing some work getting weather information from Google Weather and I thoug
         &lt;/forecast_conditions&gt;
 	  ...
     &lt;/weather&gt;
-&lt;/xml_api_reply&gt;</pre>
+&lt;/xml_api_reply&gt;
+</pre>
 </blockquote>
 Notice the weather element contains multiple forecast_conditions elements without a single container element as well as the other forecast_information and current_conditions elements. At first this was a problem, I spoke to John Sheehan (the creator of RestSharp) about this and he told me it was currently unsupported with RestSharp. So I took a dive into the RestSharp source (mainly the XmlDeserialiser) to try and find a solution to this problem and I came across the support for Derived Lists, therein lies a solution…
-<pre class="prettyprint">public class xml_api_reply
+<pre class="prettyprint">
+public class xml_api_reply
 {
     public string version { get; set; }
     public Weather weather { get; set; }
@@ -86,10 +87,12 @@ public class Forecast_Conditions
     public DataElement Low { get; set; }
     public DataElement High { get; set; }
     public DataElement Icon { get; set; }
-}</pre>
+}
+</pre>
 These classes are then used by RestSharp to Deserialise the response. xml_api_reply is the root element and under it is weather. The weather class inherits from a List&lt;forecast_conditions&gt; because it can contain multiple elements as well as other properties. The DataElement class was created because of the way the xml has its data ie. &lt;city data="Brisbane, QLD"/&gt;  instead of &lt;city&gt;Brisbane, QLD&lt;/city&gt;.
 
 Now that we have setup the Response classes we can use get to the real code…
+
 <pre class="prettyprint">
 var client = new RestClient(&quot;http://www.google.com/ig/api&quot;);
 var request = new RestRequest(Method.GET);
@@ -97,6 +100,7 @@ request.AddParameter(&quot;weather&quot;, &quot;Brisbane&quot;);
 
 var response = client.Execute&lt;Models.xml_api_reply&gt;(request);
 </pre>
+
 Pretty easy, and the response is a RestResponse&lt;T&gt; where T is my xml_api_reply class, this object then gives us access to anything we could need from the response including the content itself (response.Content) and the deserialised class (response.Data).
 
 And to find the current temperature:

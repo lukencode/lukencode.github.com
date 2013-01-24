@@ -1,4 +1,4 @@
----
+﻿---
 title: User Control Email Templates in asp.net
 date: 2010-03-23
 layout: post
@@ -61,8 +61,11 @@ Below is a simple example from the project I am working on it is used for sendin
 &lt;p&gt;
     &lt;strong&gt;Message: &lt;/strong&gt; &lt;br /&gt;
      &lt;%= GetTagValue("message").Replace(Environment.NewLine, "&lt;br /&gt;")%&gt;
-&lt;/p&gt;</pre>
+&lt;/p&gt;
+</pre>
+
 I created a class to easily load and use the email templates within my code by passing the location of the template on the server.
+
 <pre class="prettyprint">
 
 public class EmailTemplate
@@ -86,6 +89,7 @@ public class EmailTemplate
         return _template.RenderTemplate();
     }
 }
+
 </pre>
 
 Below is how I use the templates in my code, sending using a basic <a title="c# email sender" href="http://lukencode.com/2010/04/08/synchronous-asynchronous-email-sender/">email sender</a> class I have (or better still <a title=".net fluent emal" href="http://lukencode.com/2010/04/11/fluent-email-in-net/">fluent email</a>).
@@ -99,6 +103,7 @@ template.Tags.Add("message", message);
 
 string body = template.Render();
 
-EmailSender.Send(from, fromName, to, toName, subject, body);</pre>
+EmailSender.Send(from, fromName, to, toName, subject, body);
+</pre>
 
 I could probably try encapsulate a bit more of the email sending inside my template (toName, toAddress etc) to clean this up a bit so feel free to tell me how come I suck.
