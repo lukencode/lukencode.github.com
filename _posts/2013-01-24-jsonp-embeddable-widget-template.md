@@ -70,22 +70,22 @@ This is the core of what I came up with:
 
     /******** starting point for your widget ********/
     function main() {
-    //your widget code goes here
+    	//your widget code goes here
 	
         jQuery(document).ready(function ($) {
-        //or you could wait until the page is ready
-        
-        //example jsonp call
-        //var jsonp_url = &quot;www.example.com/jsonpscript.js?callback=?&quot;;
-        //jQuery.getJSON(jsonp_url, function(result) {
-        //	alert(&quot;win&quot;);
-        //});
-        
-        //example load css
-        //loadCss(&quot;http://example.com/widget.css&quot;);
-        
-        //example script load
-        //loadScript(&quot;http://example.com/anotherscript.js&quot;, function() { /* loaded */ });
+          //or you could wait until the page is ready
+          
+          //example jsonp call
+          //var jsonp_url = &quot;www.example.com/jsonpscript.js?callback=?&quot;;
+          //jQuery.getJSON(jsonp_url, function(result) {
+          //	alert(&quot;win&quot;);
+          //});
+          
+          //example load css
+          //loadCss(&quot;http://example.com/widget.css&quot;);
+          
+          //example script load
+          //loadScript(&quot;http://example.com/anotherscript.js&quot;, function() { /* loaded */ });
         });
 		
     }
