@@ -3,10 +3,9 @@ title: Calling Web Services in Android using HttpClient
 date: 2010-04-27T21:02:21.0000000+10:00
 layout: post
 categories:
-- &o0 Mobile
+- Mobile
 tags:
 - java
-- *o0
 - web services
 ---
 
@@ -186,4 +185,6 @@ String response = client.getResponse();</pre>
 
 The class also exposes the Http response code and message which are important when using some Restful APIs. I know could definitely improve/extend on this code and would love to hear from those more experienced in Java and Android than myself.
 
-{% literal %}<script src="http://pollfu.com/public/js/embed.v1.js" data-id="8"> </script>{% endliteral %}
+<div>
+<script src="http://pollfu.com/public/js/embed.v1.js" data-id="8"> </script>
+</div>
