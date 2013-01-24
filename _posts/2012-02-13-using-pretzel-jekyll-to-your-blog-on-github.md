@@ -14,7 +14,7 @@ This scary red screen (well a similar one) along with some performance issues an
 
 This is what liquid templating looks like:
 
-{% literal %}
+<pre>
 
     ---
     layout : layout
@@ -22,15 +22,15 @@ This is what liquid templating looks like:
     ---
     
     <ul id="archive">
-        {% for post in site.posts %}
+		{{ "{% for post in site.posts " }}%}
     		<li>
-    			<a href="{{ post.url }}">{{ post.title }}</a>
-    			<span class="date">{{ post.date | date: "%d %B, %Y" }}</span>
+    			<a href="{{ "{{ post.url " }}}}">{{ "{{ post.title " }}}}</a>
+    			<span class="date">{{ "{{ post.date | date: '%d %B, %Y' " }}}}</span>
     		</li>
-        {% endfor %}
+		{{ "{% endfor " }}%}
     </ul>
     
-{% endliteral %}
+</pre>
 
 The text inbetween the --- up the top is a [YAML](http://www.yaml.org/) header - any files with a yaml header will be processed as special files. The variables being set are for things like the layout to be used, permalink or page title.
 
