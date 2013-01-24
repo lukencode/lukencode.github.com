@@ -9,7 +9,9 @@ Recently I've been hacking together a little [online poll creator - pollfu](http
 
 This is the core of what I came up with:
 
-<script src="https://gist.github.com/4629345.js"></script>
+<div>
+<script src="https://gist.github.com/4629345.js"> </script>
+</div>
 
 This is what it can do:
  
