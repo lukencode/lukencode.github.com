@@ -1,6 +1,6 @@
 ---
 title: "An embeddable JSONP javascript widget template"
-date: 2012-02-13
+date: 2013-01-24
 layout: post
 published: true
 ---
