@@ -1,4 +1,4 @@
-﻿---
+---
 title: Calling Web Services in Android using HttpClient
 date: 2010-04-27T21:02:21.0000000+10:00
 layout: post

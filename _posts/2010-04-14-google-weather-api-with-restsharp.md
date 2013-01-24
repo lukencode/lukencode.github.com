@@ -1,4 +1,4 @@
-﻿---
+---
 title: Google Weather API with RestSharp
 date: 2010-04-14
 layout: post

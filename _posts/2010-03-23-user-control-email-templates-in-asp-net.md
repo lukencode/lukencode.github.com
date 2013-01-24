@@ -1,4 +1,4 @@
-﻿---
+---
 title: User Control Email Templates in asp.net
 date: 2010-03-23
 layout: post
