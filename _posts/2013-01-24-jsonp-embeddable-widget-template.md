@@ -31,5 +31,5 @@ Another cool thing to try is setting widget variables on the script tag using da
 This is an example of the end result embedded poll for pollfu:
 
 <div>
-<script src="http://pollfu.com/public/js/embed.v1.js" data-id="9"> </script>
+<script src="http://pollfu.com/public/js/embed.v1.js" data-id="9">;</script>
 </div>
