@@ -8,7 +8,7 @@ It has been a couple of years (kids will do that) in the wilderness but I am bac
 
  **[Austechjobs](https://austechjobs.com.au)** is a job board focusing on technology jobs in Australia. This includes developers, designers, support, sys admin and management.
 
-[![Austechjobs - home](/img/austechjobs - home.png "Austechjobs - home")](https://austechjobs.com.au) 
+[![Austechjobs - home](/img/austechjobs-home.png "Austechjobs - home")](https://austechjobs.com.au) 
 
 In my role as Development Manager at QIMR Berghofer I am often involved in recruiting developers for my team. I have always been disappointed with the recruiter spam and mountains of unqualified applications that posting to the big job sites brings. My hope is Austechjobs will be a place to find the best IT jobs at the best companies in Australia and in turn for employers to reach the best IT professionals in Australia.
 
