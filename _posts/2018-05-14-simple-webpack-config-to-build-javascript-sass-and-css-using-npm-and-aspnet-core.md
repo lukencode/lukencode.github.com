@@ -1,5 +1,5 @@
 ---
-title: Simple webpack config to build javascript, sass and css using NPM and ASP.NET Cored
+title: Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
 date: 2018-04-14
 layout: post
 ---
