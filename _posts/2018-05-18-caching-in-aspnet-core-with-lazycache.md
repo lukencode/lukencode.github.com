@@ -23,7 +23,6 @@ Here is a simplified example of using LazyCache from the homepage my [Australian
 <script src="https://gist.github.com/lukencode/f974c562b2e48c9cbad63aa768ddb4a7.js"></script>
 <noscript>
     <pre>
-        <code>
 public class HomePageService
 {
     public static string HomeModelCacheKey = "HomeModel";
@@ -57,7 +56,6 @@ public class HomePageService
 
     public void ClearHomePageCache() => cache.Remove(HomeModelCacheKey);
 }
-        </code>
     </pre>
 </noscript>
 
