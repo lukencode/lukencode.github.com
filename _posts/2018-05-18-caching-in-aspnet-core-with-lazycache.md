@@ -15,13 +15,15 @@ The ASP.NET Core version is currently in beta (though seems to be pretty solid) 
 Once installed it can be easily made available when configuring services in startup:
     
     services.AddLazyCache();
-    
+
 This will inject IAppCache throughout your application.
             
 Here is a simplified example of using LazyCache from the homepage my [Australian tech job board - Austechjobs](https://austechjobs.com.au):
 
 <script src="https://gist.github.com/lukencode/f974c562b2e48c9cbad63aa768ddb4a7.js"></script>
-<noscript><pre><code>
+<noscript>
+    <pre>
+        <code>
 public class HomePageService
 {
     public static string HomeModelCacheKey = "HomeModel";
@@ -55,7 +57,9 @@ public class HomePageService
 
     public void ClearHomePageCache() => cache.Remove(HomeModelCacheKey);
 }
-</code></pre></noscript>
+        </code>
+    </pre>
+</noscript>
 
 IAppCache is the Lazy Cache service being injected into my class. It provides a *GetOrAddAsync* method that accepts:
  - A cache key which in my example is the string "HomeModel".
