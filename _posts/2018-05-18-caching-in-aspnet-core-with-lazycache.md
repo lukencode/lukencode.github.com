@@ -21,46 +21,6 @@ This will inject IAppCache throughout your application.
 Here is a simplified example of using LazyCache from the homepage my [Australian tech job board - Austechjobs](https://austechjobs.com.au):
 
 <script src="https://gist.github.com/lukencode/f974c562b2e48c9cbad63aa768ddb4a7.js"></script>
-<noscript>
-
-    <pre>
-public class HomePageService
-{
-    public static string HomeModelCacheKey = "HomeModel";
-    private static TimeSpan cacheExpiry = new TimeSpan(12, 0, 0); //12 hours
-
-    private readonly PositionsGroupedByTagQuery positionsGroupedByTagQuery;
-    private readonly IAppCache cache;
-
-    private SiteSettings SiteSettings => siteSettingsOptions.Value;
-
-    public HomePageService(PositionsGroupedByTagQuery positionsGroupedByTagQuery, IAppCache cache)
-    {
-        this.positionsGroupedByTagQuery = positionsGroupedByTagQuery;
-        this.cache = cache;
-    }
-
-    public async Task<HomeModel> GetHomeModel(string tag, bool bustCache = false)
-    {
-        if (bustCache) ClearHomePageCache();
-
-        var model = await cache.GetOrAddAsync(HomeModelCacheKey, async () =>
-        {
-            return new HomeModel()
-            {
-                GroupedLatestListings = await positionsGroupedByTagQuery.Execute(tag)
-            };
-        }, cacheExpiry);             
-        
-        return model;
-    }
-
-    public void ClearHomePageCache() => cache.Remove(HomeModelCacheKey);
-}
-
-    </pre>
-    
-</noscript>
 
 IAppCache is the Lazy Cache service being injected into my class. It provides a *GetOrAddAsync* method that accepts:
  - A cache key which in my example is the string "HomeModel".
