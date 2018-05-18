@@ -22,6 +22,7 @@ Here is a simplified example of using LazyCache from the homepage my [Australian
 
 <script src="https://gist.github.com/lukencode/f974c562b2e48c9cbad63aa768ddb4a7.js"></script>
 <noscript>
+
     <pre>
 public class HomePageService
 {
@@ -56,7 +57,9 @@ public class HomePageService
 
     public void ClearHomePageCache() => cache.Remove(HomeModelCacheKey);
 }
+
     </pre>
+    
 </noscript>
 
 IAppCache is the Lazy Cache service being injected into my class. It provides a *GetOrAddAsync* method that accepts:
