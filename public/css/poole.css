@@ -272,7 +272,7 @@ tbody tr:nth-child(odd) th {
  */
 
 .message {
-  margin-bottom: 1rem;
+  margin-bottom: 2.5rem;
   padding: 1rem;
   color: #717171;
   background-color: #f9f9f9;
@@ -330,7 +330,7 @@ tbody tr:nth-child(odd) th {
 
 .page,
 .post {
-  margin-bottom: 4em;
+  margin-bottom: 2.5em;
 }
 
 /* Blog post or page title */
