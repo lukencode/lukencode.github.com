@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      NetBash – An Alternative to Endless Admin Pages in Asp.Net Web Applications &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">NetBash – An Alternative to Endless Admin Pages in Asp.Net Web Applications</h1>
+  <span class="post-date">11 Dec 2011</span>
+  <p>One thing that always annoys me when working on a web app is having to write those inevitable pages full of admin functions some of which are just a single button. When hacking up one such page I had a thought - a plug in library providing a command line for your web app might save me a lot of time. <a href="https://github.com/lukencode/NetBash">NetBash</a> is what I came up with.</p>
+<p><a href="http://lukencode.com/wp-content/uploads/2011/12/netbash.png"><img alt="netbash" src="http://lukencode.com/wp-content/uploads/2011/12/netbash_thumb.png" width="1028" height="561" /></a></p>
+<p>As you can see from the screenshot NetBash is basically a miniature command line complete with that sweet lime green on black theme that lives in your web app. It can be expanded, minimised and hidden with keyboard shortcuts (<a href="https://github.com/madrobby/keymaster" target="_blank">keymaster</a> ftw) and remembers recent command history using localStorage. NetBash works in a similar way to the <a href="http://code.google.com/p/mvc-mini-profiler/" target="_blank">MVC Mini Profiler</a> meaning that it can be installed with minimal effort on your part (just a NuGet package) and follows you around your site. This is the setup:</p>
+
+<pre class="prettyprint">protected void Application_Start()
+{
+    AreaRegistration.RegisterAllAreas();
+
+    RegisterGlobalFilters(GlobalFilters.Filters);
+    RegisterRoutes(RouteTable.Routes);
+
+    NetBash.Init();
+
+    //this is optional, allows you to decide who sees netbash
+    NetBash.Settings.Authorize = (request) =&gt;
+        {
+            return request.IsLocal;
+        };
+}
+</pre>
+
+<p>The call to Init inserts a couple of routes for the handler, css and js files. You also need to somewhere in your _Layout.cshtml / MasterPage add the RenderIncludes function to write the css and script tags to the page.</p>
+<pre class="prettyprint">NetBash.RenderIncludes()</pre>
+<p>The way it works is by searching your application using reflection for classes implementing IWebCommand with a WebCommand attribute. The WebCommand attribute defines a name for the command which is used to invoke it as well as a description displayed on help. The IWebCommand interface has a method called Process which passes in a string array of arguments in the same manor that a .NET console application’s main method would. When a command is entered on the front end an ajax request is made to the NetBash handler. The handler grabs the first word of the request text and matches it to a WebCommand with the same name then invokes Process and returns the result. Here is a very simple example command that returns the length of the arguments passed in:</p>
+
+<pre class="prettyprint">
+[WebCommand(&quot;length&quot;, &quot;Returns number of characters in given arguments&quot;)]
+public class LengthCommand : IWebCommand
+{
+    public bool ReturnHtml
+    {
+        get { return false; }
+    }
+
+    public string Process(string[] args)
+    {
+        return string.Join(&quot; &quot;, args).Length.ToString();
+    }
+}
+</pre>
+
+<p>Hopefully defining commands this way makes it both dead easy to implement while allowing flexibility to do something more complex (perhaps parsing the arguments with <a href="http://www.ndesk.org/Options" target="_blank">nDesk.Options</a>).</p>
+<p>It is pretty early days for the code so I probably wouldn’t recommend using it in a production situation at the moment. NetBash is available as a <a href="http://nuget.org/packages/NetBash" target="_blank">NuGet package</a> and the source on GitHub at <a href="https://github.com/lukencode/NetBash" target="_blank">lukencode/netbash</a>. I’d love to hear people opinions on the api (nothing is set in stone) as well as the UI which could use some work. I have some ideas for some useful commands (some mad stats with a .net version of <a href="https://github.com/holman/spark" target="_blank">spark</a>) also <a href="http://benjii.me/" target="_blank">Ben Cull</a> promises me he will write an asp.net membership command pack.</p>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2011/12/11/netbashan-alternative-to-endless-admin-pages-in-asp-net-web-applications/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2011/12/11/netbashan-alternative-to-endless-admin-pages-in-asp-net-web-applications'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

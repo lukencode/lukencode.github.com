@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      IP to Geo Location in Asp.Net MVC &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">IP to Geo Location in Asp.Net MVC</h1>
+  <span class="post-date">19 May 2010</span>
+  <p>I have been working on a couple of projects recently (like the new and improved version of <a href="http://gigpig.fm" target="_blank">Gigpig</a> which is coming soon!) which could really benefit from some automagic geolocation lookups for visitors. In the case of Gigpig I wanted to filter what gigs users could see based on where they were in the world.</p>
+
+<p>The database I am using is the binary version of the <a href="http://www.maxmind.com/app/geolitecity" target="_blank">Max Mind GeoLite City</a> free location database. The database essentially maps IP address ranges to cities and countries.  The binary format, I am informed is the fastest version however there is a csv file you can download and import into your database of choice.</p>
+
+<p>Max Mind provide some C# code for querying the binary database but it takes a little work to set up where as I never like doing work someone else has done for me. The library I use is the <a href="http://en.googlemaps.subgurim.net/" target="_blank">GoogleMaps.Subgurim.NET</a> which as well as from google map functions provides code to access the GeoLite City database.</p>
+
+<p>The code to call the Subgurim methods is super simple. Here I am returning the location class which is also included in the library – it has properties for longitude, latitude, country, city and a few other things. All that needs to be passed to it is the location of your database and the ip address you want to look up.</p>
+
+<pre class="prettyprint">
+public static Location GetLocationFromIP(string ipAddress)
+{
+    string databasePath = HttpContext.Current.Server.MapPath(&quot;~/app_data/geocitylite.dat&quot;);
+    LookupService service = new LookupService(databasePath);
+    Location loc = service.getLocation(ipAddress);
+
+    return loc;
+}</pre>
+
+<p>One way I like to use this code in Asp.Net MVC is including some properties in a base controller class that my controllers all inherit so I can access the current location on any controller. One thing to be aware of is the lookup will return null for the ip address 127.0.0.1 so you might want to hard code it for testing.</p>
+
+<pre class="prettyprint">public class ControllerBase : Controller
+{
+    public string CurrentUserIPAddress
+    {
+        get
+        {
+            return HttpContext.Request.UserHostAddress;
+        }
+    }
+
+    public Location CurrentLocation
+    {
+        get
+        {
+            if (Request.Cookies[&quot;pref&quot;] == null)
+            {
+                var loc = LocationHelper.GetLocationFromIP(CurrentUserIPAddress);
+
+                if (loc != null)
+                {
+                    Response.Cookies[&quot;pref&quot;][&quot;city&quot;] = loc.city;
+                    Response.Cookies[&quot;pref&quot;][&quot;country&quot;] = loc.countryCode;
+                    Response.Cookies[&quot;pref&quot;][&quot;lat&quot;] = loc.latitude.ToString();
+                    Response.Cookies[&quot;pref&quot;][&quot;lng&quot;] = loc.longitude.ToString();
+                    Response.Cookies[&quot;pref&quot;].Expires = DateTime.Now.AddDays(1);
+                }
+
+                return loc;
+            }
+            else
+            {
+                var loc = new Location
+                {
+                    city = Request.Cookies[&quot;pref&quot;][&quot;city&quot;],
+                    countryCode = Request.Cookies[&quot;pref&quot;][&quot;country&quot;],
+                    latitude = Convert.ToDouble(Request.Cookies[&quot;pref&quot;][&quot;lat&quot;]),
+                    longitude = Convert.ToDouble(Request.Cookies[&quot;pref&quot;][&quot;lng&quot;]),
+                };
+
+                return loc;
+            }
+        }
+    }
+}</pre>
+
+<p>I also cache the user’s location in a cookie so I can avoid doing a database query for every request. There are a couple of ways you could implement IP address to geo location including some variations of this code – but if you just want something quick and easy this is a good starting point.</p>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2010/05/19/ip-to-geo-location-in-asp-net-mvc/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2010/05/19/ip-to-geo-location-in-asp-net-mvc'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

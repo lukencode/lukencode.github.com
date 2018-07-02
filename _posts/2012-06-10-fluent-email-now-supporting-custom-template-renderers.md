@@ -4,6 +4,10 @@ date: 2012-06-10
 layout: post
 ---
 
+<div class="message">
+See an updated (2018) example of <a href='/2018/07/01/send-email-in-dotnet-core-with-fluent-email'>sending in .NET core email using FluentEmail</a>.
+</div>
+
 Fluent Email is a simple wrapper for System.Net.Mail that provides a fluent interface for constructing and sending emails in .Net. It also provides a Razor based template rendering engine. After getting a couple of requests for different renderers I decided to provide an interface in Fluent Email for templating that anyone can implement.
 
 The updated version of fluent email is available as always on [nuget](http://nuget.org/packages/fluent-email) and you can find the source on [github](https://github.com/lukencode).

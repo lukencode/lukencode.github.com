@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Windows Phone 7 Google Reader App (GREAD) Work In Progress &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Windows Phone 7 Google Reader App (GREAD) Work In Progress</h1>
+  <span class="post-date">29 Jul 2010</span>
+  <p>I’ve spent the last couple of days playing around with some Windows Phone 7 development. I decided to create a simple Google reader client as a practice app that later on down the track might at least be useful to me. Considering I have no background in Silverlight (mainly just web applications) I think I’ve managed to come quite a long way in a short amount of time. </p>
+
+<div style="padding-bottom: 0px; margin: 0px auto; padding-left: 0px; width: 637px; padding-right: 0px; display: block; float: none; padding-top: 0px" id="scid:66721397-FF69-4ca6-AEC4-17E6B3208830:8f284cef-2448-4db0-8757-dcac1fb8328a" class="wlWriterEditableSmartContent">
+<a style="border:0px" href="http://cid-f01a240b2645ac50.skydrive.live.com/redir.aspx?page=browse&amp;resid=F01A240B2645AC50!106&amp;type=5"><img style="border:0px" alt="View GREAD" src="http://lukencode.com/wp-content/uploads/2010/07/InlineRepresentationd420332b7adc45dda78014e8c8d29201.jpg" /></a>
+<div style="width:637px;text-align:right;"><a href="http://cid-f01a240b2645ac50.skydrive.live.com/redir.aspx?page=browse&amp;resid=F01A240B2645AC50!106&amp;type=5">View Full Album</a></div></div>
+<p>&nbsp;</p>
+<p>The app current pulls in the given users unread counts and labels on the home screen with the labels located a swoosh to the right. From there you can jump straight to view a story or drill down into one of your labels.</p>
+<p>Before I go too much further I would like to try get some feedback/ideas on what people want from a Google reader client (if anything). </p>
+<p>The design is obviously a little dodgy at the moment my main plan here is to try utilized the wp7 concept of horizontal space. I am waiting for the official panorama/pivot controls and will look to implement those. </p>
+<p>Features wise at the moment all the client does is query the Google reader api for feeds an stories. I am going to implement the core reader functionality – read and unread, starring and notes as well as some type of social sharing.&#160; I’d like to know how important offline reading / caching is to people so I can decide how much effort I need to put into that side of the application.</p>
+<p>If you have any ideas let me know in the comments or on twitter - <a href="http://twitter.com/lukencode" target="_blank">@lukencode</a>.</p>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2010/07/29/windows-phone-7-google-reader-app-gread-work-in-progress/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2010/07/29/windows-phone-7-google-reader-app-gread-work-in-progress'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

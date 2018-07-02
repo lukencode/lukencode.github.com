@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core</h1>
+  <span class="post-date">14 Apr 2018</span>
+  <p>I have been working on a ASP.NET Core project that requires me to build and publish sass stylesheets, css and javascript. I wanted to streamline the process so I put together this simple <a href="https://webpack.js.org/">webpack</a> setup to automate what had been a couple of manual steps.</p>
+
+<p>Webpack and its various plugins require Node.js to run and NPM to install. The package.json file tracks the node dependencies for the project. The packages I am using for Webpack are installed as devDependencies and can be added using the npm install command with the -D flag eg:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm install webpack -D
+</code></pre></div></div>
+
+<p>This is my package.json file:</p>
+
+<script src="https://gist.github.com/lukencode/017c8d2105498c32c1bfe9bc87711ad7.js"></script>
+
+<p>I will explain a couple of the packages I am including here when we look at my actual webpack config. You can install all packages using “npm install” in the directory of package.json. I am also using npm to run the webpack scripts. I found this a much simpler option than including extra grunt/gulp scripts. The scripts are pretty straight forward build and build:dev run webpack with flags to tell it the environment and whether it should minimize the output. Th watch script is useful during development as it will automatically rebuild assets when it detects a file has changed.</p>
+
+<script src="https://gist.github.com/lukencode/a48ca54cedc442f6dd36fd72460f3a10.js"></script>
+
+<p>This is the webpack config script that is being run by npm. It reads a single “entry” javascript file and builds any javascript, css or sass included to the specified output path.</p>
+
+<p>The work is done by the loaders configured in the modules section. <a href="https://babeljs.io/">Babel</a> is a popular javascript compiler which allows you to use ES2015 and other things easily on the web.</p>
+
+<p>The css and sass rules are using the ‘extract-text-webpack-plugin’ to pull out the resulting css into a separate file (‘site.css’). Webpack allows for some pretty fancy setups where css is rendered inline or bundled with javascript components like react and vuejs but for my purposes I am going with a single seperate css file.</p>
+
+<p>The entry file will include javascript import or require statements for dependencies in addition to any javascript for the application. This includes the sass or css dependencies although this webpack script is configured to export those to a separate file. Example import statements in app.js:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import '../css/theme.scss'
+import '../vendor/tagsinput'
+</code></pre></div></div>
+
+<p>The scripts so far are completely independent to the ASP.NET Core application and work well being run as npm scripts from the console:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run build
+npm run watch
+</code></pre></div></div>
+
+<p>We can integrate the into the .net build and publish workflow by adding some steps the the build process in the projects .csproj file. These scripts come from good post on <a href="https://codeburst.io/how-to-use-webpack-in-asp-net-core-projects-a-basic-react-template-sample-25a3681a5fc2">codeburst.io on webpack</a>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  &lt;Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') "&gt;
+    &lt;!-- Ensure Node.js is installed --&gt;
+    &lt;Exec Command="node --version" ContinueOnError="true"&gt;
+      &lt;Output TaskParameter="ExitCode" PropertyName="ErrorCode" /&gt;
+    &lt;/Exec&gt;
+    &lt;Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." /&gt;
+    &lt;!-- In development, the dist files won't exist on the first run or when cloning to a different machine, so rebuild them if not already present. --&gt;
+    &lt;Message Importance="high" Text="Performing first-run Webpack build..." /&gt;
+    &lt;Exec Command="npm run build:dev" /&gt;
+  &lt;/Target&gt;
+  
+  &lt;Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish"&gt;
+    &lt;Exec Command="npm install" /&gt;
+    &lt;Exec Command="npm run build" /&gt;    
+    &lt;ItemGroup&gt;
+      &lt;DistFiles Include="wwwroot\dist\**" /&gt;
+      &lt;ResolvedFileToPublish Include="@(DistFiles-&gt;'%(FullPath)')" Exclude="@(ResolvedFileToPublish)"&gt;
+        &lt;RelativePath&gt;%(DistFiles.Identity)&lt;/RelativePath&gt;
+        &lt;CopyToPublishDirectory&gt;PreserveNewest&lt;/CopyToPublishDirectory&gt;
+      &lt;/ResolvedFileToPublish&gt;
+    &lt;/ItemGroup&gt;
+  &lt;/Target&gt;
+</code></pre></div></div>
+
+<p>The “DebugRunWebpack” target will build the assets in dev mode if they dont already exist. “PublishRunWebpack” will build and include the files when running dotnet publish. This is useful for automated build pipelines such as visual studio online.</p>
+
+<p>The setup here is very basic and a good starting point - especially if you are not using a framework such as react. Functionality that could be added depending on the project is separating the vendor assets into a different file/process as well as adding linting, source maps and more to the webpack config.</p>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2013/01/24/jsonp-embeddable-widget-template/">
+          An embeddable JSONP javascript widget template
+          <small>24 Jan 2013</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

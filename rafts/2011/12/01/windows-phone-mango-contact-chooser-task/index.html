@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Windows Phone (Mango) Contact Chooser Task &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Windows Phone (Mango) Contact Chooser Task</h1>
+  <span class="post-date">01 Dec 2011</span>
+  <p>When creating the amazing, incredible and life changing app for managing money you borrow and lend <a href="http://www.windowsphone.com/en-US/apps/7745a9a4-6926-4767-9e61-837fdd1faba5" target="_blank">Metrowe</a> I was pretty annoyed to discover that in the Mango SDK there are choosers for selecting emails: <em>EmailAddressChooserTask</em><strong> </strong>and phone numbers: <em>PhoneNumberChooserTask </em>but not just plain selecting a contact. The problem with the other choosers is the email address will exclude contacts without an email and similarly the phone number chooser and phone numbers. After much complaining decided to develop my own contact chooser (quite closely based off <a href="http://blog.naviso.fr/wordpress/?p=851" target="_blank">this french one</a>) matching the OS version as closely as possible. This is what it ended up looking like:</p>
+<p><a href="http://lukencode.com/wp-content/uploads/2011/12/contact-chooser.png"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="contact-chooser" border="0" alt="contact-chooser" src="http://lukencode.com/wp-content/uploads/2011/12/contact-chooser_thumb.png" width="333" height="553" /></a></p>
+<p>Seamless huh? I’ve managed to get the calling code for this down to something nice a simple which pretty much matches the built in choosers:</p>
+
+<pre class="prettyprint">
+private void button1_Click(object sender, RoutedEventArgs e)
+{
+    var contactChooser = new ContactChooserTask();
+    contactChooser.OnSelected += new EventHandler&lt;ContactChooserEventArgs&gt;(contactChooser_OnSelected);
+    contactChooser.Show();
+}
+
+void contactChooser_OnSelected(object sender, ContactChooserEventArgs e)
+{
+    MessageBox.Show(e.Contact.DisplayName);
+}
+</pre>
+<p>Under the covers it is a bit of a different story. The display relies on the <a href="http://silverlight.codeplex.com/" target="_blank">Silverlight Toolkit’s</a> LongListSelector (which is awesome) and uses code pretty similar to that described by my good friend Benjii in his post: <a href="http://benjii.me/2011/10/how-to-use-the-long-list-selector-for-windows-phone-mango/" target="_blank">How to Use the Long List Selector for Windows Phone Mango</a>. The code to encapsulate the page is kind of a mish mash of code adapted(/stolen) from the source of the <a href="http://coding4fun.codeplex.com/" target="_blank">Coding4Fun</a> toolkit (also awesome). That said it seems to work well in my app and in my very limited testing.</p>
+<p>The code for the library lives on github at <a href="https://github.com/lukencode/ContactChooser" target="_blank"><strong>lukencode/ContactChooser</strong></a> and is free and open source fork it, try it out, tell me how I suck then submit a pull request fixing the aforementioned suck! A couple of things that would be cool to see added would be some nice transition animations in and out and some more control over how the chooser looks.</p>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2011/12/01/windows-phone-mango-contact-chooser-task/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2011/12/01/windows-phone-mango-contact-chooser-task'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

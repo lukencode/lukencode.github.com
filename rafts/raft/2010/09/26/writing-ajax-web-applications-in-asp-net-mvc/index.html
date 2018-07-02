@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Writing AJAX web applications in Asp.Net MVC &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Writing AJAX web applications in Asp.Net MVC</h1>
+  <span class="post-date">26 Sep 2010</span>
+  <p>Asp.Net MVC and jQuery have made it much easier to build awesome Gmail like ajax powered applications. I am going to run through the technique I used to do the ajax web services, call them in javascript and display the html through a template. </p>
+<h3>What Do I Need?</h3>
+<ol>   <li>An Asp.Net MVC web application </li>    <li><a href="http://jquery.com/" target="_blank">jQuery</a> </li>    <li><a href="http://benjii.me/2010/08/jqax-jquery-plugin-the-jquery-plugin-version-of-the-jqax-ajax-wrapper/" target="_blank">jQax</a> – a wrapper around jQuery ajax </li>    <li><a href="http://aefxx.com/jquery-plugins/jqote2/" target="_blank">jQote</a> – a simple lightweight jQuery templating engine </li> </ol>
+<h3>What Do I Do?</h3>
+<p>Lets start at the web application because you probably already have something there. Pick a nice simple controller action you wish was ajaxy – say displaying some gig (also know as concert) info?</p>
+<p>You probably have a view model you hand to your concert details page. Here is a simplified version of what I use:</p>
+<pre class="prettyprint">public class GigViewModel
+{
+	public int GigID { get; set; }
+	public string StartDate { get; set; }
+	public string Name { get; set; }
+}   </pre>
+
+<p>I am using a string to represent the date to make the eventual javascript I have to write simpler.</p>
+
+<pre class="prettyprint">//
+// GET: /Gig/Details/5
+
+public ActionResult Details(int id)
+{
+	var gigSession = new GigSession();
+	var gig = gigSession.Single(g =&gt;; g.GigID == id);
+
+	if (Request.IsAjaxRequest())
+	{
+		return Json(new GigViewModel(gig), JsonRequestBehavior.AllowGet);
+	}
+	
+	return View(&quot;GigDetails&quot;, new GigViewModel(gig));
+}</pre>
+
+<p>
+  <br />I have here a pretty standard controller action it grabs some data from the database (the session stuff) dumps it into a view model and returns it to a view. What I’ve added is the Request.IsAjaxRequest() statement. This statement checks the headers of the incoming request for “XMLHttpRequest” meaning the request originated in javascript. If we have an ajax request I use the MVC method Json() to return a json representation of my view model instead of a view. The JsonRequestbehavior parameter allows this control to return json on a Get request.</p>
+
+<p>Now that the backend is set up to give us our json we need to write some javascript to request it. I am using jQax to make this a bit simpler but you could go vanilla jQuery if that floats your boat.</p>
+
+<pre class="prettyprint">var ajax = $.jQax();
+
+ajax.Get(&quot;/gig/1&quot;&quot;, null, function (data) {
+	alert(&quot;woo a json gig - &quot; + data)
+});</pre>
+
+<p>This bit of javascript uses jQax to make a get request to the url “/gig/1” to get the very first gig in my database. That null parameter is used to set query string parameters which I didn’t need in this case. jQax also has a few other pretty cool options that you can check out on <a href="http://benjii.me/2010/08/jqax-jquery-plugin-the-jquery-plugin-version-of-the-jqax-ajax-wrapper/" target="_blank">benjii’s blog</a>, for now we will keep it simple.</p>
+
+<p>So now that we have our json gig what should we do with it? You coooouuuld manually set some html up and inject it into a container or you could do what the cool kids are doing and use a template engine. A template engine basically allows you to set up a sort of javascript view which renders the model (a json object) you pass to it. I am using jQote (what’s with the stupid names?) which under the covers uses <a href="http://ejohn.org/blog/javascript-micro-templating/" target="_blank">John Resig’s micro templating</a> code which in turn invokes black voodoo magic to do it’s bidding (its quite complicated).</p>
+
+<p>Before I show you the template this little bit is important to us asp.net developers. By default jQote will want to use tags like: &lt;%= %&gt;. Asp,Net doesn’t like that so we change jQote’s tag character to be something else, I like #.</p>
+
+<pre class="brush: js;">$.jqotetag&quot;#&quot;);</pre>
+
+<p>It is easiest to do this once on document load before you attempt to do any templates.</p>
+
+<p>jQote templates look pretty similar to MVC views using javascript rather than C#. They also work best when they live in a script tag like so:</p>
+
+<pre class="prettyprint">&lt;script type=&quot;text/x-jqote-template&quot; id=&quot;GigDetailsTemplate&quot;&gt;
+	&lt;div class=&quot;gigDetails&quot;&gt;
+		&lt;h2&gt;&lt;#= this.Name #&gt;&lt;/h2&gt;
+		&lt;span class=&quot;date&quot;&gt;&lt;#= this.StartDate #&gt;&lt;/span&gt;
+	&lt;/div&gt;
+&lt;/script&gt;</pre>
+
+<p>The “this” in the template refers to the json object you pass it. This example is pretty simple but jQote allows you do easily work with lists, conditions and pretty much any other javascript – <a href="http://aefxx.com/api/jqote2-reference/" target="_blank">the doco page has some pretty good examples</a>.</p>
+
+<p>Now all the pieces are in place it is just a matter of giving the gig json to the GigDetailsTemplate and putting the resulting html somewhere on the page. jQote has a few different methods depending if you want to replace, append, prepend or just get the raw html. This example alters the code used to get the gig json to use the jqotesub method which will replace whatever you had in the target dom element with the rendered template html:</p>
+
+<pre class="brush: js;">var ajax = $.jQax();
+
+ajax.Get(&quot;/gig/1&quot;, null, function (data) {
+	$(&quot;#gigWrapper&quot;).jqotesub(&quot;#GigDetailsTemplate&quot;, data);
+});</pre>
+
+<p>First we use jQuery to select the container we want the html in. Next we call jqotesub with the selector for the template we created above and the gig json data returned from the ajax call. BAM! The template is filled out with the values of the gig and displayed on the page.</p>
+
+<p><strong>Helpful Tips</strong></p>
+
+<ul>
+  <li>I found to keep things organized creating templates as Partial Views in MVC and then rendering them on the pages they are required worked well. </li>
+
+  <li>In your view models try to avoid DateTime – its pretty annoying trying to display javascript dates how you like. </li>
+</ul>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2010/09/26/writing-ajax-web-applications-in-asp-net-mvc/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2010/09/26/writing-ajax-web-applications-in-asp-net-mvc'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

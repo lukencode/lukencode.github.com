@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Fluent Email in .NET &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Fluent Email in .NET</h1>
+  <span class="post-date">11 Apr 2010</span>
+  <p>I have been working with <a href="http://lukencode.com/2010/04/08/synchronous-asynchronous-email-sender/">sending emails with System.Net.Mail</a> and had a few people mention they would like fluent interface. It sounded like a pretty cool idea and I also needed an excuse to learn git/github thus was born <a href="http://github.com/lukencode/FluentEmail" target="_blank">FluentEmail for .NET</a>.</p>
+
+<p>Here is a quick example of intended usage, the Smtp details if not provided using the .UsingClient(SmptClient client) method will be taken from the mailSettings config section.</p>
+
+<pre class="prettyprint">
+var email = Email
+            .From("john@email.com")
+            .To("bob@email.com", "bob")
+            .Subject("hows it going bob")
+            .Body("yo dawg, sup?");
+
+//send normally
+email.Send();
+
+//send asynchronously
+email.SendAsync(MailDeliveredCallback);
+</pre>
+
+<p>The fluent interface is acheived by using a builder pattern. The .From method is static and returns the underlying email object for the other methods to build upon.</p>
+
+<pre class="prettyprint">
+public class Email : IHideObjectMembers
+{
+    private SmtpClient _client;
+    public MailMessage Message { get; set; }
+
+    private Email()
+    {
+        Message = new MailMessage() { IsBodyHtml = true };
+        _client = new SmtpClient();
+    }
+
+    public static Email From(string emailAddress, string name = "")
+    {
+        var email = new Email();
+        email.Message.From = new MailAddress(emailAddress, name);
+        return email;
+    }
+
+    public Email To(string emailAddress, string name = "")
+    {
+        Message.To.Add(new MailAddress(emailAddress, name));
+        return this;
+    }
+
+    //other methods left out for readability
+}</pre>
+
+<p>Its early days at the moment but it does support multiple recipients, BCC and CC. Some of the things I would like to eventually include is support for bulk email sending (sending in batches) and easy support for different Smpt clients such as gmail.</p>
+
+<p>You can grab/fork the code at <a title="http://github.com/lukencode/FluentEmail" href="http://github.com/lukencode/FluentEmail">http://github.com/lukencode/FluentEmail</a>. Let me know if you have any comments or suggestions.</p>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2010/04/11/fluent-email-in-net/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2010/04/11/fluent-email-in-net'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

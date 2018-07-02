@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Fluent Email now supporting custom template renderers &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Fluent Email now supporting custom template renderers</h1>
+  <span class="post-date">10 Jun 2012</span>
+  <p>Fluent Email is a simple wrapper for System.Net.Mail that provides a fluent interface for constructing and sending emails in .Net. It also provides a Razor based template rendering engine. After getting a couple of requests for different renderers I decided to provide an interface in Fluent Email for templating that anyone can implement.</p>
+
+<p>The updated version of fluent email is available as always on <a href="http://nuget.org/packages/fluent-email">nuget</a> and you can find the source on <a href="https://github.com/lukencode">github</a>.</p>
+
+<p>The interface itself is really basic and has just one method:</p>
+
+<pre class="prettyprint">
+public interface ITemplateRenderer
+{
+	string Parse&lt;T&gt;(string template, T model);
+}
+</pre>
+
+<p>The default renderer uses the awesome <a href="http://nuget.org/packages/RazorEngine">RazorEngine</a> to implement the interface:</p>
+
+<pre class="prettyprint">
+public class RazorRenderer : ITemplateRenderer
+{
+	public string Parse&lt;T&gt;(string template, T model)
+	{
+		return Razor.Parse&lt;T&gt;(template, model);
+	}
+}
+</pre>
+
+<p>If you want to use your own renderer all you need to do is implement the ITemplateRenderer interface and call the UsingTemplateEngine method when constructing an email:</p>
+
+<pre class="prettyprint">
+var email = Email
+		.FromDefault()
+		.To("test@test.test")
+		.Subject("awesome new fluent email features")
+		.UsingTemplateEngine(new CustomTemplateRenderer())
+		.UsingTemplate(template, new { Name = "LUKE" })
+		.Send();
+</pre>
+
+<p>Here are a couple of the different engines I have seen people using for fluent email (not yet implementing the new interface but hopefully soon).  If you have your own implementation leave a comment with a link and I will add it too the list.</p>
+
+<ul>
+  <li>Markdown support - Nguyen Ly has some markdown support sitting in his <a href="https://github.com/lyphtec/FluentEmail">fluent email fork on github</a></li>
+  <li>Mustache - <a href="http://twitter.com/frankr">Frank Radocaj</a> is uses Mustache (using Nustache) for his templates hopefully he can post some code up soon.</li>
+</ul>
+
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2012/06/10/fluent-email-now-supporting-custom-template-renderers/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2012/06/10/fluent-email-now-supporting-custom-template-renderers'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

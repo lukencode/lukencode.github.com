@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Calling Web Services in Android using HttpClient &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Calling Web Services in Android using HttpClient</h1>
+  <span class="post-date">27 Apr 2010</span>
+  <p>I’ve decided recently to branch out from mainly web development into the mobile app space – starting with Google’s Android (because I own a Android phone). One of the first things I wanted to do was start calling webservices, specifically Google Analytics.</p>
+
+<p>Now I am pretty new to Android and Java in general but I feel I’ve come up with a nice simple way to make requests to web services and APIs (and plain html pages if you want). The class uses the org.apache.http library which is included in Android.</p>
+
+<p>This is the code for the class.</p>
+
+<pre class="prettyprint">
+public class RestClient {
+
+    private ArrayList &lt;NameValuePair&gt; params;
+    private ArrayList &lt;NameValuePair&gt; headers;
+
+    private String url;
+
+    private int responseCode;
+    private String message;
+
+    private String response;
+
+    public String getResponse() {
+        return response;
+    }
+
+    public String getErrorMessage() {
+        return message;
+    }
+
+    public int getResponseCode() {
+        return responseCode;
+    }
+
+    public RestClient(String url)
+    {
+        this.url = url;
+        params = new ArrayList&lt;NameValuePair&gt;();
+        headers = new ArrayList&lt;NameValuePair&gt;();
+    }
+
+    public void AddParam(String name, String value)
+    {
+        params.add(new BasicNameValuePair(name, value));
+    }
+
+    public void AddHeader(String name, String value)
+    {
+        headers.add(new BasicNameValuePair(name, value));
+    }
+
+    public void Execute(RequestMethod method) throws Exception
+    {
+        switch(method) {
+            case GET:
+            {
+                //add parameters
+                String combinedParams = "";
+                if(!params.isEmpty()){
+                    combinedParams += "?";
+                    for(NameValuePair p : params)
+                    {
+                        String paramString = p.getName() + "=" + URLEncoder.encode(p.getValue(),”UTF-8″);
+                        if(combinedParams.length() &gt; 1)
+                        {
+                            combinedParams  +=  "&amp;" + paramString;
+                        }
+                        else
+                        {
+                            combinedParams += paramString;
+                        }
+                    }
+                }
+
+                HttpGet request = new HttpGet(url + combinedParams);
+
+                //add headers
+                for(NameValuePair h : headers)
+                {
+                    request.addHeader(h.getName(), h.getValue());
+                }
+
+                executeRequest(request, url);
+                break;
+            }
+            case POST:
+            {
+                HttpPost request = new HttpPost(url);
+
+                //add headers
+                for(NameValuePair h : headers)
+                {
+                    request.addHeader(h.getName(), h.getValue());
+                }
+
+                if(!params.isEmpty()){
+                    request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+                }
+
+                executeRequest(request, url);
+                break;
+            }
+        }
+    }
+
+    private void executeRequest(HttpUriRequest request, String url)
+    {
+        HttpClient client = new DefaultHttpClient();
+
+        HttpResponse httpResponse;
+
+        try {
+            httpResponse = client.execute(request);
+            responseCode = httpResponse.getStatusLine().getStatusCode();
+            message = httpResponse.getStatusLine().getReasonPhrase();
+
+            HttpEntity entity = httpResponse.getEntity();
+
+            if (entity != null) {
+
+                InputStream instream = entity.getContent();
+                response = convertStreamToString(instream);
+
+                // Closing the input stream will trigger connection release
+                instream.close();
+            }
+
+        } catch (ClientProtocolException e)  {
+            client.getConnectionManager().shutdown();
+            e.printStackTrace();
+        } catch (IOException e) {
+            client.getConnectionManager().shutdown();
+            e.printStackTrace();
+        }
+    }
+
+    private static String convertStreamToString(InputStream is) {
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sb.toString();
+    }
+}
+</pre>
+
+<p>Here is an example of how I use the class to call the Google Analytics API. I use the AddParam methods to add query string / post values and the AddHeader method to add headers to the request. RequestMethod is a simple enum with GET and POST values.</p>
+
+<pre class="prettyprint">RestClient client = new RestClient(LOGIN_URL);
+client.AddParam("accountType", "GOOGLE");
+client.AddParam("source", "tboda-widgalytics-0.1");
+client.AddParam("Email", _username);
+client.AddParam("Passwd", _password);
+client.AddParam("service", "analytics");
+client.AddHeader("GData-Version", "2");
+
+try {
+    client.Execute(RequestMethod.POST);
+} catch (Exception e) {
+    e.printStackTrace();
+}
+
+String response = client.getResponse();
+</pre>
+
+<p>The class also exposes the Http response code and message which are important when using some Restful APIs. I know could definitely improve/extend on this code and would love to hear from those more experienced in Java and Android than myself.</p>
+
+<div>
+	<script src="http://pollfu.com/public/js/embed.v1.js" data-id="8"> </script>
+</div>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2010/04/27/calling-web-services-in-android-using-httpclient/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2010/04/27/calling-web-services-in-android-using-httpclient'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

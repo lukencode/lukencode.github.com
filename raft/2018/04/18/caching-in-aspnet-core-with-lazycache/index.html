@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Caching in ASP.NET Core with LazyCache &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Caching in ASP.NET Core with LazyCache</h1>
+  <span class="post-date">18 Apr 2018</span>
+  <p>Caching is a great way to get improve the performance of your application - either enabling high load scenarios or papering over some bad code to make life bearable. I have always favoured a simple “GetOrCreate” style caching API so when I found the open source <a href="https://github.com/alastairtree/LazyCache">LazyCache</a> by <a href="https://alastaircrabtree.com/">Alistair Crabtree</a> I was keen to check it out.</p>
+
+<p>LazyCache describes itself as “An easy to use thread safe generics based in memory caching service with a simple developer friendly API for C#” which I would pretty much have to agree with.</p>
+
+<p>The ASP.NET Core version is currently in beta (though seems to be pretty solid) and can be installed via nuget:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Install-Package LazyCache.AspNetCore -Version 2.0.0-beta03
+</code></pre></div></div>
+
+<p>Once installed it can be easily made available when configuring services in startup:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>services.AddLazyCache();
+</code></pre></div></div>
+
+<p>This will inject IAppCache throughout your application.</p>
+
+<p>Here is a simplified example of using LazyCache from the homepage my <a href="https://austechjobs.com.au">Australian tech job board - Austechjobs</a>:</p>
+
+<script src="https://gist.github.com/lukencode/f974c562b2e48c9cbad63aa768ddb4a7.js"></script>
+
+<p>IAppCache is the Lazy Cache service being injected into my class. It provides a <em>GetOrAddAsync</em> method that accepts:</p>
+<ul>
+  <li>A cache key which in my example is the string “HomeModel”.</li>
+  <li>A factory to retrieve the data to be cached in the form of a function Func&lt;ICacheEntry, Task<T>&gt; addItemFactory. The code in my example returns a model after making a database call (the bit I wanted to cache).</T></li>
+  <li>Options for cache length. I am using a simple sliding timespan of 12 hours.</li>
+</ul>
+
+<p>I find the simplicity of this caching setup very pleasing. It’s implementation uses Lazy&lt;T&gt; to ensure the factory method is only executed once. Under the hood by default LazyCache will use IMemoryCache in Microsoft.Extensions.Caching.Memory. This is implementation will only cache data on the machine it is running on. If I was running a more intensive service I would want to extend <a href="https://github.com/alastairtree/LazyCache/wiki/2.0-Extending-LazyCache-with-Redis,-Cassandra-etc">LazyCache</a> and implement something like redis for distributed caching. The good news is because I am using IAppCache throughout my application I can change the underlying caching provider with relative ease.</p>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2018/04/18/caching-in-aspnet-core-with-lazycache/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2018/04/18/caching-in-aspnet-core-with-lazycache'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2013/01/24/jsonp-embeddable-widget-template/">
+          An embeddable JSONP javascript widget template
+          <small>24 Jan 2013</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

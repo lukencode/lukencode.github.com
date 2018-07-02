@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Using Pretzel / Jekyll to host your blog on Github &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Using Pretzel / Jekyll to host your blog on Github</h1>
+  <span class="post-date">13 Feb 2012</span>
+  <p>A couple of weeks ago after shamelessly promoting on of my blog post on a social network I received a troubling report that my pride and joy had contracted some type of virus.</p>
+
+<p><img src="/img/posts/virus.png" alt="Virus" title="MY GOD - ITS ALL MY FAULT" /></p>
+
+<p>This scary red screen (well a similar one) along with some performance issues and me getting bored with wordpress meant I was on the hunt for a new blog platform.  I was after was something fast and simple where I have control over the html and css generated.</p>
+
+<p><a href="https://github.com/mojombo/jekyll">Jekyll</a> is a “blog-aware, static site generator in Ruby”. It takes markdown and liquid (a templating language) text files and mashes them into a static html site. The “blog-aware” bit means Jekyll will take posts written in mark down and generate a url structure similar to what is seen on most blogs eg [year]/[month]/[day]/[title]. Static html sites have a couple of obvious advantages and disadvantages - they are easy to host, fast and difficult to hack (take that virus man!) but there is no admin interface for update posts.</p>
+
+<p>This is what liquid templating looks like:</p>
+
+<pre>
+
+    ---
+    layout : layout
+    title : SiteName
+    ---
+    
+    <ul id="archive">
+		{% for post in site.posts %}
+    		<li>
+    			<a href="{{ post.url }}">{{ post.title }}</a>
+    			<span class="date">{{ post.date | date: '%d %B, %Y' }}</span>
+    		</li>
+		{% endfor %}
+    </ul>
+    
+</pre>
+
+<p>The text inbetween the — up the top is a <a href="http://www.yaml.org/">YAML</a> header - any files with a yaml header will be processed as special files. The variables being set are for things like the layout to be used, permalink or page title.</p>
+
+<p>A simple post written in markdown might looks something like this:</p>
+
+<pre>
+    --- 
+    layout: post
+    title: "My First Post"
+    author: "Author"
+    comments: true
+    ---
+    
+    ## Hello world...
+    
+    This is my first post on the site!
+</pre>
+
+<p>This Jekyll business was sounding wonderful but being the sheltered windows loving, 9-5 enterprise coding, <a href="http://blog.expensify.com/2011/03/25/ceo-friday-why-we-dont-hire-net-programmers/">unhireable</a> .NET developer that I am I threw it into the “too hard basket” and went back to whinging about wordpress.
+Lucky for me there is a gang of open source programmers (with .net flavour to them) that were setting out to build the windows equivalent of Jekyll code named - <a href="https://github.com/Code52/pretzel">Pretzel</a>.</p>
+
+<p>Pretzel is a .NET console app built in just one week builds static sites in a similar manner to Jekyll, with the jekyll mode more or less emulating it exactly. There are some other cool features in the pipeline such as a razor engine, js and css minification and less support. Pretzel has a couple of commands - “create” builds the basic site structure, “bake” converts your site to static html and “taste” runs an embedded web server and watches for file changes to preview your site. I personally like to use “taste” like this while I am working on my site for instant updates:</p>
+
+<pre>pretzel taste -p=8080 -e=jekyll</pre>
+
+<p>With my mind set on a fancy static blog I had one more problem to solve - hosting. It turns out Github allows you to do some really cool stuff with github pages AND github pages supports Jekyll all for free! Hosting my blog as a github repo + <a href="http://pages.github.com/">gh pages</a> has another advantage my blog is safely stored on github servers with a full history. Updating the site is as easy as pushing updates or new pages to the repo.</p>
+
+<p>Here is what I did to get my blog up and running on github.</p>
+
+<ul>
+  <li>Set up a repo named username.github.com. This will tell github to publish any files on the master branch to http://yourusername.github.com.</li>
+  <li>Add a text file named CNAME to your repo with each url you want mapped to the site on separate lines.</li>
+  <li>Import my wordpress posts using pretzel. To do this you just need to download the xml export of your wordpress blog and run the import command. This will import your posts as markdown files in the post folder.</li>
+</ul>
+
+<pre>pretzel import -t=wordpress -f="path to xml"</pre>
+
+<ul>
+  <li>Import my blog comments to disqus and embed their javascript widget on my post pages. Disqus provides a wordpress plugin that will import existing posts - remember to do this before you shut down your wordpress blog.</li>
+  <li>Profit!</li>
+</ul>
+
+<p>One thing to beware of is 404s. You need to add a plain 404.html page to your repo or 404s will be redirected to a github page (and not the one with the <a href="https://github.com/404">cool star wars one</a>).</p>
+
+<p>This blog now essentially a git repo you can take a look at the source for my blog at <a href="https://github.com/lukencode/lukencode.github.com">lukencode/lukencode.github.com</a>. Without the cruft of a wordpress theme I have been able to drastically simplify the html and css and cut down the page size. I’ve also had a chance to experiment with responsive design - go on resize this window and let me know what you think. Next on the todo list is a redesigned home page, pages for my wp7 apps and some fancy javascript to load in my current github repos.</p>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2012/02/13/using-pretzel-jekyll-to-your-blog-on-github/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2012/02/13/using-pretzel-jekyll-to-your-blog-on-github'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

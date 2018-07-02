@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Google Weather API with RestSharp &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Google Weather API with RestSharp</h1>
+  <span class="post-date">14 Apr 2010</span>
+  <p>Guest post by <a href="http://github.com/dkarzon">DK</a>!</p>
+
+<p>The <a href="http://www.googleapihelp.com/2009/08/google-weather-api.html">Google Weather API</a> is a grand service for developers to get weather data for any location with ease. <a href="http://restsharp.org/">RestSharp</a> is a open source .NET REST Client…</p>
+
+<p>Been doing some work getting weather information from Google Weather and I thought I might take the time to explain how I used Restsharp with this API. I started with the xml from the API itself.</p>
+
+<p><a title="http://www.google.com/ig/api?weather=Brisbane+au" href="http://www.google.com/ig/api?weather=Brisbane+au">http://www.google.com/ig/api?weather=Brisbane+au</a></p>
+<blockquote>
+<pre class="prettyprint">
+&lt;xml_api_reply version="1"&gt;
+    &lt;weather&gt;
+        &lt;forecast_information&gt;
+            &lt;city data="Brisbane, QLD"/&gt;
+            &lt;postal_code data="Brisbane au"/&gt;
+            &lt;latitude_e6 data=""/&gt;
+            &lt;longitude_e6 data=""/&gt;
+            &lt;forecast_date data="2010-04-14"/&gt;
+            &lt;current_date_time data="2010-04-14 14:00:00 +0000"/&gt;
+            &lt;unit_system data="US"/&gt;
+        &lt;/forecast_information&gt;
+        &lt;current_conditions&gt;
+            &lt;condition data="Partly Cloudy"/&gt;
+            &lt;temp_f data="72"/&gt;
+            &lt;temp_c data="22"/&gt;
+            &lt;humidity data="Humidity: 64%"/&gt;
+            &lt;icon data="/ig/images/weather/partly_cloudy.gif"/&gt;
+            &lt;wind_condition data="Wind: SW at 14 mph"/&gt;
+        &lt;/current_conditions&gt;
+        &lt;forecast_conditions&gt;
+            &lt;day_of_week data="Wed"/&gt;
+            &lt;low data="64"/&gt;
+            &lt;high data="78"/&gt;
+            &lt;icon data="/ig/images/weather/chance_of_rain.gif"/&gt;
+            &lt;condition data="Chance of Rain"/&gt;
+        &lt;/forecast_conditions&gt;
+	  ...
+    &lt;/weather&gt;
+&lt;/xml_api_reply&gt;
+</pre>
+</blockquote>
+<p>Notice the weather element contains multiple forecast_conditions elements without a single container element as well as the other forecast_information and current_conditions elements. At first this was a problem, I spoke to John Sheehan (the creator of RestSharp) about this and he told me it was currently unsupported with RestSharp. So I took a dive into the RestSharp source (mainly the XmlDeserialiser) to try and find a solution to this problem and I came across the support for Derived Lists, therein lies a solution…</p>
+<pre class="prettyprint">
+public class xml_api_reply
+{
+    public string version { get; set; }
+    public Weather weather { get; set; }
+}
+public class Weather : List&lt;Forecast_Conditions&gt;
+{
+    public Forecast_Information Forecast_Information { get; set; }
+    public Current_Conditions Current_Conditions { get; set; }
+}
+public class DataElement
+{
+    public string Data { get; set; }
+}
+public class Forecast_Information
+{
+    public DataElement City { get; set; }
+    public DataElement Postal_Code { get; set; }
+    public DataElement Forecast_Date { get; set; }
+    public DataElement Unit_System { get; set; }
+}
+public class Current_Conditions
+{
+    public DataElement Condition { get; set; }
+    public DataElement Temp_c { get; set; }
+    public DataElement Humidity { get; set; }
+    public DataElement Icon { get; set; }
+    public DataElement Wind_condition { get; set; }
+}
+public class Forecast_Conditions
+{
+    public DataElement Day_Of_Week { get; set; }
+    public DataElement Condition { get; set; }
+    public DataElement Low { get; set; }
+    public DataElement High { get; set; }
+    public DataElement Icon { get; set; }
+}
+</pre>
+<p>These classes are then used by RestSharp to Deserialise the response. xml_api_reply is the root element and under it is weather. The weather class inherits from a List&lt;forecast_conditions&gt; because it can contain multiple elements as well as other properties. The DataElement class was created because of the way the xml has its data ie. &lt;city data=”Brisbane, QLD”/&gt;  instead of &lt;city&gt;Brisbane, QLD&lt;/city&gt;.</p>
+
+<p>Now that we have setup the Response classes we can use get to the real code…</p>
+
+<pre class="prettyprint">
+var client = new RestClient(&quot;http://www.google.com/ig/api&quot;);
+var request = new RestRequest(Method.GET);
+request.AddParameter(&quot;weather&quot;, &quot;Brisbane&quot;);
+
+var response = client.Execute&lt;Models.xml_api_reply&gt;(request);
+</pre>
+
+<p>Pretty easy, and the response is a RestResponse&lt;T&gt; where T is my xml_api_reply class, this object then gives us access to anything we could need from the response including the content itself (response.Content) and the deserialised class (response.Data).</p>
+
+<p>And to find the current temperature:</p>
+<pre class="prettyprint">response.Data.weather.Current_Conditions.Temp_c.Data</pre>
+<p>Now you know how to use RestSharp the world of Restful services is yours for the taking!</p>
+
+<p>Update: Updated the reponse class to Pascal Case.</p>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2010/04/14/google-weather-api-with-restsharp/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2010/04/14/google-weather-api-with-restsharp'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

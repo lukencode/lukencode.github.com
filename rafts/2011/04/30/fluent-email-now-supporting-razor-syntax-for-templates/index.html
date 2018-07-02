@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Fluent Email Now Supporting Razor Syntax For Templates &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Fluent Email Now Supporting Razor Syntax For Templates</h1>
+  <span class="post-date">30 Apr 2011</span>
+  <p>A while back I wrote Fluent Email, a little .NET wrapper for sending emails with System.Net.Mail using a fluent interface. After relentless requests (there was at least 2) to publish the library on <a href="http://nuget.org/" target="_blank">NuGet.org</a> I eventually caved in. You can add Fluent Email to your project using Nuget’s built in library package manager or the following package console command.</p>
+<p><a href="http://nuget.org/List/Packages/fluent-email" target="_blank"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top: 0px; border-right: 0px; padding-top: 0px" title="nuget-fluent-email" border="0" alt="PM&gt; Install-Package fluent-email" src="http://lukencode.com/wp-content/uploads/2011/04/nuget-fluent-email.png" width="589" height="70" /></a></p>
+<p>The library is pretty simple buts makes the code for sending emails easy to use and read.</p>
+
+<pre class="prettyprint">var email = Email
+            .From(&quot;john@email.com&quot;)
+            .To(&quot;bob@email.com&quot;, &quot;bob&quot;)
+            .Subject(&quot;hows it going bob&quot;)
+            .Body(&quot;yo dawg, sup?&quot;);
+
+            //send normally
+            email.Send();
+            
+            //send asynchronously
+            email.SendAsync((sender, e) =&gt;
+            {
+                Console.WriteLine(&quot;Email Sent&quot;);
+            });
+</pre>
+
+<p>There are a few other methods not shown here that work in a similar way for adding the usual email suspects such as CC, BCC&#160; and ReplyTo.</p>
+
+<p>I had also been playing around with some form of templating when I came across <a href="http://razorengine.codeplex.com/" target="_blank">RazorEngine</a>. RazorEngine is an awesome library that brings the razor syntax (from MVC3) to other applications. In Fluent Email we use RazorEngine to make email templates as simple as this:</p>
+
+<pre class="prettyprint">var template = &quot;Dear @Model.Name, You are totally @Model.Compliment.&quot;;
+
+var email = Email
+            .From(&quot;bob@hotmail.com&quot;)
+            .To(&quot;somedude@gmail.com&quot;)
+            .Subject(&quot;woo nuget&quot;)
+            .UsingTemplate(template, new { Name = &quot;Luke&quot;, Compliment = &quot;Awesome&quot; });</pre>
+
+<p>This will set the body of the email to the rendered template “Dear Luke, You are totally Awesome.&quot; and can be sent the same way as the first example. The UsingTemplate method uses generics so you can pass in a specific type or just use an anonymous object like in the example. If you prefer to use a seperate file for your template there is a method called UsingTemplateFromFile to handle that. Since RazorEngine supports everything you would expect from the Razor view engine so does Fluent Email!</p>
+
+<p>If you want to take a look at the code it is hosted on Github at <a href="https://github.com/lukencode/FluentEmail" target="_blank">lukencode/fluentemail</a> otherwise just grab the NuGet package.</p>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2011/04/30/fluent-email-now-supporting-razor-syntax-for-templates/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2011/04/30/fluent-email-now-supporting-razor-syntax-for-templates'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Timesaving CSS Tools for ASP.Net Developers &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Timesaving CSS Tools for ASP.Net Developers</h1>
+  <span class="post-date">04 May 2010</span>
+  <p>Are you a developer?</p>
+
+<p>Are you a lazy developer?</p>
+
+<p>Do you hate doing web design?</p>
+
+<p>If you answered yes to that last question you have come to the right blog post. I am going to show you three simple to use libraries to make working with CSS much less painful giving you time to get back to the good stuff – pointlessly refactoring your code!</p>
+<h3>1. Blueprint CSS</h3>
+<p>First cab off the rank is the<strong> </strong><a href="http://www.blueprintcss.org/" target="_blank"><strong>Blueprint CSS Framework</strong></a>. Blueprint combines a solid reset file,  good looking default typography and an easy to use grid system.</p>
+
+<p>The purpose of the reset file is fairly straightforward – removing some browser inconsistencies.</p>
+
+<p>The <a href="http://www.blueprintcss.org/tests/parts/elements.html" target="_blank">typography</a> defaults are great as a sane starting point for padding, sizes, line height and all the other stuff designers write novels on but us developers have really no idea about. The values are also set in em so they should scale to the user’s font size appropriately.</p>
+
+<p>Last but not least is Blueprint’s grid system. This I am not totally sold on but at the very least its useful for getting together a quick prototype. Essentially the system uses classes such as ‘container’, ‘span-10’ and ‘last’ to quickly and easily bust out complex layouts.</p>
+
+<p>Here is a basic example with a header, content, footer and sidebars.</p>
+<pre class="prettyprint">&lt;div class="container"&gt;
+    &lt;div class="span-24 last"&gt;
+        Header
+    &lt;/div&gt;
+    &lt;div class="span-4"&gt;
+        Left sidebar
+    &lt;/div&gt;
+    &lt;div class="span-16"&gt;
+        Main content
+    &lt;/div&gt;
+    &lt;div class="span-4 last"&gt;
+        Right sidebar
+    &lt;/div&gt;
+&lt;/div&gt;</pre>
+<h3>2. Bundler</h3>
+<p>When building a public facing website its usually a good idea to combine and minify your CSS(and javascript) files into a single file. This of course is a huge pain in the ass. It is possible to use something like the Yahoo YUI Compressor and an MSBuild task to automate this but then you run into problems for things like debugging your CSS.</p>
+
+<p>Enter <a href="http://github.com/jetheredge/bundler" target="_blank"><strong>Bundler</strong></a>. Bundler essentially reduces combining and minifying of CSS and javascript into on tiny bit of code -</p>
+<pre class="prettyprint">&lt;%= Bundle.Css()
+        .AddCss("~/css/reset.css")
+        .AddCss("~/css/site.css")
+        .RenderCss("~/css/combined.css") %&gt;</pre>
+<p>Bundler combines and minifies reset.css and site.css into one file – combined.css. It also takes care of ensuring old files aren’t cached and will not combine your files if the website is running in debug mode. Using bundler you have the freedom to split your CSS up into manageable pieces without sacrificing load times.</p>
+<h3>3. LESS CSS (using Bundler)</h3>
+<p>Last on the list is <a href="http://lesscss.org/" target="_blank"><strong>LESS CSS</strong></a>.</p>
+<blockquote>In its own words - <em>“LESS extends CSS with: variables, mixins, operations and nested rules</em>”.</blockquote>
+<p>In my words LESS allows you to write CSS more like you would normally write code allowing you to keep your CSS files DRY (don’t repeat yourself… dammit I just repeated myself). It achieves this by using this variables, mixins which are kind of like functions and a few other nifty features.</p>
+
+<p>For the two readers who have gotten this far <em>and</em> clicked through the link will notice LESS CSS is targeted at ruby and not at .Net. However our good friend from step 2 – Bundler (or <a href="http://www.dotlesscss.com/" target="_blank">dotlesscss</a>) will automatically parse CSS files ending with .less using the LESS CSS language.</p>
+
+<p>Variables behave exactly as you would expect them to and are awesome for making sure you don’t keep repeating yourself with things like colours.</p>
+
+<pre class="brush: css;">
+@brand_color: #4D926F;
+
+#header {
+  color: @brand_color;
+}
+
+h2 {
+  color: @brand_color;
+}
+</pre>
+
+<p>The other feature I really love is mixins. Mixins behave in a way like functions that take parameters as input and return a set of CSS properties based off those parameters. CSS 3 rounded corners are a good example of this.</p>
+
+<pre class="brush: css;">
+.rounded_corners (@radius: 5px) {
+  -moz-border-radius: @radius;
+  -webkit-border-radius: @radius;
+  border-radius: @radius;
+}
+
+#header {
+  .rounded_corners;
+}
+</pre>
+
+<p>LESS has a number of other cool features you can check out on the <a href="http://lesscss.org/docs" target="_blank">documentation</a>.</p>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2010/05/04/timesaving-css-tools-for-asp-net-developers/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2010/05/04/timesaving-css-tools-for-asp-net-developers'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

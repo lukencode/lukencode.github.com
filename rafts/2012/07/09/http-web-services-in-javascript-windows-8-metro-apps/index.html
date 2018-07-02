@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Http Web Services in Javascript Windows 8 Metro Apps &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">Http Web Services in Javascript Windows 8 Metro Apps</h1>
+  <span class="post-date">09 Jul 2012</span>
+  <p>I have been doing some Windows 8 development recently and decided to work with html, css and javascript rather than c# and xaml. I am mainly a .net guy and was a little worried about how javascript would work for a few things including consuming rest web services. I’ve written a few posts on web services for <a href="http://lukencode.com/2010/04/14/google-weather-api-with-restsharp/">.net</a>, <a href="http://lukencode.com/2010/04/27/calling-web-services-in-android-using-httpclient/">android</a> and <a href="http://lukencode.com/2010/08/04/rest-web-services-in-windows-phone-7/">windows phone</a> and as it turns out Windows 8 javascript is easier than all of them.</p>
+
+<p>###A Basic Web Request</p>
+
+<p>The best way to call your web services is using the <a href="http://msdn.microsoft.com/en-us/library/windows/apps/br229787.aspx">WinJS.xhr function</a>. This function is basically a wrapper for the lower level XMLHttpRequest object. The function takes an options object with a number of optional properties. A basic xhr get request looks like this:</p>
+
+<pre class="prettyprint">
+WinJS.xhr({
+           type: "get",
+           url: "www.example.com"
+        });
+</pre>
+
+<p>You can make a post request by changing the type to “post”.</p>
+
+<p>###Using Promises</p>
+
+<p>WinJS.xhr wraps the request in something called a <a href="http://msdn.microsoft.com/en-us/library/windows/apps/br211867.aspx">promise</a>. Promises in WinJS is an abstraction to help out with asynchronous requests. In short a promise is like a schedule or work to be done on a value that has yet to be computed, in the case of web services we are waiting on the response from the server. Using promises you can chain calls to the then and done methods. These methods will fire after the promise has been completed. You can chain multiple then methods together or just use done to wait until the end.</p>
+
+<pre class="prettyprint">
+WinJS.xhr({
+            type: "post",
+            url: "www.example.com",
+        }).done(function (result) {
+            console.log(result.responseText)
+        });
+</pre>
+
+<p>In the previous example the done function has a parameter “result”. This is the data returned from the webservice, you can also access a number of other properties such as result.status. You can also provide an error function as the second parameter to the done and then functions.</p>
+
+<p>###Setting Request Parameters</p>
+
+<p>Most web services will require you to provide paramters. These might be query string params for get requests, form values for post or setting specific headers. To set query string or form parameters you can set the data property on the xhr options objects. To get the parameters in the right format I use a little helper function called formatParams. This function takes a javascript object and converts each property into a key/value parameter.</p>
+
+<pre class="prettyprint">
+var p = {
+            key: &quot;1234&quot;
+        };
+
+//get request
+WinJS.xhr({
+            type: &quot;get&quot;,
+            url: &quot;www.example.com&quot;,
+            data: formatParams(p)
+        });
+            
+//post request
+WinJS.xhr({
+            type: &quot;post&quot;,
+            url: &quot;www.example.com&quot;,
+            data: formatParams(p),
+            headers: { &quot;Content-type&quot;: &quot;application/x-www-form-urlencoded&quot; }
+        });
+            
+function formatParams(p) {
+    var queryStr = &quot;&quot;;
+
+    for (var propertyName in p) {
+        var val = p[propertyName];
+        queryStr += propertyName + &quot;=&quot; + encodeURI(val) + &quot;&amp;&quot;;
+    }
+
+    return queryStr.slice(0, -1);
+}
+</pre>
+
+<p>For the post request I set the content type header to x-www-form-urlencoded. You can set any other headers you need using this same format.</p>
+
+<p>###Consuming JSON</p>
+
+<p>Assuming your web service returns json the biggest advantage javascript has it it handles it natively. There is no need for building a matching class or messing about with dictionaries it just works. All you need to do is call JSON.parse on your response text.</p>
+
+<pre class="prettyprint">
+WinJS.xhr({
+            type: "post",
+            url: url,
+        }).done(function (result) {
+        	var json = JSON.parse(result.responseText);
+        });
+</pre>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2012/07/09/http-web-services-in-javascript-windows-8-metro-apps/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2012/07/09/http-web-services-in-javascript-windows-8-metro-apps'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

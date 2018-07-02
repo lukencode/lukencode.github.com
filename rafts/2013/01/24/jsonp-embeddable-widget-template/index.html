@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      An embeddable JSONP javascript widget template &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">An embeddable JSONP javascript widget template</h1>
+  <span class="post-date">24 Jan 2013</span>
+  <p>Recently I’ve been hacking together a little <a href="http://pollfu.com">online poll creator - pollfu</a>. For the app I needed to have the option to embed the poll on an external website. One of the best examples of this is the <a href="https://stripe.com/docs/checkout">checkout widget by stripe</a>. The cool thing about the stripe widget is it loads everything it needs through that one script.</p>
+
+<p>This is the core of what I came up with:</p>
+
+<div>
+<script src="https://gist.github.com/4629345.js"> </script>
+</div>
+
+<p>This is what it can do:</p>
+
+<ul>
+  <li>Check for the existence of jquery (and version) on the page, if it isn’t there load it in. Just set the jquery script location and version variables at the top. It uses noconflict and sets jquery to the var jQuery variable. After jquery is ready the main() function is called, from there you can listen for document ready.</li>
+  <li>Load in any other script and call back a function when it has loaded using the loadScript(src, onLoad) function.</li>
+  <li>Load in a css file and add it to the document head using the loadCss(src) function.</li>
+  <li>Has a reference to the script tag itself (var scriptTag). This means you can place the script on the page where you want to inject your html ala stripe checkout.</li>
+</ul>
+
+<p>After you have jquery and your scripts loaded in you can use it grab data from your server using jsonp (there is a super simple example commented out in the source).</p>
+
+<p>Another cool thing to try is setting widget variables on the script tag using data attirbutes (eg data-id=”1”). Once you have a reference to the script tag these are super easy to read in eg:</p>
+
+<pre>
+&lt;script src=&quot;http://pollfu.com/public/js/embed.v1.js&quot; data-id=&quot;9&quot;&gt;&lt;/script&gt;
+</pre>
+
+<p>This is an example of the end result embedded poll for pollfu:</p>
+
+<div>
+<script src="http://pollfu.com/public/js/embed.v1.js" data-id="9">;</script>
+</div>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2013/01/24/jsonp-embeddable-widget-template/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2013/01/24/jsonp-embeddable-widget-template'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

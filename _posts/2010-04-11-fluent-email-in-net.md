@@ -10,6 +10,10 @@ tags:
 - open-source
 ---
 
+<div class="message">
+See an updated (2018) example of <a href='/2018/07/01/send-email-in-dotnet-core-with-fluent-email'>sending in .NET core email using FluentEmail</a>.
+</div>
+
 I have been working with <a href="http://lukencode.com/2010/04/08/synchronous-asynchronous-email-sender/">sending emails with System.Net.Mail</a> and had a few people mention they would like fluent interface. It sounded like a pretty cool idea and I also needed an excuse to learn git/github thus was born <a href="http://github.com/lukencode/FluentEmail" target="_blank">FluentEmail for .NET</a>.
 
 Here is a quick example of intended usage, the Smtp details if not provided using the .UsingClient(SmptClient client) method will be taken from the mailSettings config section.
@@ -28,7 +32,7 @@ email.Send();
 email.SendAsync(MailDeliveredCallback);
 </pre>
 
-The fluent interface is acheived by using a builder pattern. The .From method is static and returns the underlying email object for the other methods to build upon.
+The fluent interface is achieved by using a builder pattern. The .From method is static and returns the underlying email object for the other methods to build upon.
 
 <pre class="prettyprint">
 public class Email : IHideObjectMembers

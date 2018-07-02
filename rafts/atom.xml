@@ -1,0 +1,2372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title>lukencode</title>
+ <link href="http://lukencode.com/atom.xml" rel="self"/>
+ <link href="http://lukencode.com/"/>
+ <updated>2018-07-02T21:23:04+10:00</updated>
+ <id>http://lukencode.com/</id>
+ <author>
+   <name>Luke Lowrey</name>
+   <email>lukenlowrey@gmail.com</email>
+ </author>
+
+ 
+ <entry>
+   <title>Caching in ASP.NET Core with LazyCache</title>
+   <link href="http://lukencode.com/2018/04/18/caching-in-aspnet-core-with-lazycache/"/>
+   <updated>2018-04-18T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2018/04/18/caching-in-aspnet-core-with-lazycache</id>
+   <content type="html">&lt;p&gt;Caching is a great way to get improve the performance of your application - either enabling high load scenarios or papering over some bad code to make life bearable. I have always favoured a simple “GetOrCreate” style caching API so when I found the open source &lt;a href=&quot;https://github.com/alastairtree/LazyCache&quot;&gt;LazyCache&lt;/a&gt; by &lt;a href=&quot;https://alastaircrabtree.com/&quot;&gt;Alistair Crabtree&lt;/a&gt; I was keen to check it out.&lt;/p&gt;
+
+&lt;p&gt;LazyCache describes itself as “An easy to use thread safe generics based in memory caching service with a simple developer friendly API for C#” which I would pretty much have to agree with.&lt;/p&gt;
+
+&lt;p&gt;The ASP.NET Core version is currently in beta (though seems to be pretty solid) and can be installed via nuget:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Install-Package LazyCache.AspNetCore -Version 2.0.0-beta03
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Once installed it can be easily made available when configuring services in startup:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;services.AddLazyCache();
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This will inject IAppCache throughout your application.&lt;/p&gt;
+
+&lt;p&gt;Here is a simplified example of using LazyCache from the homepage my &lt;a href=&quot;https://austechjobs.com.au&quot;&gt;Australian tech job board - Austechjobs&lt;/a&gt;:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/lukencode/f974c562b2e48c9cbad63aa768ddb4a7.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;IAppCache is the Lazy Cache service being injected into my class. It provides a &lt;em&gt;GetOrAddAsync&lt;/em&gt; method that accepts:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;A cache key which in my example is the string “HomeModel”.&lt;/li&gt;
+  &lt;li&gt;A factory to retrieve the data to be cached in the form of a function Func&amp;lt;ICacheEntry, Task&lt;T&gt;&amp;gt; addItemFactory. The code in my example returns a model after making a database call (the bit I wanted to cache).&lt;/T&gt;&lt;/li&gt;
+  &lt;li&gt;Options for cache length. I am using a simple sliding timespan of 12 hours.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I find the simplicity of this caching setup very pleasing. It’s implementation uses Lazy&amp;lt;T&amp;gt; to ensure the factory method is only executed once. Under the hood by default LazyCache will use IMemoryCache in Microsoft.Extensions.Caching.Memory. This is implementation will only cache data on the machine it is running on. If I was running a more intensive service I would want to extend &lt;a href=&quot;https://github.com/alastairtree/LazyCache/wiki/2.0-Extending-LazyCache-with-Redis,-Cassandra-etc&quot;&gt;LazyCache&lt;/a&gt; and implement something like redis for distributed caching. The good news is because I am using IAppCache throughout my application I can change the underlying caching provider with relative ease.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core</title>
+   <link href="http://lukencode.com/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/"/>
+   <updated>2018-04-14T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core</id>
+   <content type="html">&lt;p&gt;I have been working on a ASP.NET Core project that requires me to build and publish sass stylesheets, css and javascript. I wanted to streamline the process so I put together this simple &lt;a href=&quot;https://webpack.js.org/&quot;&gt;webpack&lt;/a&gt; setup to automate what had been a couple of manual steps.&lt;/p&gt;
+
+&lt;p&gt;Webpack and its various plugins require Node.js to run and NPM to install. The package.json file tracks the node dependencies for the project. The packages I am using for Webpack are installed as devDependencies and can be added using the npm install command with the -D flag eg:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npm install webpack -D
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This is my package.json file:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/lukencode/017c8d2105498c32c1bfe9bc87711ad7.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;I will explain a couple of the packages I am including here when we look at my actual webpack config. You can install all packages using “npm install” in the directory of package.json. I am also using npm to run the webpack scripts. I found this a much simpler option than including extra grunt/gulp scripts. The scripts are pretty straight forward build and build:dev run webpack with flags to tell it the environment and whether it should minimize the output. Th watch script is useful during development as it will automatically rebuild assets when it detects a file has changed.&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/lukencode/a48ca54cedc442f6dd36fd72460f3a10.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;This is the webpack config script that is being run by npm. It reads a single “entry” javascript file and builds any javascript, css or sass included to the specified output path.&lt;/p&gt;
+
+&lt;p&gt;The work is done by the loaders configured in the modules section. &lt;a href=&quot;https://babeljs.io/&quot;&gt;Babel&lt;/a&gt; is a popular javascript compiler which allows you to use ES2015 and other things easily on the web.&lt;/p&gt;
+
+&lt;p&gt;The css and sass rules are using the ‘extract-text-webpack-plugin’ to pull out the resulting css into a separate file (‘site.css’). Webpack allows for some pretty fancy setups where css is rendered inline or bundled with javascript components like react and vuejs but for my purposes I am going with a single seperate css file.&lt;/p&gt;
+
+&lt;p&gt;The entry file will include javascript import or require statements for dependencies in addition to any javascript for the application. This includes the sass or css dependencies although this webpack script is configured to export those to a separate file. Example import statements in app.js:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import '../css/theme.scss'
+import '../vendor/tagsinput'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The scripts so far are completely independent to the ASP.NET Core application and work well being run as npm scripts from the console:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npm run build
+npm run watch
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We can integrate the into the .net build and publish workflow by adding some steps the the build process in the projects .csproj file. These scripts come from good post on &lt;a href=&quot;https://codeburst.io/how-to-use-webpack-in-asp-net-core-projects-a-basic-react-template-sample-25a3681a5fc2&quot;&gt;codeburst.io on webpack&lt;/a&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &amp;lt;Target Name=&quot;DebugRunWebpack&quot; BeforeTargets=&quot;Build&quot; Condition=&quot; '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') &quot;&amp;gt;
+    &amp;lt;!-- Ensure Node.js is installed --&amp;gt;
+    &amp;lt;Exec Command=&quot;node --version&quot; ContinueOnError=&quot;true&quot;&amp;gt;
+      &amp;lt;Output TaskParameter=&quot;ExitCode&quot; PropertyName=&quot;ErrorCode&quot; /&amp;gt;
+    &amp;lt;/Exec&amp;gt;
+    &amp;lt;Error Condition=&quot;'$(ErrorCode)' != '0'&quot; Text=&quot;Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE.&quot; /&amp;gt;
+    &amp;lt;!-- In development, the dist files won't exist on the first run or when cloning to a different machine, so rebuild them if not already present. --&amp;gt;
+    &amp;lt;Message Importance=&quot;high&quot; Text=&quot;Performing first-run Webpack build...&quot; /&amp;gt;
+    &amp;lt;Exec Command=&quot;npm run build:dev&quot; /&amp;gt;
+  &amp;lt;/Target&amp;gt;
+  
+  &amp;lt;Target Name=&quot;PublishRunWebpack&quot; AfterTargets=&quot;ComputeFilesToPublish&quot;&amp;gt;
+    &amp;lt;Exec Command=&quot;npm install&quot; /&amp;gt;
+    &amp;lt;Exec Command=&quot;npm run build&quot; /&amp;gt;    
+    &amp;lt;ItemGroup&amp;gt;
+      &amp;lt;DistFiles Include=&quot;wwwroot\dist\**&quot; /&amp;gt;
+      &amp;lt;ResolvedFileToPublish Include=&quot;@(DistFiles-&amp;gt;'%(FullPath)')&quot; Exclude=&quot;@(ResolvedFileToPublish)&quot;&amp;gt;
+        &amp;lt;RelativePath&amp;gt;%(DistFiles.Identity)&amp;lt;/RelativePath&amp;gt;
+        &amp;lt;CopyToPublishDirectory&amp;gt;PreserveNewest&amp;lt;/CopyToPublishDirectory&amp;gt;
+      &amp;lt;/ResolvedFileToPublish&amp;gt;
+    &amp;lt;/ItemGroup&amp;gt;
+  &amp;lt;/Target&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The “DebugRunWebpack” target will build the assets in dev mode if they dont already exist. “PublishRunWebpack” will build and include the files when running dotnet publish. This is useful for automated build pipelines such as visual studio online.&lt;/p&gt;
+
+&lt;p&gt;The setup here is very basic and a good starting point - especially if you are not using a framework such as react. Functionality that could be added depending on the project is separating the vendor assets into a different file/process as well as adding linting, source maps and more to the webpack config.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Introducing Austechjobs an Australian technology job board</title>
+   <link href="http://lukencode.com/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/"/>
+   <updated>2018-04-09T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2018/04/09/introducing-austechjobs-an-australian-technology-job-board</id>
+   <content type="html">&lt;p&gt;It has been a couple of years (kids will do that) in the wilderness but I am back working on my blog and on an exciting new project.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://austechjobs.com.au&quot;&gt;Austechjobs&lt;/a&gt;&lt;/strong&gt; is a job board focusing on technology jobs in Australia. This includes developers, designers, support, sys admin and management.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://austechjobs.com.au&quot;&gt;&lt;img src=&quot;/img/austechjobs-home.png&quot; alt=&quot;Austechjobs - home&quot; title=&quot;Austechjobs - home&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;In my role as Development Manager at QIMR Berghofer I am often involved in recruiting developers for my team. I have always been disappointed with the recruiter spam and mountains of unqualified applications that posting to the big job sites brings. My hope is Austechjobs will be a place to find the best IT jobs at the best companies in Australia and in turn for employers to reach the best IT professionals in Australia.&lt;/p&gt;
+
+&lt;p&gt;Austechjobs will provide incentives for employers to list positions with enough detail for job seekers to see what they are in for. Initially at least this means positions recruitment agencies will not be accepted. Posting a job on the site is free during the launch but this will change as more jobs and functionality are available. If you have any questions or feedback contact me on &lt;a href=&quot;mailto:luke@austechjobs.com.au&quot;&gt;luke@austechjobs.com.au&lt;/a&gt; for more information visit  &lt;a href=&quot;https://austechjobs.com.au/about&quot;&gt;austechjobs.com.au/about&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The site itself is a custom asp.net core application and since this is a technical blog I hope to post some snippets of code I have been working on soon.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>An embeddable JSONP javascript widget template</title>
+   <link href="http://lukencode.com/2013/01/24/jsonp-embeddable-widget-template/"/>
+   <updated>2013-01-24T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2013/01/24/jsonp-embeddable-widget-template</id>
+   <content type="html">&lt;p&gt;Recently I’ve been hacking together a little &lt;a href=&quot;http://pollfu.com&quot;&gt;online poll creator - pollfu&lt;/a&gt;. For the app I needed to have the option to embed the poll on an external website. One of the best examples of this is the &lt;a href=&quot;https://stripe.com/docs/checkout&quot;&gt;checkout widget by stripe&lt;/a&gt;. The cool thing about the stripe widget is it loads everything it needs through that one script.&lt;/p&gt;
+
+&lt;p&gt;This is the core of what I came up with:&lt;/p&gt;
+
+&lt;div&gt;
+&lt;script src=&quot;https://gist.github.com/4629345.js&quot;&gt; &lt;/script&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This is what it can do:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Check for the existence of jquery (and version) on the page, if it isn’t there load it in. Just set the jquery script location and version variables at the top. It uses noconflict and sets jquery to the var jQuery variable. After jquery is ready the main() function is called, from there you can listen for document ready.&lt;/li&gt;
+  &lt;li&gt;Load in any other script and call back a function when it has loaded using the loadScript(src, onLoad) function.&lt;/li&gt;
+  &lt;li&gt;Load in a css file and add it to the document head using the loadCss(src) function.&lt;/li&gt;
+  &lt;li&gt;Has a reference to the script tag itself (var scriptTag). This means you can place the script on the page where you want to inject your html ala stripe checkout.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;After you have jquery and your scripts loaded in you can use it grab data from your server using jsonp (there is a super simple example commented out in the source).&lt;/p&gt;
+
+&lt;p&gt;Another cool thing to try is setting widget variables on the script tag using data attirbutes (eg data-id=”1”). Once you have a reference to the script tag these are super easy to read in eg:&lt;/p&gt;
+
+&lt;pre&gt;
+&amp;lt;script src=&amp;quot;http://pollfu.com/public/js/embed.v1.js&amp;quot; data-id=&amp;quot;9&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;This is an example of the end result embedded poll for pollfu:&lt;/p&gt;
+
+&lt;div&gt;
+&lt;script src=&quot;http://pollfu.com/public/js/embed.v1.js&quot; data-id=&quot;9&quot;&gt;;&lt;/script&gt;
+&lt;/div&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Billminder for Windows 8</title>
+   <link href="http://lukencode.com/2012/11/15/billminder-for-windows-8/"/>
+   <updated>2012-11-15T18:33:01+10:00</updated>
+   <id>http://lukencode.com/2012/11/15/billminder-for-windows-8</id>
+   <content type="html">&lt;p&gt;&lt;a href=&quot;http://apps.microsoft.com/webpdp/en-US/app/billminder/016419f6-fa32-463b-8265-a8d26f3bb0c0&quot;&gt;&lt;img src=&quot;https://vgvmkw.blu.livefilestore.com/y1p6KlRXkg0I2Ubz-J1joUmABHfucRPxoqLfIdicdyVZe1qSQ_ZYwb3yCQfwXx9GO0bvy2hXQQCYOCBplkqpJdNr97ZOwzZTfeX/biglogo.png?psid=1&quot; alt=&quot;logo&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Billminder, my first windows 8 app has &lt;a href=&quot;http://apps.microsoft.com/webpdp/en-US/app/billminder/016419f6-fa32-463b-8265-a8d26f3bb0c0&quot;&gt;finally hit the store&lt;/a&gt;. This is how I describe it in my wanky store description:&lt;/p&gt;
+
+&lt;p&gt;Billminder is a minimalist and elegant solution for controlling your expenses. With innovative infographic style display you can see at a glance how much you have to pay. Billminder features a live tile showing the next 30 days of bills so you will never miss a payment.&lt;/p&gt;
+
+&lt;h4 id=&quot;features&quot;&gt;Features&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Elegant minimalist interface&lt;/li&gt;
+  &lt;li&gt;Infographic overview of where your money goes&lt;/li&gt;
+  &lt;li&gt;Live tile that automatically updates with upcoming bills&lt;/li&gt;
+  &lt;li&gt;Add one off and re-occurring bills&lt;/li&gt;
+  &lt;li&gt;Keep organised with custom categories&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://wscont1.apps.microsoft.com/winstore/1x/6108fd88-128e-42bd-8654-8f9fc1f43438/Screenshot.43147.1000001.jpg&quot; alt=&quot;Year View&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://wscont2.apps.microsoft.com/winstore/1x/6108fd88-128e-42bd-8654-8f9fc1f43438/Screenshot.43147.1000002.jpg&quot; alt=&quot;Month View&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;From a developers point of view Billminder is a html/js app. Coming from a mainly C# (but with plenty of web experience) background I actually javascript really refreshing. The time it takes to get something on the screen feels much reduced compared to the strict MVVM structure I have used in the past. I used a number of really great libraries including &lt;a href=&quot;http://aaronpowell.github.com/db.js/&quot;&gt;db.js&lt;/a&gt; for data storage, &lt;a href=&quot;http://d3js.org/&quot;&gt;d3.js&lt;/a&gt; for cool visualisations and &lt;a href=&quot;http://momentjs.com/&quot;&gt;moment.js&lt;/a&gt; for working with dates. I should have some posts on specifics up in the nearish future so if you see something in the app you want and you want to know how it works let me know.&lt;/p&gt;
+
+&lt;p&gt;If you like the app obviously you should buy it and rate it 5 stars but you could also &lt;strong&gt;&lt;a href=&quot;http://apptivate.ms/apps/1284/billminder&quot;&gt;vote for it on apptivate.ms&lt;/a&gt;&lt;/strong&gt; - an awesome competition for Windows 8 developers.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Http Web Services in Javascript Windows 8 Metro Apps</title>
+   <link href="http://lukencode.com/2012/07/09/http-web-services-in-javascript-windows-8-metro-apps/"/>
+   <updated>2012-07-09T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2012/07/09/http-web-services-in-javascript-windows-8-metro-apps</id>
+   <content type="html">&lt;p&gt;I have been doing some Windows 8 development recently and decided to work with html, css and javascript rather than c# and xaml. I am mainly a .net guy and was a little worried about how javascript would work for a few things including consuming rest web services. I’ve written a few posts on web services for &lt;a href=&quot;http://lukencode.com/2010/04/14/google-weather-api-with-restsharp/&quot;&gt;.net&lt;/a&gt;, &lt;a href=&quot;http://lukencode.com/2010/04/27/calling-web-services-in-android-using-httpclient/&quot;&gt;android&lt;/a&gt; and &lt;a href=&quot;http://lukencode.com/2010/08/04/rest-web-services-in-windows-phone-7/&quot;&gt;windows phone&lt;/a&gt; and as it turns out Windows 8 javascript is easier than all of them.&lt;/p&gt;
+
+&lt;p&gt;###A Basic Web Request&lt;/p&gt;
+
+&lt;p&gt;The best way to call your web services is using the &lt;a href=&quot;http://msdn.microsoft.com/en-us/library/windows/apps/br229787.aspx&quot;&gt;WinJS.xhr function&lt;/a&gt;. This function is basically a wrapper for the lower level XMLHttpRequest object. The function takes an options object with a number of optional properties. A basic xhr get request looks like this:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+WinJS.xhr({
+           type: &quot;get&quot;,
+           url: &quot;www.example.com&quot;
+        });
+&lt;/pre&gt;
+
+&lt;p&gt;You can make a post request by changing the type to “post”.&lt;/p&gt;
+
+&lt;p&gt;###Using Promises&lt;/p&gt;
+
+&lt;p&gt;WinJS.xhr wraps the request in something called a &lt;a href=&quot;http://msdn.microsoft.com/en-us/library/windows/apps/br211867.aspx&quot;&gt;promise&lt;/a&gt;. Promises in WinJS is an abstraction to help out with asynchronous requests. In short a promise is like a schedule or work to be done on a value that has yet to be computed, in the case of web services we are waiting on the response from the server. Using promises you can chain calls to the then and done methods. These methods will fire after the promise has been completed. You can chain multiple then methods together or just use done to wait until the end.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+WinJS.xhr({
+            type: &quot;post&quot;,
+            url: &quot;www.example.com&quot;,
+        }).done(function (result) {
+            console.log(result.responseText)
+        });
+&lt;/pre&gt;
+
+&lt;p&gt;In the previous example the done function has a parameter “result”. This is the data returned from the webservice, you can also access a number of other properties such as result.status. You can also provide an error function as the second parameter to the done and then functions.&lt;/p&gt;
+
+&lt;p&gt;###Setting Request Parameters&lt;/p&gt;
+
+&lt;p&gt;Most web services will require you to provide paramters. These might be query string params for get requests, form values for post or setting specific headers. To set query string or form parameters you can set the data property on the xhr options objects. To get the parameters in the right format I use a little helper function called formatParams. This function takes a javascript object and converts each property into a key/value parameter.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var p = {
+            key: &amp;quot;1234&amp;quot;
+        };
+
+//get request
+WinJS.xhr({
+            type: &amp;quot;get&amp;quot;,
+            url: &amp;quot;www.example.com&amp;quot;,
+            data: formatParams(p)
+        });
+            
+//post request
+WinJS.xhr({
+            type: &amp;quot;post&amp;quot;,
+            url: &amp;quot;www.example.com&amp;quot;,
+            data: formatParams(p),
+            headers: { &amp;quot;Content-type&amp;quot;: &amp;quot;application/x-www-form-urlencoded&amp;quot; }
+        });
+            
+function formatParams(p) {
+    var queryStr = &amp;quot;&amp;quot;;
+
+    for (var propertyName in p) {
+        var val = p[propertyName];
+        queryStr += propertyName + &amp;quot;=&amp;quot; + encodeURI(val) + &amp;quot;&amp;amp;&amp;quot;;
+    }
+
+    return queryStr.slice(0, -1);
+}
+&lt;/pre&gt;
+
+&lt;p&gt;For the post request I set the content type header to x-www-form-urlencoded. You can set any other headers you need using this same format.&lt;/p&gt;
+
+&lt;p&gt;###Consuming JSON&lt;/p&gt;
+
+&lt;p&gt;Assuming your web service returns json the biggest advantage javascript has it it handles it natively. There is no need for building a matching class or messing about with dictionaries it just works. All you need to do is call JSON.parse on your response text.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+WinJS.xhr({
+            type: &quot;post&quot;,
+            url: url,
+        }).done(function (result) {
+        	var json = JSON.parse(result.responseText);
+        });
+&lt;/pre&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Fluent Email now supporting custom template renderers</title>
+   <link href="http://lukencode.com/2012/06/10/fluent-email-now-supporting-custom-template-renderers/"/>
+   <updated>2012-06-10T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2012/06/10/fluent-email-now-supporting-custom-template-renderers</id>
+   <content type="html">&lt;p&gt;Fluent Email is a simple wrapper for System.Net.Mail that provides a fluent interface for constructing and sending emails in .Net. It also provides a Razor based template rendering engine. After getting a couple of requests for different renderers I decided to provide an interface in Fluent Email for templating that anyone can implement.&lt;/p&gt;
+
+&lt;p&gt;The updated version of fluent email is available as always on &lt;a href=&quot;http://nuget.org/packages/fluent-email&quot;&gt;nuget&lt;/a&gt; and you can find the source on &lt;a href=&quot;https://github.com/lukencode&quot;&gt;github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The interface itself is really basic and has just one method:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public interface ITemplateRenderer
+{
+	string Parse&amp;lt;T&amp;gt;(string template, T model);
+}
+&lt;/pre&gt;
+
+&lt;p&gt;The default renderer uses the awesome &lt;a href=&quot;http://nuget.org/packages/RazorEngine&quot;&gt;RazorEngine&lt;/a&gt; to implement the interface:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class RazorRenderer : ITemplateRenderer
+{
+	public string Parse&amp;lt;T&amp;gt;(string template, T model)
+	{
+		return Razor.Parse&amp;lt;T&amp;gt;(template, model);
+	}
+}
+&lt;/pre&gt;
+
+&lt;p&gt;If you want to use your own renderer all you need to do is implement the ITemplateRenderer interface and call the UsingTemplateEngine method when constructing an email:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var email = Email
+		.FromDefault()
+		.To(&quot;test@test.test&quot;)
+		.Subject(&quot;awesome new fluent email features&quot;)
+		.UsingTemplateEngine(new CustomTemplateRenderer())
+		.UsingTemplate(template, new { Name = &quot;LUKE&quot; })
+		.Send();
+&lt;/pre&gt;
+
+&lt;p&gt;Here are a couple of the different engines I have seen people using for fluent email (not yet implementing the new interface but hopefully soon).  If you have your own implementation leave a comment with a link and I will add it too the list.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Markdown support - Nguyen Ly has some markdown support sitting in his &lt;a href=&quot;https://github.com/lyphtec/FluentEmail&quot;&gt;fluent email fork on github&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Mustache - &lt;a href=&quot;http://twitter.com/frankr&quot;&gt;Frank Radocaj&lt;/a&gt; is uses Mustache (using Nustache) for his templates hopefully he can post some code up soon.&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Quick and Dirty Currency Formatting in C#</title>
+   <link href="http://lukencode.com/2012/05/28/quick-and-dirty-csharp-currency-helper/"/>
+   <updated>2012-05-28T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2012/05/28/quick-and-dirty-csharp-currency-helper</id>
+   <content type="html">&lt;p&gt;A project I have been working on recently stores amounts of money along with the currency they are in. I was getting sick of the old &lt;code class=&quot;highlighter-rouge&quot;&gt;amount + currency_code&lt;/code&gt; style of display and decided to see if I could hack together something that looks a bit nicer. Turns out you can use the built in .NET culture info and &lt;code class=&quot;highlighter-rouge&quot;&gt;string.Format&lt;/code&gt; to format decimals into any currency.&lt;/p&gt;
+
+&lt;p&gt;The code queries the cultures using linq to find a culture matching the given currency code it then uses passes the culture into string.Format and asks it to format as currency (“C”). I wrapped it all up in an extension method and added a default return if the culture is not found. The code seems to work fine but I can’t really vouch for its performance or coverage of currencies other than to say “it works on my machine”.&lt;/p&gt;
+
+&lt;pre&gt;
+public static string FormatCurrency(this decimal amount, string currencyCode)
+{
+	var culture = (from c in CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+			let r = new RegionInfo(c.LCID)
+			where r != null
+			&amp;amp;&amp;amp; r.ISOCurrencySymbol.ToUpper() == currencyCode.ToUpper()
+			select c).FirstOrDefault();
+
+	if (culture == null)
+		return amount.ToString(&amp;quot;0.00&amp;quot;);
+
+	return string.Format(culture, &amp;quot;{0:C}&amp;quot;, amount);
+}
+&lt;/pre&gt;
+
+&lt;p&gt;Here are the results of calling FormatCurrency for a few different currency codes:&lt;/p&gt;
+
+&lt;pre&gt;
+decimal amount = 100;
+
+amount.FormatCurrency(&quot;AUD&quot;);  //$100.00
+amount.FormatCurrency(&quot;GBP&quot;);  //£100.00
+amount.FormatCurrency(&quot;EUR&quot;);  //100,00 €
+amount.FormatCurrency(&quot;VND&quot;);  //100,00 ₫
+amount.FormatCurrency(&quot;IRN&quot;);  //₹ 100.00
+&lt;/pre&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Using Pretzel / Jekyll to host your blog on Github</title>
+   <link href="http://lukencode.com/2012/02/13/using-pretzel-jekyll-to-your-blog-on-github/"/>
+   <updated>2012-02-13T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2012/02/13/using-pretzel-jekyll-to-your-blog-on-github</id>
+   <content type="html">&lt;p&gt;A couple of weeks ago after shamelessly promoting on of my blog post on a social network I received a troubling report that my pride and joy had contracted some type of virus.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/posts/virus.png&quot; alt=&quot;Virus&quot; title=&quot;MY GOD - ITS ALL MY FAULT&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This scary red screen (well a similar one) along with some performance issues and me getting bored with wordpress meant I was on the hunt for a new blog platform.  I was after was something fast and simple where I have control over the html and css generated.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/mojombo/jekyll&quot;&gt;Jekyll&lt;/a&gt; is a “blog-aware, static site generator in Ruby”. It takes markdown and liquid (a templating language) text files and mashes them into a static html site. The “blog-aware” bit means Jekyll will take posts written in mark down and generate a url structure similar to what is seen on most blogs eg [year]/[month]/[day]/[title]. Static html sites have a couple of obvious advantages and disadvantages - they are easy to host, fast and difficult to hack (take that virus man!) but there is no admin interface for update posts.&lt;/p&gt;
+
+&lt;p&gt;This is what liquid templating looks like:&lt;/p&gt;
+
+&lt;pre&gt;
+
+    ---
+    layout : layout
+    title : SiteName
+    ---
+    
+    &lt;ul id=&quot;archive&quot;&gt;
+		{% for post in site.posts %}
+    		&lt;li&gt;
+    			&lt;a href=&quot;{{ post.url }}&quot;&gt;{{ post.title }}&lt;/a&gt;
+    			&lt;span class=&quot;date&quot;&gt;{{ post.date | date: '%d %B, %Y' }}&lt;/span&gt;
+    		&lt;/li&gt;
+		{% endfor %}
+    &lt;/ul&gt;
+    
+&lt;/pre&gt;
+
+&lt;p&gt;The text inbetween the — up the top is a &lt;a href=&quot;http://www.yaml.org/&quot;&gt;YAML&lt;/a&gt; header - any files with a yaml header will be processed as special files. The variables being set are for things like the layout to be used, permalink or page title.&lt;/p&gt;
+
+&lt;p&gt;A simple post written in markdown might looks something like this:&lt;/p&gt;
+
+&lt;pre&gt;
+    --- 
+    layout: post
+    title: &quot;My First Post&quot;
+    author: &quot;Author&quot;
+    comments: true
+    ---
+    
+    ## Hello world...
+    
+    This is my first post on the site!
+&lt;/pre&gt;
+
+&lt;p&gt;This Jekyll business was sounding wonderful but being the sheltered windows loving, 9-5 enterprise coding, &lt;a href=&quot;http://blog.expensify.com/2011/03/25/ceo-friday-why-we-dont-hire-net-programmers/&quot;&gt;unhireable&lt;/a&gt; .NET developer that I am I threw it into the “too hard basket” and went back to whinging about wordpress.
+Lucky for me there is a gang of open source programmers (with .net flavour to them) that were setting out to build the windows equivalent of Jekyll code named - &lt;a href=&quot;https://github.com/Code52/pretzel&quot;&gt;Pretzel&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Pretzel is a .NET console app built in just one week builds static sites in a similar manner to Jekyll, with the jekyll mode more or less emulating it exactly. There are some other cool features in the pipeline such as a razor engine, js and css minification and less support. Pretzel has a couple of commands - “create” builds the basic site structure, “bake” converts your site to static html and “taste” runs an embedded web server and watches for file changes to preview your site. I personally like to use “taste” like this while I am working on my site for instant updates:&lt;/p&gt;
+
+&lt;pre&gt;pretzel taste -p=8080 -e=jekyll&lt;/pre&gt;
+
+&lt;p&gt;With my mind set on a fancy static blog I had one more problem to solve - hosting. It turns out Github allows you to do some really cool stuff with github pages AND github pages supports Jekyll all for free! Hosting my blog as a github repo + &lt;a href=&quot;http://pages.github.com/&quot;&gt;gh pages&lt;/a&gt; has another advantage my blog is safely stored on github servers with a full history. Updating the site is as easy as pushing updates or new pages to the repo.&lt;/p&gt;
+
+&lt;p&gt;Here is what I did to get my blog up and running on github.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Set up a repo named username.github.com. This will tell github to publish any files on the master branch to http://yourusername.github.com.&lt;/li&gt;
+  &lt;li&gt;Add a text file named CNAME to your repo with each url you want mapped to the site on separate lines.&lt;/li&gt;
+  &lt;li&gt;Import my wordpress posts using pretzel. To do this you just need to download the xml export of your wordpress blog and run the import command. This will import your posts as markdown files in the post folder.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;pretzel import -t=wordpress -f=&quot;path to xml&quot;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Import my blog comments to disqus and embed their javascript widget on my post pages. Disqus provides a wordpress plugin that will import existing posts - remember to do this before you shut down your wordpress blog.&lt;/li&gt;
+  &lt;li&gt;Profit!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;One thing to beware of is 404s. You need to add a plain 404.html page to your repo or 404s will be redirected to a github page (and not the one with the &lt;a href=&quot;https://github.com/404&quot;&gt;cool star wars one&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;This blog now essentially a git repo you can take a look at the source for my blog at &lt;a href=&quot;https://github.com/lukencode/lukencode.github.com&quot;&gt;lukencode/lukencode.github.com&lt;/a&gt;. Without the cruft of a wordpress theme I have been able to drastically simplify the html and css and cut down the page size. I’ve also had a chance to experiment with responsive design - go on resize this window and let me know what you think. Next on the todo list is a redesigned home page, pages for my wp7 apps and some fancy javascript to load in my current github repos.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>NetBash Updated – Formatting Helpers Added</title>
+   <link href="http://lukencode.com/2012/01/14/netbash-updatedformatting-helpers-added/"/>
+   <updated>2012-01-14T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2012/01/14/netbash-updatedformatting-helpers-added</id>
+   <content type="html">&lt;p&gt;NetBash (drop in command line for asp.net web applications) was first released late last year with little to no response from the community. No big deal – I built it to scratch my own itch so it was at least going to be useful to me. Then, like clockwork I go on holidays for a week and a bit and it is featured on &lt;a href=&quot;http://asp.net&quot; target=&quot;_blank&quot;&gt;Asp.net&lt;/a&gt; and tweeted by close to 100 people. I have used the past few days to catch up with the bugs people have found (thanks heaps to those who forked and fixed bugs themselves) and get a new release out on &lt;a href=&quot;http://nuget.org/packages/NetBash&quot; target=&quot;_blank&quot;&gt;NuGet&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3&gt;Bug Fixes&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;NetBash is now compatible with older versions of JQuery (1.5 at least). This was causing some issues with people using a fresh file – new project mvc app to test it out.&lt;/li&gt;
+  &lt;li&gt;Console now auto scrolls to bottom when opened.&lt;/li&gt;
+  &lt;li&gt;Now more compatible with older versions of IE.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;Formatting Extensions&lt;/h3&gt;
+
+&lt;p&gt;A couple of classes have been included in the NetBash.Formatting namespace to help make the output of your commands a bit prettier. The most useful is the &lt;strong&gt;TableExtensions&lt;/strong&gt; class contributed by &lt;a href=&quot;https://twitter.com/#!/d1k_is&quot; target=&quot;_blank&quot;&gt;Damian Karzon&lt;/a&gt;. This class includes a couple of extension methods on IEnumerable&amp;lt;T&amp;gt; that take a list of objects and using reflection output them into a nice consoley table. Here is an example:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;public string Process(string[] args)
+{
+    var tempData = new List&amp;lt;GridData&amp;gt;
+    {
+        new GridData
+        {
+            RowId = 1,
+            SomeName = &quot;NUMBER1&quot;,
+            Longtext = &quot;12345678901234567890&quot;,
+            SomeDate = DateTime.Today
+        },
+        new GridData
+        {
+            RowId = 2,
+            SomeName = &quot;sup bro&quot;,
+            Longtext = &quot;I AM THE GREATEST&quot;,
+            SomeDate = DateTime.Now.AddDays(21)
+        },
+        new GridData
+        {
+            RowId = 5,
+            SomeName = &quot;GridCommand&quot;,
+            Longtext = &quot;longish&quot;,
+            SomeDate = DateTime.Now.AddDays(-3)
+        }
+    };
+
+    return tempData.ToConsoleTable();
+}&lt;/pre&gt;
+
+&lt;p&gt;Output:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2012/01/gridyo.png&quot;&gt;&lt;img title=&quot;gridyo&quot; border=&quot;0&quot; alt=&quot;gridyo&quot; src=&quot;http://lukencode.com/wp-content/uploads/2012/01/gridyo_thumb.png&quot; width=&quot;624&quot; height=&quot;115&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Pretty neat I think. It works with most things I’ve thrown at it including anonymous classes but not dynamic.&lt;/p&gt;
+&lt;p&gt;The other class is called &lt;strong&gt;SparkExtensions&lt;/strong&gt;. This class is a C# port of this &lt;a href=&quot;https://github.com/holman/spark&quot; target=&quot;_blank&quot;&gt;cool little shell script&lt;/a&gt;. The Spark() methods are extension methods on various IEnumerable collections (int, decimal, string, etc) they take the list and turn it into a cool little spark line graph similar to this: ▁▂▃▅▂▇. Here is a basic example:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public string Process(string[] args)
+{
+    var list = new List&amp;lt;int&amp;gt;() { 5, 7, 3, 8, 9, 2, 12, 7, 6 };
+
+    return list.Spark();
+}
+&lt;/pre&gt;
+
+&lt;p&gt;Hopefully these additions make building commands a little more painless. If you are using NetBash or better still have built some open source commands I'd love to hear from you. NetBash source can be found on &lt;a href=&quot;https://github.com/lukencode/NetBash&quot; target=&quot;_blank&quot;&gt;Github&lt;/a&gt; and downloaded using &lt;a href=&quot;http://nuget.org/packages/NetBash&quot; target=&quot;_blank&quot;&gt;NuGet&lt;/a&gt;.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>NetBash – An Alternative to Endless Admin Pages in Asp.Net Web Applications</title>
+   <link href="http://lukencode.com/2011/12/11/netbashan-alternative-to-endless-admin-pages-in-asp-net-web-applications/"/>
+   <updated>2011-12-11T21:14:54+10:00</updated>
+   <id>http://lukencode.com/2011/12/11/netbashan-alternative-to-endless-admin-pages-in-asp-net-web-applications</id>
+   <content type="html">&lt;p&gt;One thing that always annoys me when working on a web app is having to write those inevitable pages full of admin functions some of which are just a single button. When hacking up one such page I had a thought - a plug in library providing a command line for your web app might save me a lot of time. &lt;a href=&quot;https://github.com/lukencode/NetBash&quot;&gt;NetBash&lt;/a&gt; is what I came up with.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2011/12/netbash.png&quot;&gt;&lt;img alt=&quot;netbash&quot; src=&quot;http://lukencode.com/wp-content/uploads/2011/12/netbash_thumb.png&quot; width=&quot;1028&quot; height=&quot;561&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As you can see from the screenshot NetBash is basically a miniature command line complete with that sweet lime green on black theme that lives in your web app. It can be expanded, minimised and hidden with keyboard shortcuts (&lt;a href=&quot;https://github.com/madrobby/keymaster&quot; target=&quot;_blank&quot;&gt;keymaster&lt;/a&gt; ftw) and remembers recent command history using localStorage. NetBash works in a similar way to the &lt;a href=&quot;http://code.google.com/p/mvc-mini-profiler/&quot; target=&quot;_blank&quot;&gt;MVC Mini Profiler&lt;/a&gt; meaning that it can be installed with minimal effort on your part (just a NuGet package) and follows you around your site. This is the setup:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;protected void Application_Start()
+{
+    AreaRegistration.RegisterAllAreas();
+
+    RegisterGlobalFilters(GlobalFilters.Filters);
+    RegisterRoutes(RouteTable.Routes);
+
+    NetBash.Init();
+
+    //this is optional, allows you to decide who sees netbash
+    NetBash.Settings.Authorize = (request) =&amp;gt;
+        {
+            return request.IsLocal;
+        };
+}
+&lt;/pre&gt;
+
+&lt;p&gt;The call to Init inserts a couple of routes for the handler, css and js files. You also need to somewhere in your _Layout.cshtml / MasterPage add the RenderIncludes function to write the css and script tags to the page.&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;NetBash.RenderIncludes()&lt;/pre&gt;
+&lt;p&gt;The way it works is by searching your application using reflection for classes implementing IWebCommand with a WebCommand attribute. The WebCommand attribute defines a name for the command which is used to invoke it as well as a description displayed on help. The IWebCommand interface has a method called Process which passes in a string array of arguments in the same manor that a .NET console application’s main method would. When a command is entered on the front end an ajax request is made to the NetBash handler. The handler grabs the first word of the request text and matches it to a WebCommand with the same name then invokes Process and returns the result. Here is a very simple example command that returns the length of the arguments passed in:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+[WebCommand(&amp;quot;length&amp;quot;, &amp;quot;Returns number of characters in given arguments&amp;quot;)]
+public class LengthCommand : IWebCommand
+{
+    public bool ReturnHtml
+    {
+        get { return false; }
+    }
+
+    public string Process(string[] args)
+    {
+        return string.Join(&amp;quot; &amp;quot;, args).Length.ToString();
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;Hopefully defining commands this way makes it both dead easy to implement while allowing flexibility to do something more complex (perhaps parsing the arguments with &lt;a href=&quot;http://www.ndesk.org/Options&quot; target=&quot;_blank&quot;&gt;nDesk.Options&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;It is pretty early days for the code so I probably wouldn’t recommend using it in a production situation at the moment. NetBash is available as a &lt;a href=&quot;http://nuget.org/packages/NetBash&quot; target=&quot;_blank&quot;&gt;NuGet package&lt;/a&gt; and the source on GitHub at &lt;a href=&quot;https://github.com/lukencode/NetBash&quot; target=&quot;_blank&quot;&gt;lukencode/netbash&lt;/a&gt;. I’d love to hear people opinions on the api (nothing is set in stone) as well as the UI which could use some work. I have some ideas for some useful commands (some mad stats with a .net version of &lt;a href=&quot;https://github.com/holman/spark&quot; target=&quot;_blank&quot;&gt;spark&lt;/a&gt;) also &lt;a href=&quot;http://benjii.me/&quot; target=&quot;_blank&quot;&gt;Ben Cull&lt;/a&gt; promises me he will write an asp.net membership command pack.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Windows Phone (Mango) Contact Chooser Task</title>
+   <link href="http://lukencode.com/2011/12/01/windows-phone-mango-contact-chooser-task/"/>
+   <updated>2011-12-01T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2011/12/01/windows-phone-mango-contact-chooser-task</id>
+   <content type="html">&lt;p&gt;When creating the amazing, incredible and life changing app for managing money you borrow and lend &lt;a href=&quot;http://www.windowsphone.com/en-US/apps/7745a9a4-6926-4767-9e61-837fdd1faba5&quot; target=&quot;_blank&quot;&gt;Metrowe&lt;/a&gt; I was pretty annoyed to discover that in the Mango SDK there are choosers for selecting emails: &lt;em&gt;EmailAddressChooserTask&lt;/em&gt;&lt;strong&gt; &lt;/strong&gt;and phone numbers: &lt;em&gt;PhoneNumberChooserTask &lt;/em&gt;but not just plain selecting a contact. The problem with the other choosers is the email address will exclude contacts without an email and similarly the phone number chooser and phone numbers. After much complaining decided to develop my own contact chooser (quite closely based off &lt;a href=&quot;http://blog.naviso.fr/wordpress/?p=851&quot; target=&quot;_blank&quot;&gt;this french one&lt;/a&gt;) matching the OS version as closely as possible. This is what it ended up looking like:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2011/12/contact-chooser.png&quot;&gt;&lt;img style=&quot;background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px&quot; title=&quot;contact-chooser&quot; border=&quot;0&quot; alt=&quot;contact-chooser&quot; src=&quot;http://lukencode.com/wp-content/uploads/2011/12/contact-chooser_thumb.png&quot; width=&quot;333&quot; height=&quot;553&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Seamless huh? I’ve managed to get the calling code for this down to something nice a simple which pretty much matches the built in choosers:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+private void button1_Click(object sender, RoutedEventArgs e)
+{
+    var contactChooser = new ContactChooserTask();
+    contactChooser.OnSelected += new EventHandler&amp;lt;ContactChooserEventArgs&amp;gt;(contactChooser_OnSelected);
+    contactChooser.Show();
+}
+
+void contactChooser_OnSelected(object sender, ContactChooserEventArgs e)
+{
+    MessageBox.Show(e.Contact.DisplayName);
+}
+&lt;/pre&gt;
+&lt;p&gt;Under the covers it is a bit of a different story. The display relies on the &lt;a href=&quot;http://silverlight.codeplex.com/&quot; target=&quot;_blank&quot;&gt;Silverlight Toolkit’s&lt;/a&gt; LongListSelector (which is awesome) and uses code pretty similar to that described by my good friend Benjii in his post: &lt;a href=&quot;http://benjii.me/2011/10/how-to-use-the-long-list-selector-for-windows-phone-mango/&quot; target=&quot;_blank&quot;&gt;How to Use the Long List Selector for Windows Phone Mango&lt;/a&gt;. The code to encapsulate the page is kind of a mish mash of code adapted(/stolen) from the source of the &lt;a href=&quot;http://coding4fun.codeplex.com/&quot; target=&quot;_blank&quot;&gt;Coding4Fun&lt;/a&gt; toolkit (also awesome). That said it seems to work well in my app and in my very limited testing.&lt;/p&gt;
+&lt;p&gt;The code for the library lives on github at &lt;a href=&quot;https://github.com/lukencode/ContactChooser&quot; target=&quot;_blank&quot;&gt;&lt;strong&gt;lukencode/ContactChooser&lt;/strong&gt;&lt;/a&gt; and is free and open source fork it, try it out, tell me how I suck then submit a pull request fixing the aforementioned suck! A couple of things that would be cool to see added would be some nice transition animations in and out and some more control over how the chooser looks.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Behind the XAML of the Windows Phone Silverlight Game – Numbertap</title>
+   <link href="http://lukencode.com/2011/09/30/behind-the-xaml-of-the-windows-phone-silverlight-game-numbertap/"/>
+   <updated>2011-09-30T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2011/09/30/behind-the-xaml-of-the-windows-phone-silverlight-game-numbertap</id>
+   <content type="html">&lt;p&gt;&lt;a href=&quot;http://numbertap.com/&quot; target=&quot;_blank&quot;&gt;Numbertap&lt;/a&gt; is a Windows Phone game built by me and a few mates (&lt;a href=&quot;http://twitter.com/benjii22&quot; target=&quot;_blank&quot;&gt;@benjii22&lt;/a&gt;, &lt;a href=&quot;http://twitter.com/d1k_is&quot; target=&quot;_blank&quot;&gt;@d1k_is&lt;/a&gt; and &lt;a href=&quot;http://twitter.com/fishkopter&quot; target=&quot;_blank&quot;&gt;@fishkopter&lt;/a&gt;). It is alive and well in the marketplace right now in the games section. When people ask this is what we tell people Numbertap is:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;em&gt;&quot;NumberTap pits you and your mad math skills against the rest of the world in a fast paced number tapping math frenzy!&quot;&lt;/em&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;What that actually means is Numbertap is a maths based game where you answer maths questions online organised into 2 minute rounds. At any one time everyone playing the game is playing the same round, at the end scores are tallied and you are placed in your rightful place as king of the maths world on the online leader board. Its kinda like times tables meets guitar hero scoring meets global leader boards. Here is a shot of the game in action:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2011/09/GameScreen.png&quot;&gt;&lt;img style=&quot;background-image: none; padding-left: 0px; padding-right: 0px; display: block; float: none; margin-left: auto; margin-right: auto; padding-top: 0px; border-width: 0px;&quot; title=&quot;GameScreen&quot; src=&quot;http://lukencode.com/wp-content/uploads/2011/09/GameScreen_thumb.png&quot; alt=&quot;GameScreen&quot; width=&quot;204&quot; height=&quot;337&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;This post is a collection of the libraries and techniques we found useful in both the windows phone app and the asp.net mvc server side.&lt;/p&gt;
+&lt;h3&gt;The App&lt;/h3&gt;
+&lt;p&gt;Like all good Windows Phone apps we focused on a few key ideas – simply and beautiful design, fluid movement and animation and speedy performance. Listed in no particular order is the technology we used to (hopefully) achieve this.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Silverlight over XNA for a game?!&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;If I were to guess I would say the vast majority of windows phone games are XNA based (and with good reason!) but we had a couple of reasons to roll with Silverlight:&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;We know Silverlight. This one is the most obvious 3/4 developers had built reasonably successful apps using Silverlight while 0/4 of us had built anything at all in XNA.&lt;/li&gt;
+	&lt;li&gt;We wanted a kick ass metro design. Building apps with expression blend in Silverlight almost feels like cheating in terms of design. All the styles, colours, buttons and fonts are right there ready to go all the [crap at design] developer has to do is follow &lt;a href=&quot;http://www.jeff.wilcox.name/2011/03/metro-design-guide-v1/&quot; target=&quot;_blank&quot;&gt;Jeff Wilcox’s excellent metro design guide&lt;/a&gt;to metro UI heaven (just don't let Jeff catch you missing a 12px margin). Since the gameplay we had in mind was pretty simple and Silverlight animations are actually pretty powerful we didn’t give up too much on the XNA front.&lt;/li&gt;
+	&lt;li&gt;There is no 3.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;br /&gt;
+&lt;strong&gt;Awesome Open Source Control Libraries&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;This is one are where windows phone is really starting to shine, nearly any control you would want UI wise that isn’t in the base SDK exists in a well documented and supported open source library. The two we like best are the official &lt;a href=&quot;http://silverlight.codeplex.com/&quot; target=&quot;_blank&quot;&gt;Silverlight Toolkit&lt;/a&gt; and the &lt;a href=&quot;http://coding4fun.codeplex.com/&quot; target=&quot;_blank&quot;&gt;Coding4Fun Toolkit&lt;/a&gt; both are available on NuGet.&lt;/p&gt;
+
+&lt;p&gt;Silverlight toolkit is more or less a must have in every windows phone app. The most useful thing it brings to the table is really nice and super simple to implement page transitions. Here is an example of some XAML form the Numbertap about page to do turnstile transitions in and out:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;toolkit:transitionservice.navigationintransition&amp;gt;
+    &amp;lt;toolkit:navigationintransition&amp;gt;
+        &amp;lt;toolkit:navigationintransition.backward&amp;gt;
+            &amp;lt;toolkit:turnstiletransition mode=&amp;quot;BackwardIn&amp;quot; /&amp;gt;
+        &amp;lt;/toolkit:navigationintransition.backward&amp;gt;
+        &amp;lt;toolkit:navigationintransition.forward&amp;gt;
+            &amp;lt;toolkit:turnstiletransition mode=&amp;quot;ForwardIn&amp;quot; /&amp;gt;
+        &amp;lt;/toolkit:navigationintransition.forward&amp;gt;
+    &amp;lt;/toolkit:navigationintransition&amp;gt;
+&amp;lt;/toolkit:transitionservice.navigationintransition&amp;gt;
+&amp;lt;toolkit:transitionservice.navigationouttransition&amp;gt;
+    &amp;lt;toolkit:navigationouttransition&amp;gt;
+        &amp;lt;toolkit:navigationouttransition.backward&amp;gt;
+            &amp;lt;toolkit:turnstiletransition mode=&amp;quot;BackwardOut&amp;quot; /&amp;gt;
+        &amp;lt;/toolkit:navigationouttransition.backward&amp;gt;
+        &amp;lt;toolkit:navigationouttransition.forward&amp;gt;
+            &amp;lt;toolkit:turnstiletransition mode=&amp;quot;ForwardOut&amp;quot; /&amp;gt;
+        &amp;lt;/toolkit:navigationouttransition.forward&amp;gt;
+    &amp;lt;/toolkit:navigationouttransition&amp;gt;
+&amp;lt;/toolkit:transitionservice.navigationouttransition&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;The other Silverlight Toolkit feature I really like is the tilt effect, it really helps bring an application to life when elements react to touch. You can automatically add a “tilt” to all eligible controls (buttons, list items, etc) on a page by just adding this to your PhoneApplicationPage xaml.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;toolkit:TiltEffect.IsTiltEnabled=&quot;True&quot;&lt;/pre&gt;
+
+&lt;p&gt;Coding4Fun is the other toolkit we make heavy use of. It has a couple of good controls but the ones we really like are the prompts. The input prompt was clean way to prompt players on registration, as with all the Coding4Fun prompts the code is really simple.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;var msg = new InputPrompt();
+msg.Title = &quot;Create Player&quot;;
+msg.Message = &quot;Please enter a player name&quot;;
+
+msg.Show();&lt;/pre&gt;
+
+&lt;p&gt;That code (plus a tiny bit extra to add the buttons) gives this result:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2011/09/input-prompt.png&quot;&gt;&lt;img style=&quot;background-image: none; padding-left: 0px; padding-right: 0px; display: block; float: none; margin-left: auto; margin-right: auto; padding-top: 0px; border-width: 0px;&quot; title=&quot;input-prompt&quot; src=&quot;http://lukencode.com/wp-content/uploads/2011/09/input-prompt_thumb.png&quot; alt=&quot;input-prompt&quot; width=&quot;206&quot; height=&quot;340&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;These are other prompts we use are the regular message prompt and the toast prompt (that one looks awesome, slides in and out). They use really similar and really simple code to display so I won’t show it again (but if you want to see let me know).&lt;/p&gt;
+&lt;div style=&quot;margin: 20px auto; width: 600px;&quot;&gt;&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2011/09/message-box-resize.png&quot;&gt;&lt;img style=&quot;background-image: none; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border-width: 0px;&quot; title=&quot;message-box-resize&quot; src=&quot;http://lukencode.com/wp-content/uploads/2011/09/message-box-resize_thumb.png&quot; alt=&quot;message-box-resize&quot; width=&quot;244&quot; height=&quot;129&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2011/09/toast-resize.png&quot;&gt;&lt;img style=&quot;background-image: none; margin: 0px 0px 0px 20px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border-width: 0px;&quot; title=&quot;toast-resize&quot; src=&quot;http://lukencode.com/wp-content/uploads/2011/09/toast-resize_thumb.png&quot; alt=&quot;toast-resize&quot; width=&quot;244&quot; height=&quot;52&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Web Services with RestSharp&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I’ve already posted about how much I love &lt;a href=&quot;http://restsharp.org/&quot; target=&quot;_blank&quot;&gt;RestSharp&lt;/a&gt; for &lt;a href=&quot;http://lukencode.com/2010/08/04/rest-web-services-in-windows-phone-7/&quot; target=&quot;_blank&quot;&gt;communicating with web services in windows phone apps&lt;/a&gt; but screw it I will say it again: USE RESTSHARP its fast, simple and reliable.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Prompt Users to Review with AppEvents&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;With mobile apps getting a good review is pretty much gold. As a user I am very unlikely to try any app with a sub 3/5 star rating. We wanted to give Numbertap the best chance we could at a decent rating by asking users (nicely) to rate the app. We didn’t just want to annoy any user either, we wanted to hit them up when we KNOW they are enjoying the game and they are at a point where they can jump out and give us a good score.&lt;/p&gt;
+
+&lt;p&gt;To achieved this lofty goal we used a little library @d1k_is open sourced – &lt;a href=&quot;https://github.com/dkarzon/AppEvents&quot; target=&quot;_blank&quot;&gt;AppEvents&lt;/a&gt;. The syntax is a little funky so you should probably check out &lt;a href=&quot;http://dkdevelopment.net/2011/04/29/appevents-do-stuff-when-things-happen-wp7/&quot; target=&quot;_blank&quot;&gt;dk’s blog post&lt;/a&gt; for a full intro but essentially what we are doing here is running the method AskToRate() when the “games-played” event has been fired 5 or more times and the “rated” event has not occurred.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;//in app.xaml.cs set up the rule
+AppEventsClient.New(Rule.When(&quot;rate-app&quot;,
+                el =&amp;gt; el.Any(e =&amp;gt; e.Name == &quot;games-played&quot; &amp;amp;&amp;amp; e.Occurrrences.Count &amp;gt;= 5) &amp;amp;&amp;amp; !el.Any(e =&amp;gt; e.Name == &quot;rated&quot;))
+                .Do(r =&amp;gt; DispatcherHelper.SafeDispatch(() =&amp;gt; AskToRate()))
+            );
+
+//when a game has played fire the event
+AppEventsClient.Current.Fire(&quot;games-played&quot;);&lt;/pre&gt;
+
+&lt;p&gt;This little piece of code has helped us gain 170+ reviews with an average of about 4.5 / 5 so far (hopefully having a cool game helped).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The Icon&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;When you live in an app store (sorry marketplace… don’t sue me) you basically have two ways to attract any customers that may be passing by. One is to have a good review and the other is a slick icon. Given that no one ever has or (or ever will) describe my artistic skills as “slick” we jumped on the crowd sourcing bandwagon and cruised over to &lt;a href=&quot;http://99designs.com/&quot; target=&quot;_blank&quot;&gt;99designs&lt;/a&gt; to get ourselves an icon on the cheap ($140ish). We think it turned out pretty good:&lt;/p&gt;
+
+&lt;p&gt;&lt;img style=&quot;display: block; float: none; margin-left: auto; margin-right: auto;&quot; src=&quot;http://catalog.zune.net/v3.2/en-AU/apps/4594645f-fd41-48bd-b12e-b6b1f9fcea40/primaryImage?width=95&amp;amp;height=95&amp;amp;resize=true&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;The Server&lt;/h3&gt;
+&lt;p&gt;Like the App we wanted the server side of Numbertap to be fast and simple, this is what we used.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The Framework&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;We know ASP.NET MVC so just like the Silverlight decision we rolled with what we knew. Turns out combining RestSharp, mvc and a shared class library for the API models makes REST based API’s really easy. Because both our app and server shares a class library for RestSharp models it means that we can easily update our web service responses and have that data available in the app. We return json over xml because json rules – this is how you do it from an MVC controller, this action returns some info on player rank and the current number of players in game:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;[HttpPost]
+public ActionResult GameStats(LoginRequest loginRequest)
+{
+    var player = DB.Queries.Player.GetPlayer(loginRequest.ID, loginRequest.PlatformID, loginRequest.GameID, null);
+
+    var response = new GameStatsResponse();
+
+    response.PlayerStats = DB.Queries.Player.GetPlayerStats(loginRequest.GameID, player.PlayerID);
+    response.PlayerStats.PlayerRank = DB.Queries.Player.WeeklyRank(player.PlayerID, loginRequest.GameID);
+
+    return Json(response, JsonRequestBehavior.AllowGet);
+}&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;The Platform&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Being a multiplayer game Numbertap needed a server side component and where better to look for a server than the cloud? I bet you are thinking I’m going to talk about how awesome azure is right? WRONG! Bottom line is I looked at azure and I looked at the azure pricing table and quickly shut my browser and unplugged my computer before my head exploded. Azure is too hard for a simple developer like me, we wanted easy cloud and found it with &lt;a href=&quot;https://appharbor.com/&quot; target=&quot;_blank&quot;&gt;App Harbour&lt;/a&gt;. App Harbour in their own words is “Azure done right”. Deployment is super simple – pushing to a git repo will build your project, run your tests and deploy. We went with the $10 a month shared Sql Server DB and have the option to add instances to scale at any time BALLIN’.&lt;/p&gt;
+
+&lt;p&gt;Hopefully from this rambling post you can pick up a tip or two you can use in your own app. If anyone (ha! like anyone reads my blog) would like some more information on something I have posted here hit my up in the comments and I might do a blog post on it or maybe just send you some code.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Phonealytics “Mango” Update Preview</title>
+   <link href="http://lukencode.com/2011/07/31/phonealytics-mango-update-preview/"/>
+   <updated>2011-07-31T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2011/07/31/phonealytics-mango-update-preview</id>
+   <content type="html">&lt;p&gt;I have been talking up some substantial updates to the live tiles used in my Windows Phone Google Analytics app &lt;a href=&quot;http://social.zune.net/redirect?type=phoneApp&amp;amp;id=11416a38-28f6-df11-9264-00237de2db9e&quot; target=&quot;_blank&quot;&gt;Phonealytics&lt;/a&gt; for some time now. Over the weekend I finally got round to getting started implementing them. The result is a button you can press on your site’s profile page (the first page you get to when you press a site) to pin a live tile of that site to your home screen. &lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2011/07/fullview1.png&quot;&gt;&lt;img style=&quot;background-image: none; border-bottom: 0px; border-left: 0px; margin: 10px 20px 10px 30px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top: 0px; border-right: 0px; padding-top: 0px&quot; title=&quot;fullview&quot; border=&quot;0&quot; alt=&quot;fullview&quot; align=&quot;left&quot; src=&quot;http://lukencode.com/wp-content/uploads/2011/07/fullview_thumb1.png&quot; width=&quot;250&quot; height=&quot;455&quot; /&gt;&lt;/a&gt;&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2011/07/joined.png&quot;&gt;&lt;img style=&quot;margin: 20px 0px 10px; display: inline; float: left&quot; title=&quot;Phonealytics Live Tiles&quot; alt=&quot;Phonealytics Live Tiles&quot; align=&quot;left&quot; src=&quot;http://lukencode.com/wp-content/uploads/2011/07/joined_thumb.png&quot; width=&quot;583&quot; height=&quot;199&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;clear: both&quot;&gt;You can pin as many tiles as you like (although I think the background process might struggle with 5+) with the tiles taking the settings for date range (day, week, month, year) of Phonealytics when pinned. The tiles themselves show a bit more data than the current ones with the front of the tile showing visits and % change, the tile will occasionally flip to reveal the bounce rate and time on site. Pressing a tile from the home screen will take you directly the the details of that site in Phonealytics.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2011/07/new_profile.png&quot;&gt;&lt;img style=&quot;background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px&quot; title=&quot;Pin Tile&quot; border=&quot;0&quot; alt=&quot;Pin Tile&quot; src=&quot;http://lukencode.com/wp-content/uploads/2011/07/new_profile_thumb.png&quot; width=&quot;254&quot; height=&quot;421&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;These new live tiles are updated entirely from your phone so should be &lt;strong&gt;much&lt;/strong&gt; more reliable than the current tile. The update will be submitted as soon as Microsoft allows mango app updates and hopefully should be ready to go as your phone is updated to mango. The new tiles will definitely be available on the paid version of Phonealytics and possibly will come to the free version eventually now that I don’t need to run a server for them. I am planning on making them a bit more interesting visually to stand out a tad from the sea of [“PhoneAccent”] on everybody’s home screen, any suggestions for the look of the tiles (or anything else) would be awesome.&lt;/p&gt;
+&lt;p&gt;For those of you who haven’t got the app you can pick it up from the &lt;a href=&quot;http://social.zune.net/redirect?type=phoneApp&amp;amp;id=11416a38-28f6-df11-9264-00237de2db9e&quot; target=&quot;_blank&quot;&gt;zune marketplace&lt;/a&gt; or grab the &lt;a href=&quot;http://windowsphone.com/s?appid=21baf298-210a-4fe1-9a89-6314ae62151f&quot; target=&quot;_blank&quot;&gt;free version&lt;/a&gt;.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Windows Phone 7 App Phonealytics – Sales and Download Numbers</title>
+   <link href="http://lukencode.com/2011/05/07/windows-phone-7-app-phonealyticssales-and-download-numbers/"/>
+   <updated>2011-05-07T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2011/05/07/windows-phone-7-app-phonealyticssales-and-download-numbers</id>
+   <content type="html">&lt;p&gt;&lt;a href=&quot;http://lukencode.com/2010/11/28/phonealytics-google-analytics-client-for-windows-phone-7/&quot; target=&quot;_blank&quot;&gt;Phonealytics&lt;/a&gt; is my Windows Phone 7 Google Analytics client. Phonealytics is currently selling for $0.99 in the marketplace with a free trial. Its major features include a live tile updating with a single sites stats, good performance and simple to use “metro” interface. Here I will be giving a rough and rundown of how it has performed along with the changes I have made and am planning. Due to my poor records keeping and Microsoft’s limited app hub reporting the numbers might be off here and there but should be close enough.&lt;/p&gt;
+
+&lt;h3&gt;Total Numbers&lt;/h3&gt;
+
+&lt;p&gt;Here are the raw numbers as of 30-MAR-2011:&lt;/p&gt;
+
+&lt;div class=&quot;number&quot;&gt;&lt;strong&gt;278&lt;/strong&gt;     &lt;br /&gt;paid &lt;/div&gt;
+&lt;div class=&quot;sign&quot;&gt;+&lt;/div&gt;
+
+&lt;div class=&quot;number&quot;&gt;&lt;strong&gt;514&lt;/strong&gt;     &lt;br /&gt;trial &lt;/div&gt;
+&lt;div class=&quot;sign&quot;&gt;=&lt;/div&gt;
+
+&lt;div class=&quot;number&quot;&gt;&lt;strong&gt;792&lt;/strong&gt;     &lt;br /&gt;total &lt;/div&gt;
+
+&lt;p class=&quot;clear&quot;&gt;This gives me a conversion rate of about &lt;strong&gt;35% &lt;/strong&gt;which I am pretty pleased about. The app is sitting on around a &lt;strong&gt;4 star&lt;/strong&gt; rating (depending which country you are from) and has close to 30 reviews. I get a ton of feedback via email most of it encouraging with some excellent ideas for features. Seeing as though people generally enjoy using the app I am a little disappointed in the sales numbers so far. &lt;/p&gt;
+
+&lt;h3&gt;Downloads Over Time&lt;/h3&gt;
+
+&lt;p&gt;Since first launching in the marketplace Phonealytics has been update 5 times. Major changes included adding a trial version of the app on 13-DEC-2010. Due to some pretty solid competing apps I also dropped the price of Phonealytics from $2.99 to $0.99 on 30-JAN-2011. Here is the downloads (trial and paid)&amp;#160; per day from the day the app went on sale 25-NOV-2010 to 30-MAR-2011.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2011/05/day.png&quot;&gt;&lt;img border=&quot;0&quot; alt=&quot;day&quot; src=&quot;http://lukencode.com/wp-content/uploads/2011/05/day_thumb.png&quot; width=&quot;715&quot; height=&quot;425&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;In the cumulative graph that Phonealytics has been downloaded at a fairly steady rate since hitting the marketplace.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2011/05/cumulative.png&quot;&gt;&lt;img title=&quot;cumulative&quot; border=&quot;0&quot; alt=&quot;cumulative&quot; src=&quot;http://lukencode.com/wp-content/uploads/2011/05/cumulative_thumb.png&quot; width=&quot;715&quot; height=&quot;425&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As you can see the downloads have remained fairly stable throughout the life of the app. I’d like to think that this means the app is pretty good and as new people are introduced to Windows Phone 7 the sales will continue to grow. Spikes in downloads generally coincided with me putting some effort into promoting updates. The free trial has been kept the downloads pretty steady and has a good conversion rate to the paid app. The price drop however hasn't had a great effect. &lt;/p&gt;
+&lt;h3&gt;Estimated Moneys&lt;/h3&gt;
+&lt;div class=&quot;number&quot;&gt;&lt;strong&gt;119&lt;/strong&gt;     &lt;br /&gt;at $2.99 &lt;/div&gt;
+&lt;div class=&quot;sign&quot;&gt;+&lt;/div&gt;
+&lt;div class=&quot;number&quot;&gt;&lt;strong&gt;159&lt;/strong&gt;     &lt;br /&gt;at $0.99&lt;/div&gt;
+&lt;div class=&quot;sign&quot;&gt;*&lt;/div&gt;
+&lt;div class=&quot;number&quot;&gt;&lt;strong&gt;0.7&lt;/strong&gt;     &lt;br /&gt;Microsoft's Cut &lt;/div&gt;
+&lt;div class=&quot;sign&quot;&gt;=&lt;/div&gt;
+&lt;div class=&quot;number&quot;&gt;&lt;strong&gt;$358.56&lt;/strong&gt;     &lt;br /&gt;total &lt;/div&gt;
+
+&lt;p class=&quot;clear&quot;&gt;I probably shouldn't quit my day job any time soon. &lt;/p&gt;
+
+&lt;h3&gt;Future Plans&lt;/h3&gt;
+
+&lt;ul&gt;   
+	&lt;li&gt;As you may have noticed, the app hub reporting tools are very limited. First change I am making is implementing some decent analytics through &lt;a href=&quot;http://www.localytics.com/&quot; target=&quot;_blank&quot;&gt;Localytics&lt;/a&gt; to get a better idea of how many active users Phonealytics has and how they use the app. &lt;/li&gt;    
+&lt;li&gt;I am going to try prompting repeat users to rate and review the app using a library like &lt;a href=&quot;http://dkdevelopment.net/2011/04/29/appevents-do-stuff-when-things-happen-wp7/&quot; target=&quot;_blank&quot;&gt;app events&lt;/a&gt;. My plan is to track users who have accessed the core functionality a certain number of times (and not experienced any crashes) and prompt them to review the app. Hopefully by targeting people with a positive experience I can get the average score up over 4. &lt;/li&gt;    
+&lt;li&gt;Adding a separate ad supported free version. This one is a bit of a gamble, the free version will essentially be the same as the paid version minus the live tile functionality. I will track users on the trial version using a similar method to get reviews and ask them if they would like to try the free version instead. &lt;/li&gt;    
+&lt;li&gt;Lowering the price of the app to $0.99 made little difference in terms of sales so I will be upping the price to $1.99 – less than the original price but still an increase. &lt;/li&gt;    
+&lt;li&gt;Continued updating of the app’s functionality. Though Phonealytics hasn’t been a financial success I have really enjoyed making it. I am planning some cool features around the Mango update API – most significant being multiple live tiles with more information on them. &lt;/li&gt; 
+
+&lt;/ul&gt;
+
+&lt;h3&gt;My Tips&lt;/h3&gt;
+
+&lt;ul&gt;   
+&lt;li&gt;Encourage feedback from your users, I use a real simple section on my settings page with a button that fires of an EmailComposeTask sent to me with Phonealytics as the subject.&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2011/05/feedback.png&quot;&gt;
+&lt;img border=&quot;0&quot; alt=&quot;feedback&quot; src=&quot;http://lukencode.com/wp-content/uploads/2011/05/feedback_thumb.png&quot; width=&quot;134&quot; height=&quot;244&quot; /&gt;&lt;/a&gt; &lt;/li&gt;    
+&lt;li&gt;People like the “metro” style. If you are not a designer (like myself) keep to its guidelines and you should end up with something decent looking. Don’t be afraid to add some colour though, you don’t want to look like a hello world sample. Basically follow everything Jeff Wilcox suggests in his &lt;a href=&quot;http://www.jeff.wilcox.name/2011/03/metro-design-guide-v1/&quot; target=&quot;_blank&quot;&gt;Metro Design Guide&lt;/a&gt;. &lt;/li&gt;    
+&lt;li&gt;If you have a paid app be sure to include a trial. Make the trial is of some use and remind users a paid version exists. One thing I found to work well is showing the user an example of the functionality they are missing from the full version with a button linking to the marketplace to purchase it.&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2011/05/trial.png&quot;&gt;
+&lt;img title=&quot;trial&quot; border=&quot;0&quot; alt=&quot;trial&quot; src=&quot;http://lukencode.com/wp-content/uploads/2011/05/trial_thumb.png&quot; width=&quot;134&quot; height=&quot;244&quot; /&gt;&lt;/a&gt; &lt;/li&gt; 
+&lt;/ul&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Fluent Email Now Supporting Razor Syntax For Templates</title>
+   <link href="http://lukencode.com/2011/04/30/fluent-email-now-supporting-razor-syntax-for-templates/"/>
+   <updated>2011-04-30T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2011/04/30/fluent-email-now-supporting-razor-syntax-for-templates</id>
+   <content type="html">&lt;p&gt;A while back I wrote Fluent Email, a little .NET wrapper for sending emails with System.Net.Mail using a fluent interface. After relentless requests (there was at least 2) to publish the library on &lt;a href=&quot;http://nuget.org/&quot; target=&quot;_blank&quot;&gt;NuGet.org&lt;/a&gt; I eventually caved in. You can add Fluent Email to your project using Nuget’s built in library package manager or the following package console command.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://nuget.org/List/Packages/fluent-email&quot; target=&quot;_blank&quot;&gt;&lt;img style=&quot;background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top: 0px; border-right: 0px; padding-top: 0px&quot; title=&quot;nuget-fluent-email&quot; border=&quot;0&quot; alt=&quot;PM&amp;gt; Install-Package fluent-email&quot; src=&quot;http://lukencode.com/wp-content/uploads/2011/04/nuget-fluent-email.png&quot; width=&quot;589&quot; height=&quot;70&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The library is pretty simple buts makes the code for sending emails easy to use and read.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;var email = Email
+            .From(&amp;quot;john@email.com&amp;quot;)
+            .To(&amp;quot;bob@email.com&amp;quot;, &amp;quot;bob&amp;quot;)
+            .Subject(&amp;quot;hows it going bob&amp;quot;)
+            .Body(&amp;quot;yo dawg, sup?&amp;quot;);
+
+            //send normally
+            email.Send();
+            
+            //send asynchronously
+            email.SendAsync((sender, e) =&amp;gt;
+            {
+                Console.WriteLine(&amp;quot;Email Sent&amp;quot;);
+            });
+&lt;/pre&gt;
+
+&lt;p&gt;There are a few other methods not shown here that work in a similar way for adding the usual email suspects such as CC, BCC&amp;#160; and ReplyTo.&lt;/p&gt;
+
+&lt;p&gt;I had also been playing around with some form of templating when I came across &lt;a href=&quot;http://razorengine.codeplex.com/&quot; target=&quot;_blank&quot;&gt;RazorEngine&lt;/a&gt;. RazorEngine is an awesome library that brings the razor syntax (from MVC3) to other applications. In Fluent Email we use RazorEngine to make email templates as simple as this:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;var template = &amp;quot;Dear @Model.Name, You are totally @Model.Compliment.&amp;quot;;
+
+var email = Email
+            .From(&amp;quot;bob@hotmail.com&amp;quot;)
+            .To(&amp;quot;somedude@gmail.com&amp;quot;)
+            .Subject(&amp;quot;woo nuget&amp;quot;)
+            .UsingTemplate(template, new { Name = &amp;quot;Luke&amp;quot;, Compliment = &amp;quot;Awesome&amp;quot; });&lt;/pre&gt;
+
+&lt;p&gt;This will set the body of the email to the rendered template “Dear Luke, You are totally Awesome.&amp;quot; and can be sent the same way as the first example. The UsingTemplate method uses generics so you can pass in a specific type or just use an anonymous object like in the example. If you prefer to use a seperate file for your template there is a method called UsingTemplateFromFile to handle that. Since RazorEngine supports everything you would expect from the Razor view engine so does Fluent Email!&lt;/p&gt;
+
+&lt;p&gt;If you want to take a look at the code it is hosted on Github at &lt;a href=&quot;https://github.com/lukencode/FluentEmail&quot; target=&quot;_blank&quot;&gt;lukencode/fluentemail&lt;/a&gt; otherwise just grab the NuGet package.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Windows Phone 7 Charts</title>
+   <link href="http://lukencode.com/2010/12/09/windows-phone-7-charts/"/>
+   <updated>2010-12-09T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2010/12/09/windows-phone-7-charts</id>
+   <content type="html">&lt;p&gt;One of the big features of my &lt;a href=&quot;http://lukencode.com/2010/11/28/phonealytics-google-analytics-client-for-windows-phone-7/&quot; target=&quot;_blank&quot;&gt;Windows Phone 7 Google Analytics Client – Phonealytics&lt;/a&gt; is the nice (I think) looking graphs. After briefly considering porting an existing Silverlight solution to wp7 I stumbled upon &lt;a href=&quot;http://wpf.amcharts.com/quick&quot; target=&quot;_blank&quot;&gt;Quick Charts&lt;/a&gt; by amCharts. Quick Charts is a lightweight and more importantly free chart control for Windows phone 7. It’s a bit light on options but very easy to get working and looks good. &lt;/p&gt;
+&lt;p&gt;The xaml for a line chart is pretty straightforward. You can see I am using the phone’s inbuilt styles partially because it looks awesome and partially because I am a terrible designer. The things to note here are setting the CategoryValueMemberPath to the name of the property in your model you want the graph to use as the label and in the LineGraph section setting the ValueMemberPath to the property you want to chart. The title property of the LineGraph renders on a small legend. One tip I have is setting IsEnabled to false when the graph is loading (or just in general) I got an exception tapping the graph before any data has been bound.&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;amcharts_windows_quickcharts:serialchart isenabled=&amp;quot;False&amp;quot; datasource=&amp;quot;{Binding GraphData}&amp;quot; x:name=&amp;quot;chtMain&amp;quot; 
+categoryvaluememberpath=&amp;quot;Label&amp;quot; verticalalignment=&amp;quot;Top&amp;quot;&amp;gt;
+    
+    &amp;lt;amcharts_windows_quickcharts:serialchart.foreground&amp;gt;
+        &amp;lt;solidcolorbrush color=&amp;quot;{StaticResource PhoneForegroundColor}&amp;quot; /&amp;gt;
+    &amp;lt;/amcharts_windows_quickcharts:serialchart.foreground&amp;gt;
+    
+    &amp;lt;amcharts_windows_quickcharts:serialchart.borderbrush&amp;gt;
+        &amp;lt;solidcolorbrush color=&amp;quot;{StaticResource PhoneBorderColor}&amp;quot; /&amp;gt;
+    &amp;lt;/amcharts_windows_quickcharts:serialchart.borderbrush&amp;gt;
+    
+    &amp;lt;amcharts_windows_quickcharts:serialchart.axisforeground&amp;gt;
+        &amp;lt;solidcolorbrush color=&amp;quot;{StaticResource PhoneForegroundColor}&amp;quot; /&amp;gt;
+    &amp;lt;/amcharts_windows_quickcharts:serialchart.axisforeground&amp;gt;
+    
+    &amp;lt;amcharts_windows_quickcharts:serialchart.background&amp;gt;
+        &amp;lt;solidcolorbrush color=&amp;quot;{StaticResource PhoneBackgroundColor}&amp;quot; /&amp;gt;
+    &amp;lt;/amcharts_windows_quickcharts:serialchart.background&amp;gt; 
+    
+    &amp;lt;amcharts_windows_quickcharts:serialchart.graphs&amp;gt;
+        &amp;lt;amcharts_windows_quickcharts:linegraph title=&amp;quot;Visits&amp;quot; valuememberpath=&amp;quot;Value&amp;quot; strokethickness=&amp;quot;5&amp;quot;&amp;gt;
+            &amp;lt;amcharts_windows_quickcharts:linegraph.brush&amp;gt;
+                &amp;lt;solidcolorbrush color=&amp;quot;{StaticResource PhoneAccentColor}&amp;quot; /&amp;gt;                                        
+            &amp;lt;/amcharts_windows_quickcharts:linegraph.brush&amp;gt;
+        &amp;lt;/amcharts_windows_quickcharts:linegraph&amp;gt;
+    &amp;lt;/amcharts_windows_quickcharts:serialchart.graphs&amp;gt;    
+    
+&amp;lt;/amcharts_windows_quickcharts:serialchart&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;I use an ObservableCollection of the super simple ChartDataPoint class below, with just the top properties I set on the chart xaml above.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;public class ChartDataPoint
+{
+    public string Label { get; set; }
+    public double Value { get; set; }
+}&lt;/pre&gt;
+
+&lt;p&gt;Here is a screen of the resulting graph with a dark / blue theme.&lt;/p&gt;
+
+&lt;p&gt;&lt;img style=&quot;margin: ; display: block; float: none&quot; src=&quot;http://lukencode.com/wp-content/uploads/2010/11/profile.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Quick charts also allows for some pretty delicious pie charts. Here is one I prepared earlier:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;amcharts_windows_quickcharts:piechart margin=&amp;quot;0&amp;quot; isenabled=&amp;quot;False&amp;quot; titlememberpath=&amp;quot;Label&amp;quot; 
+valuememberpath=&amp;quot;Value&amp;quot; datasource=&amp;quot;{Binding PieData}&amp;quot;&amp;gt;
+    &amp;lt;amcharts_windows_quickcharts:piechart.brushes&amp;gt;
+        &amp;lt;solidcolorbrush color=&amp;quot;{StaticResource PhoneAccentColor}&amp;quot; /&amp;gt;
+        &amp;lt;solidcolorbrush color=&amp;quot;{StaticResource PhoneAccentColor}&amp;quot; opacity=&amp;quot;0.8&amp;quot; /&amp;gt;
+        &amp;lt;solidcolorbrush color=&amp;quot;{StaticResource PhoneAccentColor}&amp;quot; opacity=&amp;quot;0.6&amp;quot; /&amp;gt;
+        &amp;lt;solidcolorbrush color=&amp;quot;{StaticResource PhoneAccentColor}&amp;quot; opacity=&amp;quot;0.4&amp;quot; /&amp;gt;
+        &amp;lt;solidcolorbrush color=&amp;quot;{StaticResource PhoneAccentColor}&amp;quot; opacity=&amp;quot;0.2&amp;quot; /&amp;gt;
+        &amp;lt;solidcolorbrush color=&amp;quot;{StaticResource PhoneAccentColor}&amp;quot; opacity=&amp;quot;0.1&amp;quot; /&amp;gt;
+    &amp;lt;/amcharts_windows_quickcharts:piechart.brushes&amp;gt;
+    &amp;lt;amcharts_windows_quickcharts:piechart.foreground&amp;gt;
+        &amp;lt;solidcolorbrush color=&amp;quot;{StaticResource PhoneForegroundColor}&amp;quot; /&amp;gt;
+    &amp;lt;/amcharts_windows_quickcharts:piechart.foreground&amp;gt;
+&amp;lt;/amcharts_windows_quickcharts:piechart&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;Again I am using the default phone colours, this time I set a few brushes with different opacities. These will be used depending on the number of slices in your pie. Speaking of pie, here is what it looks like.&lt;/p&gt;
+
+&lt;p&gt;&lt;img style=&quot;margin: ; display: block; float: none&quot; src=&quot;http://lukencode.com/wp-content/uploads/2010/11/pie.png&quot; /&gt;&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Phonealytics – Google Analytics App for Windows Phone 7</title>
+   <link href="http://lukencode.com/2010/11/28/phonealytics-google-analytics-client-for-windows-phone-7/"/>
+   <updated>2010-11-28T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2010/11/28/phonealytics-google-analytics-client-for-windows-phone-7</id>
+   <content type="html">&lt;p&gt;Phonealytics, as you may have guessed, is a Google Analytics client for Windows Phone 7. Phonealytics focuses on speed, getting information at a glance and blending in with your phone’s OS and style.  The app is priced at $2.99 USD and is available (almost) worldwide. Get the Phonealytics app from the Zune marketplace &lt;a href=&quot;http://social.zune.net/redirect?type=phoneApp&amp;amp;id=11416a38-28f6-df11-9264-00237de2db9e&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://social.zune.net/redirect?type=phoneApp&amp;amp;id=11416a38-28f6-df11-9264-00237de2db9e&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://social.zune.net/redirect?type=phoneApp&amp;amp;id=11416a38-28f6-df11-9264-00237de2db9e&quot; target=&quot;_blank&quot;&gt;&lt;img title=&quot;99x99&quot; src=&quot;http://catalog.zune.net/v3.2/en-US/image/e7dd38b8-c673-45be-89e9-0dbeec7da8cc?width=1280&amp;amp;height=720&amp;amp;resize=true&quot; border=&quot;0&quot; alt=&quot;99x99&quot; width=&quot;103&quot; height=&quot;103&quot; align=&quot;left&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2010/11/fav.png&quot;&gt;&lt;img style=&quot;display: inline; border: 0px;&quot; title=&quot;fav&quot; src=&quot;http://lukencode.com/wp-content/uploads/2010/11/fav_thumb.png&quot; border=&quot;0&quot; alt=&quot;fav&quot; width=&quot;148&quot; height=&quot;244&quot; /&gt;&lt;/a&gt; &lt;a href=&quot;http://lukencode.com/wp-content/uploads/2010/11/pie.png&quot;&gt;&lt;img style=&quot;display: inline; border: 0px;&quot; title=&quot;pie&quot; src=&quot;http://lukencode.com/wp-content/uploads/2010/11/pie_thumb.png&quot; border=&quot;0&quot; alt=&quot;pie&quot; width=&quot;148&quot; height=&quot;244&quot; /&gt;&lt;/a&gt; &lt;a href=&quot;http://lukencode.com/wp-content/uploads/2010/11/profile.png&quot;&gt;&lt;img style=&quot;display: inline; border: 0px;&quot; title=&quot;profile&quot; src=&quot;http://lukencode.com/wp-content/uploads/2010/11/profile_thumb.png&quot; border=&quot;0&quot; alt=&quot;profile&quot; width=&quot;148&quot; height=&quot;244&quot; /&gt;&lt;/a&gt; &lt;a href=&quot;http://lukencode.com/wp-content/uploads/2010/11/sites.png&quot;&gt;&lt;img style=&quot;display: inline; border: 0px;&quot; title=&quot;sites&quot; src=&quot;http://lukencode.com/wp-content/uploads/2010/11/sites_thumb.png&quot; border=&quot;0&quot; alt=&quot;sites&quot; width=&quot;148&quot; height=&quot;244&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3&gt;The Official Line&lt;/h3&gt;
+
+&lt;p&gt;Phonealytics is a Google Analytics Client. With Phonealytics you get all the important traffic stats for your website available in your pocket. Phonealytics focuses on providing information at a glance and in line with your phones theme key features include:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Pin favourite sites to the app homepage for quick stats and access&lt;/li&gt;
+  &lt;li&gt;Configure an automatically updating live tile for your phones home screen&lt;/li&gt;
+  &lt;li&gt;Phonealytics follows your phones theme settings, no matter how white and pink you make them&lt;/li&gt;
+  &lt;li&gt;Fancy charts!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;Future Features&lt;/h3&gt;
+
+&lt;p&gt;These are the features I’ve got planned for future releases, I look forward to getting feedback and implementing some of the features you guys want from analytics on the go.&lt;/p&gt;
+
+&lt;ul&gt;
+	&lt;li&gt;Keywords / Search engine reports&lt;/li&gt;
+	&lt;li&gt;More in-depth sources and referrers report&lt;/li&gt;
+	&lt;li&gt;Visitors report showing country, city, browser, etc&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://social.zune.net/redirect?type=phoneApp&amp;amp;id=11416a38-28f6-df11-9264-00237de2db9e&quot; target=&quot;_blank&quot;&gt;&lt;img style=&quot;margin: 20px auto; display: block; float: none; border: 0px;&quot; title=&quot;wp7_English_480x80_blue2&quot; src=&quot;http://lukencode.com/wp-content/uploads/2010/11/wp7_English_480x80_blue2.png&quot; border=&quot;0&quot; alt=&quot;wp7_English_480x80_blue2&quot; width=&quot;240&quot; height=&quot;43&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Writing AJAX web applications in Asp.Net MVC</title>
+   <link href="http://lukencode.com/2010/09/26/writing-ajax-web-applications-in-asp-net-mvc/"/>
+   <updated>2010-09-26T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2010/09/26/writing-ajax-web-applications-in-asp-net-mvc</id>
+   <content type="html">&lt;p&gt;Asp.Net MVC and jQuery have made it much easier to build awesome Gmail like ajax powered applications. I am going to run through the technique I used to do the ajax web services, call them in javascript and display the html through a template. &lt;/p&gt;
+&lt;h3&gt;What Do I Need?&lt;/h3&gt;
+&lt;ol&gt;   &lt;li&gt;An Asp.Net MVC web application &lt;/li&gt;    &lt;li&gt;&lt;a href=&quot;http://jquery.com/&quot; target=&quot;_blank&quot;&gt;jQuery&lt;/a&gt; &lt;/li&gt;    &lt;li&gt;&lt;a href=&quot;http://benjii.me/2010/08/jqax-jquery-plugin-the-jquery-plugin-version-of-the-jqax-ajax-wrapper/&quot; target=&quot;_blank&quot;&gt;jQax&lt;/a&gt; – a wrapper around jQuery ajax &lt;/li&gt;    &lt;li&gt;&lt;a href=&quot;http://aefxx.com/jquery-plugins/jqote2/&quot; target=&quot;_blank&quot;&gt;jQote&lt;/a&gt; – a simple lightweight jQuery templating engine &lt;/li&gt; &lt;/ol&gt;
+&lt;h3&gt;What Do I Do?&lt;/h3&gt;
+&lt;p&gt;Lets start at the web application because you probably already have something there. Pick a nice simple controller action you wish was ajaxy – say displaying some gig (also know as concert) info?&lt;/p&gt;
+&lt;p&gt;You probably have a view model you hand to your concert details page. Here is a simplified version of what I use:&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;public class GigViewModel
+{
+	public int GigID { get; set; }
+	public string StartDate { get; set; }
+	public string Name { get; set; }
+}   &lt;/pre&gt;
+
+&lt;p&gt;I am using a string to represent the date to make the eventual javascript I have to write simpler.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;//
+// GET: /Gig/Details/5
+
+public ActionResult Details(int id)
+{
+	var gigSession = new GigSession();
+	var gig = gigSession.Single(g =&amp;gt;; g.GigID == id);
+
+	if (Request.IsAjaxRequest())
+	{
+		return Json(new GigViewModel(gig), JsonRequestBehavior.AllowGet);
+	}
+	
+	return View(&amp;quot;GigDetails&amp;quot;, new GigViewModel(gig));
+}&lt;/pre&gt;
+
+&lt;p&gt;
+  &lt;br /&gt;I have here a pretty standard controller action it grabs some data from the database (the session stuff) dumps it into a view model and returns it to a view. What I’ve added is the Request.IsAjaxRequest() statement. This statement checks the headers of the incoming request for “XMLHttpRequest” meaning the request originated in javascript. If we have an ajax request I use the MVC method Json() to return a json representation of my view model instead of a view. The JsonRequestbehavior parameter allows this control to return json on a Get request.&lt;/p&gt;
+
+&lt;p&gt;Now that the backend is set up to give us our json we need to write some javascript to request it. I am using jQax to make this a bit simpler but you could go vanilla jQuery if that floats your boat.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;var ajax = $.jQax();
+
+ajax.Get(&amp;quot;/gig/1&amp;quot;&amp;quot;, null, function (data) {
+	alert(&amp;quot;woo a json gig - &amp;quot; + data)
+});&lt;/pre&gt;
+
+&lt;p&gt;This bit of javascript uses jQax to make a get request to the url “/gig/1” to get the very first gig in my database. That null parameter is used to set query string parameters which I didn’t need in this case. jQax also has a few other pretty cool options that you can check out on &lt;a href=&quot;http://benjii.me/2010/08/jqax-jquery-plugin-the-jquery-plugin-version-of-the-jqax-ajax-wrapper/&quot; target=&quot;_blank&quot;&gt;benjii’s blog&lt;/a&gt;, for now we will keep it simple.&lt;/p&gt;
+
+&lt;p&gt;So now that we have our json gig what should we do with it? You coooouuuld manually set some html up and inject it into a container or you could do what the cool kids are doing and use a template engine. A template engine basically allows you to set up a sort of javascript view which renders the model (a json object) you pass to it. I am using jQote (what’s with the stupid names?) which under the covers uses &lt;a href=&quot;http://ejohn.org/blog/javascript-micro-templating/&quot; target=&quot;_blank&quot;&gt;John Resig’s micro templating&lt;/a&gt; code which in turn invokes black voodoo magic to do it’s bidding (its quite complicated).&lt;/p&gt;
+
+&lt;p&gt;Before I show you the template this little bit is important to us asp.net developers. By default jQote will want to use tags like: &amp;lt;%= %&amp;gt;. Asp,Net doesn’t like that so we change jQote’s tag character to be something else, I like #.&lt;/p&gt;
+
+&lt;pre class=&quot;brush: js;&quot;&gt;$.jqotetag&amp;quot;#&amp;quot;);&lt;/pre&gt;
+
+&lt;p&gt;It is easiest to do this once on document load before you attempt to do any templates.&lt;/p&gt;
+
+&lt;p&gt;jQote templates look pretty similar to MVC views using javascript rather than C#. They also work best when they live in a script tag like so:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;&amp;lt;script type=&amp;quot;text/x-jqote-template&amp;quot; id=&amp;quot;GigDetailsTemplate&amp;quot;&amp;gt;
+	&amp;lt;div class=&amp;quot;gigDetails&amp;quot;&amp;gt;
+		&amp;lt;h2&amp;gt;&amp;lt;#= this.Name #&amp;gt;&amp;lt;/h2&amp;gt;
+		&amp;lt;span class=&amp;quot;date&amp;quot;&amp;gt;&amp;lt;#= this.StartDate #&amp;gt;&amp;lt;/span&amp;gt;
+	&amp;lt;/div&amp;gt;
+&amp;lt;/script&amp;gt;&lt;/pre&gt;
+
+&lt;p&gt;The “this” in the template refers to the json object you pass it. This example is pretty simple but jQote allows you do easily work with lists, conditions and pretty much any other javascript – &lt;a href=&quot;http://aefxx.com/api/jqote2-reference/&quot; target=&quot;_blank&quot;&gt;the doco page has some pretty good examples&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now all the pieces are in place it is just a matter of giving the gig json to the GigDetailsTemplate and putting the resulting html somewhere on the page. jQote has a few different methods depending if you want to replace, append, prepend or just get the raw html. This example alters the code used to get the gig json to use the jqotesub method which will replace whatever you had in the target dom element with the rendered template html:&lt;/p&gt;
+
+&lt;pre class=&quot;brush: js;&quot;&gt;var ajax = $.jQax();
+
+ajax.Get(&amp;quot;/gig/1&amp;quot;, null, function (data) {
+	$(&amp;quot;#gigWrapper&amp;quot;).jqotesub(&amp;quot;#GigDetailsTemplate&amp;quot;, data);
+});&lt;/pre&gt;
+
+&lt;p&gt;First we use jQuery to select the container we want the html in. Next we call jqotesub with the selector for the template we created above and the gig json data returned from the ajax call. BAM! The template is filled out with the values of the gig and displayed on the page.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Helpful Tips&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;I found to keep things organized creating templates as Partial Views in MVC and then rendering them on the pages they are required worked well. &lt;/li&gt;
+
+  &lt;li&gt;In your view models try to avoid DateTime – its pretty annoying trying to display javascript dates how you like. &lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>C# String Extension Methods</title>
+   <link href="http://lukencode.com/2010/08/18/c-string-extension-methods/"/>
+   <updated>2010-08-18T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2010/08/18/c-string-extension-methods</id>
+   <content type="html">&lt;p&gt;Ah extension methods… where would we be without them? Writing slightly more code to perform common functions that’s where! I am fairly sure everyone has their own set of string extensions so I though I’d share what I currently have then you guys can shoot it down and direct me to / yell at me something more useful. Everybody wins!&lt;/p&gt;
+&lt;div style=&quot;clear: both;&quot;&gt;&lt;script src=&quot;https://gist.github.com/534556.js&quot;&gt; &lt;/script&gt;&lt;/div&gt;
+&lt;div style=&quot;clear: both;&quot;&gt;I am also experimenting with using Github's Gist for my code samples (with help from a handy &lt;a href=&quot;http://wordpress.org/extend/plugins/github-gist/&quot;&gt;wordpress plugin&lt;/a&gt;). The idea is this makes it easier for me to update and you to clone, steal, comment, share etc. Let me know if it works.&lt;/div&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Google and Yahoo Add to Calendar Html Helpers for Asp.net MVC</title>
+   <link href="http://lukencode.com/2010/08/09/google-and-yahoo-add-to-calendar-html-helpers-for-asp-net-mvc/"/>
+   <updated>2010-08-09T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2010/08/09/google-and-yahoo-add-to-calendar-html-helpers-for-asp-net-mvc</id>
+   <content type="html">&lt;p&gt;I’ve been working on implementing some iCal functionality for the my &lt;a href=&quot;http://gigpig.fm&quot; target=&quot;_blank&quot;&gt;gig guide website – Gigpig&lt;/a&gt; so users could easily add concert dates to their calendars. This works fine and dandy if you have some desktop program to handle iCal files. I have however been informed that the cool kids roll with Google Calendar (and some strange people with Yahoo?!). I dug around a bit and found you can easily prompt users to add events to these calendars using a link to the calendar with the event details in the query string.&lt;/p&gt;
+
+&lt;p&gt;If you want to play around with these parameters I recommend using google’s tools to &lt;a href=&quot;http://www.google.com/googlecalendar/event_publisher_guide.html#public&quot; target=&quot;_blank&quot;&gt;create a button for google calendar&lt;/a&gt; and following the guide on &lt;a href=&quot;http://chris.photobooks.com/tests/calendar/Notes.html&quot; target=&quot;_blank&quot;&gt;this site&lt;/a&gt; for yahoo.&lt;/p&gt;
+
+&lt;p&gt;I’ve gone ahead and wrapped them up into some Html helpers for Asp.Net MVC. I didn’t go overboard with the options here so if you will probably want to tweak the code a bit.
+&lt;script src=&quot;https://gist.github.com/536521.js&quot;&gt; &lt;/script&gt;
+Calling the helpers is a little wieldy but gets the job done (yahoo is more of the same).&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;&amp;lt;%= Html.GoogleCalendar(&quot;add to google calendar&quot;, &quot;a test event!&quot;, DateTime.Now, null, &quot;its a test&quot;, &quot;testington&quot;, &quot;websitename&quot;, &quot;www.website.com&quot;) %&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Here are some rendered links I prepared earlier:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.google.com/calendar/b/0/render?action=TEMPLATE&amp;amp;text=Global+Sound+System&amp;amp;dates=20100903T200000Z/20100903T200000Z&amp;amp;details=Global+Sound+System+at+The+Met&amp;lt;br+/&amp;gt;Featuring:+Global+Sound+System&amp;amp;location=256 Wickham St,+Fortitude+Valley+Qld&amp;amp;trp=false&amp;amp;sprop=Gigpig.fm&amp;amp;sprop=name:http://gigpig.fm/gig/2329/Global-Sound-System&amp;amp;sf=true&amp;amp;output=xml&quot; target=&quot;_blank&quot;&gt;Google Calendar Event&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://calendar.yahoo.com/?v=60&amp;amp;view=d&amp;amp;type=10&amp;amp;title=Global%20Sound%20System&amp;amp;st=20100903T200000Z&amp;amp;desc=Global%20Sound%20System%20at%20The%20Met%3Cbr%20/%3EFeaturing:%20Global%20Sound%20System&amp;amp;in_loc=The%20Met&amp;amp;in_st=256%20Wickham%20St&amp;amp;in_csz=Fortitude%20Valley%20Qld&quot; target=&quot;_blank&quot;&gt;Yahoo Calendar Event&lt;/a&gt;&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Rest Web Services In Windows Phone 7</title>
+   <link href="http://lukencode.com/2010/08/04/rest-web-services-in-windows-phone-7/"/>
+   <updated>2010-08-04T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2010/08/04/rest-web-services-in-windows-phone-7</id>
+   <content type="html">&lt;p&gt;I’ve been messing around with some Window Phone 7 development lately and thought I would share how I have been calling web services with RestSharp (I’ve written a little about RestSharp previously using the &lt;a href=&quot;http://lukencode.com/2010/04/14/google-weather-api-with-restsharp/&quot; target=&quot;_blank&quot;&gt;google weather api&lt;/a&gt;). &lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://restsharp.org&quot; target=&quot;_blank&quot;&gt;&lt;img style=&quot;border-bottom: 0px; border-left: 0px; display: inline; margin-left: 0px; border-top: 0px; margin-right: 0px; border-right: 0px&quot; title=&quot;restsharp&quot; border=&quot;0&quot; alt=&quot;restsharp&quot; align=&quot;right&quot; src=&quot;http://lukencode.com/wp-content/uploads/2010/08/restsharp.png&quot; width=&quot;240&quot; height=&quot;57&quot; /&gt;&lt;/a&gt; For those who don’t know &lt;a href=&quot;http://restsharp.org&quot; target=&quot;_blank&quot;&gt;RestSharp&lt;/a&gt; is a REST client for .NET which has recently added silverlight and Windows Phone 7 support. RestSharp has some really great features to simplify calling web services including:&lt;/p&gt;
+&lt;ul&gt;   &lt;li&gt;Automatic XML and JSON deserialization &lt;/li&gt;    &lt;li&gt;Fuzzy name matching ('product_id' in XML/JSON will match property named 'ProductId') &lt;/li&gt;    &lt;li&gt;Automatic detection of type of content returned &lt;/li&gt;    &lt;li&gt;GET, POST, PUT, HEAD, OPTIONS, DELETE supported &lt;/li&gt; &lt;/ul&gt;
+&lt;p&gt;Windows Phone 7 basically enforces (with good reason) async web requests – luckily RestSharp has our back on that front. I’m going to use some example code from the Google Reader app I’ve been playing around with – &lt;a href=&quot;http://lukencode.com/2010/07/29/windows-phone-7-google-reader-app-gread-work-in-progress/&quot; target=&quot;_blank&quot;&gt;GREAD&lt;/a&gt;. Here is a simple example of asynchronously calling a web service using RestSharp to authenticate with with google accounts:&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;var client = new RestClient(&amp;quot;https://www.google.com&amp;quot;);
+
+var request = new RestRequest(&amp;quot;accounts/ClientLogin&amp;quot;, Method.POST);
+request.AddParameter(&amp;quot;service&amp;quot;, &amp;quot;reader&amp;quot;, ParameterType.GetOrPost);
+request.AddParameter(&amp;quot;accountType&amp;quot;, &amp;quot;GOOGLE&amp;quot;, ParameterType.GetOrPost);
+request.AddParameter(&amp;quot;source&amp;quot;, _source, ParameterType.GetOrPost);
+request.AddParameter(&amp;quot;Email&amp;quot;, _username, ParameterType.GetOrPost);
+request.AddParameter(&amp;quot;Passwd&amp;quot;, _password, ParameterType.GetOrPost);
+
+client.ExecuteAsync(request, (response) =&amp;gt;
+{
+    var auth = ParseAuthToken(response.Content);
+});&lt;/pre&gt;
+
+&lt;p&gt;RestSharp will automatically build the request with the parameters it is given. These can be get/post, cookies or http headers. The ExecuteAsync method takes the request to make and an action to execute when finished.&lt;/p&gt;
+
+&lt;p&gt;I come from a web development background living the good life making synchronous requests. Developing in Silverlight requires a bit of an adjustment with a big focus on event driven asynchronous programming. The pattern I am using I’ve tried to avoid all the plumbing involved in hooking up and firing off event handlers. Here is the basic pattern I use for api calls, in this instance I am grabbing all the feed items for the given label:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;public void GetLabelFeed(string label, Action&amp;lt;Model.Feed&amp;gt; success, Action&amp;lt;string&amp;gt; failure)
+{
+    string resource = &amp;quot;reader/api/0/stream/contents/user/-/label/&amp;quot; + label;
+
+    var request = GetBaseRequest();
+    request.Resource = resource;
+    request.Method = Method.GET;
+    request.AddParameter(&amp;quot;n&amp;quot;, 20); //number to return
+
+    _client.ExecuteAsync&amp;lt;Model.Feed&amp;gt;(request, (response) =&amp;gt;
+    {
+        if (response.ResponseStatus == ResponseStatus.Error)
+        {
+            failure(response.ErrorMessage);
+        }
+        else
+        {
+            success(response.Data);
+        }
+    });
+}&lt;/pre&gt;
+
+&lt;p&gt;I pass two callbacks to the method, one for success and one for failure. In this example I am using RestSharp’s auto deserialzation into the class Model.Feed by calling ExecuteAsync&amp;lt;Model.Feed&amp;gt;(). Depending on the status of the request either failure or success action is called.&lt;/p&gt;
+
+&lt;p&gt;To use these methods in my wp7 application I use inline delegates to handle the events. One thing to be aware of is the code on these callbacks will run in the background thread and you wont see anything change on the UI. To fix this make sure the data binding code is executed in the UI thread using the dispatcher. I use a DispatcherHelper class borrowed from the &lt;a href=&quot;http://mvvmlight.codeplex.com/&quot; target=&quot;_blank&quot;&gt;MVVM Light Toolkit&lt;/a&gt;. &lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;        
+protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+{
+	api.GetLabelFeed(
+    	feedId,
+    	(items) =&amp;gt; DispatcherHelper.SafeDispatch(() =&amp;gt;
+    	{
+        	this.DataContext = items;
+        	progressBar.Visibility = System.Windows.Visibility.Collapsed;
+    	}),
+    	(error) =&amp;gt; DispatcherHelper.SafeDispatch(() =&amp;gt;
+    	{
+        	MessageBox.Show(error);
+        	progressBar.Visibility = System.Windows.Visibility.Collapsed;
+    	}));
+
+    	base.OnNavigatedTo(e);
+}&lt;/pre&gt;
+
+&lt;p&gt;I found this structure has kept my code reasonable clean and has handled all cases in the simple web requests I have made but since I’m new to Silverlight I’m sure it could be better.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Windows Phone 7 Google Reader App (GREAD) Work In Progress</title>
+   <link href="http://lukencode.com/2010/07/29/windows-phone-7-google-reader-app-gread-work-in-progress/"/>
+   <updated>2010-07-29T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2010/07/29/windows-phone-7-google-reader-app-gread-work-in-progress</id>
+   <content type="html">&lt;p&gt;I’ve spent the last couple of days playing around with some Windows Phone 7 development. I decided to create a simple Google reader client as a practice app that later on down the track might at least be useful to me. Considering I have no background in Silverlight (mainly just web applications) I think I’ve managed to come quite a long way in a short amount of time. &lt;/p&gt;
+
+&lt;div style=&quot;padding-bottom: 0px; margin: 0px auto; padding-left: 0px; width: 637px; padding-right: 0px; display: block; float: none; padding-top: 0px&quot; id=&quot;scid:66721397-FF69-4ca6-AEC4-17E6B3208830:8f284cef-2448-4db0-8757-dcac1fb8328a&quot; class=&quot;wlWriterEditableSmartContent&quot;&gt;
+&lt;a style=&quot;border:0px&quot; href=&quot;http://cid-f01a240b2645ac50.skydrive.live.com/redir.aspx?page=browse&amp;amp;resid=F01A240B2645AC50!106&amp;amp;type=5&quot;&gt;&lt;img style=&quot;border:0px&quot; alt=&quot;View GREAD&quot; src=&quot;http://lukencode.com/wp-content/uploads/2010/07/InlineRepresentationd420332b7adc45dda78014e8c8d29201.jpg&quot; /&gt;&lt;/a&gt;
+&lt;div style=&quot;width:637px;text-align:right;&quot;&gt;&lt;a href=&quot;http://cid-f01a240b2645ac50.skydrive.live.com/redir.aspx?page=browse&amp;amp;resid=F01A240B2645AC50!106&amp;amp;type=5&quot;&gt;View Full Album&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;The app current pulls in the given users unread counts and labels on the home screen with the labels located a swoosh to the right. From there you can jump straight to view a story or drill down into one of your labels.&lt;/p&gt;
+&lt;p&gt;Before I go too much further I would like to try get some feedback/ideas on what people want from a Google reader client (if anything). &lt;/p&gt;
+&lt;p&gt;The design is obviously a little dodgy at the moment my main plan here is to try utilized the wp7 concept of horizontal space. I am waiting for the official panorama/pivot controls and will look to implement those. &lt;/p&gt;
+&lt;p&gt;Features wise at the moment all the client does is query the Google reader api for feeds an stories. I am going to implement the core reader functionality – read and unread, starring and notes as well as some type of social sharing.&amp;#160; I’d like to know how important offline reading / caching is to people so I can decide how much effort I need to put into that side of the application.&lt;/p&gt;
+&lt;p&gt;If you have any ideas let me know in the comments or on twitter - &lt;a href=&quot;http://twitter.com/lukencode&quot; target=&quot;_blank&quot;&gt;@lukencode&lt;/a&gt;.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Getting Started With MongoDB and NoRM</title>
+   <link href="http://lukencode.com/2010/07/09/getting-started-with-mongodb-and-norm/"/>
+   <updated>2010-07-09T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2010/07/09/getting-started-with-mongodb-and-norm</id>
+   <content type="html">&lt;p&gt;I just realised - I hate writing SQL. I hate it, I hate it, I hate it. I have also recently noticed a growing trend in SQL alternatives or “nosql” with open source C# drivers. Today I put one and one together and decided to try out one of these – MongoDB using the C# driver NoRM. Why this idea didn't occur to me earlier I will never know.&lt;/p&gt;
+&lt;h3&gt;What is MongoDB?&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;http://www.mongodb.org/&quot; target=&quot;_blank&quot;&gt;&lt;img style=&quot;border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; margin-left: 0px; border-left-width: 0px; margin-right: 0px&quot; title=&quot;logo-mongodb&quot; border=&quot;0&quot; alt=&quot;logo-mongodb&quot; align=&quot;right&quot; src=&quot;http://lukencode.com/wp-content/uploads/2010/07/logomongodb.png&quot; width=&quot;221&quot; height=&quot;94&quot; /&gt;&lt;/a&gt; &lt;a href=&quot;http://www.mongodb.org/&quot; target=&quot;_blank&quot;&gt;MongoDB&lt;/a&gt; is one of a growing number of nosql databases. In short these databases are non relational and schema free. I won’t attempt to give a full rundown of the pros and cons of nosql but the stated benefits are generally saleability, performance and simplicity.&lt;/p&gt;
+&lt;p&gt;MongoDB is a document orientated database storing data on disk as binary json. Some key features include indexing, rich queries, map reduce and horizontal scalability. &lt;/p&gt;
+&lt;p&gt;The Mongo website sums it all up much better than I do so you should probably just go there:&lt;/p&gt;
+&lt;blockquote&gt;   &lt;p&gt;MongoDB bridges the gap between key-value stores (which are fast and highly scalable) and traditional RDBMS systems (which provide rich queries and deep functionality).&lt;/p&gt;    &lt;p&gt;MongoDB (from &amp;quot;hu&lt;strong&gt;mongo&lt;/strong&gt;us&amp;quot;) is a scalable, high-performance, &lt;a href=&quot;http://www.mongodb.org/display/DOCS/Source+Code&quot;&gt;open source&lt;/a&gt;, document-oriented database.&lt;/p&gt; &lt;/blockquote&gt;
+&lt;p&gt;For installation instructions for Mongo I recommend taking a look at the &lt;a href=&quot;http://www.mongodb.org/display/DOCS/Quickstart+Windows&quot;&gt;Windows Quickstart guide&lt;/a&gt;.&lt;/p&gt;
+&lt;h3&gt;What (or who) is NoRM?&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;http://wiki.github.com/atheken/NoRM/&quot; target=&quot;_blank&quot;&gt;&lt;img style=&quot;border-bottom: 0px; border-left: 0px; display: inline; margin-left: 0px; border-top: 0px; margin-right: 0px; border-right: 0px&quot; title=&quot;normLogo&quot; border=&quot;0&quot; alt=&quot;normLogo&quot; align=&quot;right&quot; src=&quot;http://lukencode.com/wp-content/uploads/2010/07/normLogo.png&quot; width=&quot;244&quot; height=&quot;99&quot; /&gt;&lt;/a&gt; &lt;a href=&quot;http://wiki.github.com/atheken/NoRM/&quot; target=&quot;_blank&quot;&gt;NoRM&lt;/a&gt; is an open source .Net library for connecting to MongoDB. Its main drawcards for me are:&lt;/p&gt;
+&lt;ul&gt;   &lt;li&gt;NoRM is strongly typed. It uses plain .net classes when querying and updating the database. &lt;/li&gt;    &lt;li&gt;Uses linq for queries &lt;/li&gt;    &lt;li&gt;Simple and convention based. NoRM makes it really simple to get persistence up and running as I will soon demonstrate. &lt;/li&gt; &lt;/ul&gt;
+&lt;p&gt;To get NoRM head over to &lt;a title=&quot;http://github.com/atheken/NoRM&quot; href=&quot;http://github.com/atheken/NoRM&quot;&gt;http://github.com/atheken/NoRM&lt;/a&gt;.&lt;/p&gt;
+&lt;h3&gt;Using NoRM in C#&lt;/h3&gt;
+&lt;p&gt;I’m going to be using NoRM with a pretty standard session pattern. My MongoSession will implement the following ISession interface which uses linq expressions for queries.&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;public interface ISession : IDisposable
+{
+    void CommitChanges();
+    void Delete&amp;lt;T&amp;gt;(Expression&amp;lt;Func&amp;lt;T, bool&amp;gt;&amp;gt; expression) where T : class, new();
+    void Delete&amp;lt;T&amp;gt;(T item) where T : class, new();
+    void DeleteAll&amp;lt;T&amp;gt;() where T : class, new();
+    T Single&amp;lt;T&amp;gt;(Expression&amp;lt;Func&amp;lt;T, bool&amp;gt;&amp;gt; expression) where T : class, new();
+    System.Linq.IQueryable&amp;lt;T&amp;gt; All&amp;lt;T&amp;gt;() where T : class, new();
+    void Add&amp;lt;T&amp;gt;(T item) where T : class, new();
+    void Add&amp;lt;T&amp;gt;(IEnumerable&amp;lt;T&amp;gt; items) where T : class, new();
+    void Update&amp;lt;T&amp;gt;(T item) where T : class, new();
+}&lt;/pre&gt;
+
+&lt;p&gt;&amp;#160;&lt;/p&gt;
+
+&lt;p&gt;The MongoSession class is based off the one found in the &lt;a href=&quot;http://mvcstarter.codeplex.com/&quot; target=&quot;_blank&quot;&gt;mvcstarter project&lt;/a&gt; and uses NoRM to implement ISession. The constructor for this class sets up the Mongo connection looking for a web.config connection string entry named “db”. An example connection string is given after the code.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;public class MongoSession : ISession
+{
+    private Mongo _provider;
+    public MongoDatabase DB { get { return this._provider.Database; } }
+
+    public MongoSession()
+    {
+        //this looks for a connection string in your Web.config
+        _provider = Mongo.Create(&amp;quot;db&amp;quot;);
+    }
+
+    public void CommitChanges()
+    {
+        //mongo isn't transactional in this way
+    }
+
+    public void Delete&amp;lt;T&amp;gt;(System.Linq.Expressions.Expression&amp;lt;Func&amp;lt;T, bool&amp;gt;&amp;gt; expression) where T : class, new()
+    {
+        var items = All&amp;lt;T&amp;gt;().Where(expression);
+        foreach (T item in items)
+        {
+            Delete(item);
+        }
+    }
+
+    public void Delete&amp;lt;T&amp;gt;(T item) where T : class, new()
+    {
+        DB.GetCollection&amp;lt;T&amp;gt;().Delete(item);
+    }
+
+    public void DeleteAll&amp;lt;T&amp;gt;() where T : class, new()
+    {
+        DB.DropCollection(typeof(T).Name);
+    }
+
+    public T Single&amp;lt;T&amp;gt;(System.Linq.Expressions.Expression&amp;lt;Func&amp;lt;T, bool&amp;gt;&amp;gt; expression) where T : class, new()
+    {
+        return All&amp;lt;T&amp;gt;().Where(expression).SingleOrDefault();
+    }
+
+    public IQueryable&amp;lt;T&amp;gt; All&amp;lt;T&amp;gt;() where T : class, new()
+    {
+        return _provider.GetCollection&amp;lt;T&amp;gt;().AsQueryable();
+    }
+
+    public void Add&amp;lt;T&amp;gt;(T item) where T : class, new()
+    {
+        DB.GetCollection&amp;lt;T&amp;gt;().Insert(item);
+    }
+
+    public void Add&amp;lt;T&amp;gt;(IEnumerable&amp;lt;T&amp;gt; items) where T : class, new()
+    {
+        foreach (T item in items)
+        {
+            Add(item);
+        }
+    }
+
+    public void Update&amp;lt;T&amp;gt;(T item) where T : class, new()
+    {
+        DB.GetCollection&amp;lt;T&amp;gt;().UpdateOne(item, item);
+    }
+
+    //Helper for using map reduce in mongo
+    public T MapReduce&amp;lt;T&amp;gt;(string map, string reduce)
+    {
+        T result = default(T);
+        MapReduce mr = DB.CreateMapReduce();
+
+        MapReduceResponse response =
+            mr.Execute(new MapReduceOptions(typeof(T).Name)
+            {
+                Map = map,
+                Reduce = reduce
+            });
+        IMongoCollection&amp;lt;MapReduceResult&amp;lt;T&amp;gt;&amp;gt; coll = response.GetCollection&amp;lt;MapReduceResult&amp;lt;T&amp;gt;&amp;gt;();
+        MapReduceResult&amp;lt;T&amp;gt; r = coll.Find().FirstOrDefault();
+        result = r.Value;
+
+        return result;
+    }
+
+    public void Dispose()
+    {
+        _provider.Dispose();
+    }
+}&lt;/pre&gt;
+
+&lt;p&gt;&amp;#160;&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;&amp;lt;connectionStrings&amp;gt;
+  &amp;lt;add name=&amp;quot;db&amp;quot; connectionString=&amp;quot;mongodb://localhost/testdb?strict=true&amp;quot;/&amp;gt;
+&amp;lt;/connectionStrings&amp;gt;&lt;/pre&gt;
+
+&lt;p&gt;&amp;#160;&lt;/p&gt;
+
+&lt;p&gt;One of the best things about Mongo and NoRM is that NoRM will store plain and simple .net objects. This means we can define our models completely in code. Because Mongo is schema less we can also add and remove properties without any problems.&lt;/p&gt;
+
+&lt;p&gt;I am going to store a simple Trip class for a scheduling application. There are a couple of things to note about this code, first is the [MongoIdentifier] Attribute. Mongo requires collections have a unique identifier. When using NoRM the options you can use are: Guid/UUID, int, or ObjectId. The property must also be named either _id or Id. NoRM will handle generating the identifier when it is required. To keep my example simple I am using an integer. For more complete guidelines check the &lt;a href=&quot;http://wiki.github.com/atheken/NoRM/bson-serializer&quot; target=&quot;_blank&quot;&gt;BSON Serializer page&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;public class Trip
+{
+    [MongoIdentifier]
+    public int? Id { get; set; }
+    public string Name { get; set; }
+
+    public DateTime Start { get; set; }
+    public int Duration { get; set; }
+
+    public Trip()
+    {
+        Start = DateTime.Now;
+    }
+}&lt;/pre&gt;
+
+&lt;p&gt;&amp;#160;&lt;/p&gt;
+
+&lt;p&gt;The code to store the Trip class is very simple. The session’s add method will automatically store the object in the database as well as assigning it an Id.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;var trip = new Trip() 
+{ 
+    Name = &amp;quot;test trip&amp;quot;,
+    Duration = 5,
+    Start = DateTime.Now
+};
+
+using (var session = new MongoSession())
+{
+    session.Add(trip);
+}&lt;/pre&gt;
+
+&lt;p&gt;&amp;#160;&lt;/p&gt;
+
+&lt;p&gt;BAM! Here is the object I just saved viewed in the mongo shell. It has been assigned an identifier and stored in a collection called Trip. There was no need to define the structure of the object or to create a collection to store it in, this all happens automatically and is part of what makes coding with Mongo so refreshing.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://lukencode.com/wp-content/uploads/2010/07/shell.png&quot;&gt;&lt;img style=&quot;border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px&quot; title=&quot;shell&quot; border=&quot;0&quot; alt=&quot;shell&quot; src=&quot;http://lukencode.com/wp-content/uploads/2010/07/shell_thumb.png&quot; width=&quot;492&quot; height=&quot;250&quot; /&gt;&lt;/a&gt; &lt;/p&gt;
+
+&lt;p&gt;&amp;#160;&lt;/p&gt;
+
+&lt;p&gt;Finding the document with code is simple using the linq methods of MongoSession.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;using (var session = new MongoSession())
+{
+    var trip = session.Single&amp;lt;Trip&amp;gt;(t =&amp;gt; t.Name == &amp;quot;test trip&amp;quot;);
+}&lt;/pre&gt;
+
+&lt;p&gt;&amp;#160;&lt;/p&gt;
+
+&lt;p&gt;This is obviously a very basic overview of programming with Mongo and NoRM and therefore I have skipped over some of the more advanced features. NoRM’s linq provider is pretty good but on complex queries you may run into some issues. NoRM also has some configuration code you can add to optimise the way your objects are stored. Overall I am finding working without the constraints of a schema and letting your code define your data storage is a great way to program.&lt;/p&gt;
+
+&lt;!-- ba9836cf045145f4aa5aaf176e28e63d  --&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>IP to Geo Location in Asp.Net MVC</title>
+   <link href="http://lukencode.com/2010/05/19/ip-to-geo-location-in-asp-net-mvc/"/>
+   <updated>2010-05-19T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2010/05/19/ip-to-geo-location-in-asp-net-mvc</id>
+   <content type="html">&lt;p&gt;I have been working on a couple of projects recently (like the new and improved version of &lt;a href=&quot;http://gigpig.fm&quot; target=&quot;_blank&quot;&gt;Gigpig&lt;/a&gt; which is coming soon!) which could really benefit from some automagic geolocation lookups for visitors. In the case of Gigpig I wanted to filter what gigs users could see based on where they were in the world.&lt;/p&gt;
+
+&lt;p&gt;The database I am using is the binary version of the &lt;a href=&quot;http://www.maxmind.com/app/geolitecity&quot; target=&quot;_blank&quot;&gt;Max Mind GeoLite City&lt;/a&gt; free location database. The database essentially maps IP address ranges to cities and countries.  The binary format, I am informed is the fastest version however there is a csv file you can download and import into your database of choice.&lt;/p&gt;
+
+&lt;p&gt;Max Mind provide some C# code for querying the binary database but it takes a little work to set up where as I never like doing work someone else has done for me. The library I use is the &lt;a href=&quot;http://en.googlemaps.subgurim.net/&quot; target=&quot;_blank&quot;&gt;GoogleMaps.Subgurim.NET&lt;/a&gt; which as well as from google map functions provides code to access the GeoLite City database.&lt;/p&gt;
+
+&lt;p&gt;The code to call the Subgurim methods is super simple. Here I am returning the location class which is also included in the library – it has properties for longitude, latitude, country, city and a few other things. All that needs to be passed to it is the location of your database and the ip address you want to look up.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public static Location GetLocationFromIP(string ipAddress)
+{
+    string databasePath = HttpContext.Current.Server.MapPath(&amp;quot;~/app_data/geocitylite.dat&amp;quot;);
+    LookupService service = new LookupService(databasePath);
+    Location loc = service.getLocation(ipAddress);
+
+    return loc;
+}&lt;/pre&gt;
+
+&lt;p&gt;One way I like to use this code in Asp.Net MVC is including some properties in a base controller class that my controllers all inherit so I can access the current location on any controller. One thing to be aware of is the lookup will return null for the ip address 127.0.0.1 so you might want to hard code it for testing.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;public class ControllerBase : Controller
+{
+    public string CurrentUserIPAddress
+    {
+        get
+        {
+            return HttpContext.Request.UserHostAddress;
+        }
+    }
+
+    public Location CurrentLocation
+    {
+        get
+        {
+            if (Request.Cookies[&amp;quot;pref&amp;quot;] == null)
+            {
+                var loc = LocationHelper.GetLocationFromIP(CurrentUserIPAddress);
+
+                if (loc != null)
+                {
+                    Response.Cookies[&amp;quot;pref&amp;quot;][&amp;quot;city&amp;quot;] = loc.city;
+                    Response.Cookies[&amp;quot;pref&amp;quot;][&amp;quot;country&amp;quot;] = loc.countryCode;
+                    Response.Cookies[&amp;quot;pref&amp;quot;][&amp;quot;lat&amp;quot;] = loc.latitude.ToString();
+                    Response.Cookies[&amp;quot;pref&amp;quot;][&amp;quot;lng&amp;quot;] = loc.longitude.ToString();
+                    Response.Cookies[&amp;quot;pref&amp;quot;].Expires = DateTime.Now.AddDays(1);
+                }
+
+                return loc;
+            }
+            else
+            {
+                var loc = new Location
+                {
+                    city = Request.Cookies[&amp;quot;pref&amp;quot;][&amp;quot;city&amp;quot;],
+                    countryCode = Request.Cookies[&amp;quot;pref&amp;quot;][&amp;quot;country&amp;quot;],
+                    latitude = Convert.ToDouble(Request.Cookies[&amp;quot;pref&amp;quot;][&amp;quot;lat&amp;quot;]),
+                    longitude = Convert.ToDouble(Request.Cookies[&amp;quot;pref&amp;quot;][&amp;quot;lng&amp;quot;]),
+                };
+
+                return loc;
+            }
+        }
+    }
+}&lt;/pre&gt;
+
+&lt;p&gt;I also cache the user’s location in a cookie so I can avoid doing a database query for every request. There are a couple of ways you could implement IP address to geo location including some variations of this code – but if you just want something quick and easy this is a good starting point.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Timesaving CSS Tools for ASP.Net Developers</title>
+   <link href="http://lukencode.com/2010/05/04/timesaving-css-tools-for-asp-net-developers/"/>
+   <updated>2010-05-04T23:35:21+10:00</updated>
+   <id>http://lukencode.com/2010/05/04/timesaving-css-tools-for-asp-net-developers</id>
+   <content type="html">&lt;p&gt;Are you a developer?&lt;/p&gt;
+
+&lt;p&gt;Are you a lazy developer?&lt;/p&gt;
+
+&lt;p&gt;Do you hate doing web design?&lt;/p&gt;
+
+&lt;p&gt;If you answered yes to that last question you have come to the right blog post. I am going to show you three simple to use libraries to make working with CSS much less painful giving you time to get back to the good stuff – pointlessly refactoring your code!&lt;/p&gt;
+&lt;h3&gt;1. Blueprint CSS&lt;/h3&gt;
+&lt;p&gt;First cab off the rank is the&lt;strong&gt; &lt;/strong&gt;&lt;a href=&quot;http://www.blueprintcss.org/&quot; target=&quot;_blank&quot;&gt;&lt;strong&gt;Blueprint CSS Framework&lt;/strong&gt;&lt;/a&gt;. Blueprint combines a solid reset file,  good looking default typography and an easy to use grid system.&lt;/p&gt;
+
+&lt;p&gt;The purpose of the reset file is fairly straightforward – removing some browser inconsistencies.&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&quot;http://www.blueprintcss.org/tests/parts/elements.html&quot; target=&quot;_blank&quot;&gt;typography&lt;/a&gt; defaults are great as a sane starting point for padding, sizes, line height and all the other stuff designers write novels on but us developers have really no idea about. The values are also set in em so they should scale to the user’s font size appropriately.&lt;/p&gt;
+
+&lt;p&gt;Last but not least is Blueprint’s grid system. This I am not totally sold on but at the very least its useful for getting together a quick prototype. Essentially the system uses classes such as ‘container’, ‘span-10’ and ‘last’ to quickly and easily bust out complex layouts.&lt;/p&gt;
+
+&lt;p&gt;Here is a basic example with a header, content, footer and sidebars.&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;&amp;lt;div class=&quot;container&quot;&amp;gt;
+    &amp;lt;div class=&quot;span-24 last&quot;&amp;gt;
+        Header
+    &amp;lt;/div&amp;gt;
+    &amp;lt;div class=&quot;span-4&quot;&amp;gt;
+        Left sidebar
+    &amp;lt;/div&amp;gt;
+    &amp;lt;div class=&quot;span-16&quot;&amp;gt;
+        Main content
+    &amp;lt;/div&amp;gt;
+    &amp;lt;div class=&quot;span-4 last&quot;&amp;gt;
+        Right sidebar
+    &amp;lt;/div&amp;gt;
+&amp;lt;/div&amp;gt;&lt;/pre&gt;
+&lt;h3&gt;2. Bundler&lt;/h3&gt;
+&lt;p&gt;When building a public facing website its usually a good idea to combine and minify your CSS(and javascript) files into a single file. This of course is a huge pain in the ass. It is possible to use something like the Yahoo YUI Compressor and an MSBuild task to automate this but then you run into problems for things like debugging your CSS.&lt;/p&gt;
+
+&lt;p&gt;Enter &lt;a href=&quot;http://github.com/jetheredge/bundler&quot; target=&quot;_blank&quot;&gt;&lt;strong&gt;Bundler&lt;/strong&gt;&lt;/a&gt;. Bundler essentially reduces combining and minifying of CSS and javascript into on tiny bit of code -&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;&amp;lt;%= Bundle.Css()
+        .AddCss(&quot;~/css/reset.css&quot;)
+        .AddCss(&quot;~/css/site.css&quot;)
+        .RenderCss(&quot;~/css/combined.css&quot;) %&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bundler combines and minifies reset.css and site.css into one file – combined.css. It also takes care of ensuring old files aren’t cached and will not combine your files if the website is running in debug mode. Using bundler you have the freedom to split your CSS up into manageable pieces without sacrificing load times.&lt;/p&gt;
+&lt;h3&gt;3. LESS CSS (using Bundler)&lt;/h3&gt;
+&lt;p&gt;Last on the list is &lt;a href=&quot;http://lesscss.org/&quot; target=&quot;_blank&quot;&gt;&lt;strong&gt;LESS CSS&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;blockquote&gt;In its own words - &lt;em&gt;“LESS extends CSS with: variables, mixins, operations and nested rules&lt;/em&gt;”.&lt;/blockquote&gt;
+&lt;p&gt;In my words LESS allows you to write CSS more like you would normally write code allowing you to keep your CSS files DRY (don’t repeat yourself… dammit I just repeated myself). It achieves this by using this variables, mixins which are kind of like functions and a few other nifty features.&lt;/p&gt;
+
+&lt;p&gt;For the two readers who have gotten this far &lt;em&gt;and&lt;/em&gt; clicked through the link will notice LESS CSS is targeted at ruby and not at .Net. However our good friend from step 2 – Bundler (or &lt;a href=&quot;http://www.dotlesscss.com/&quot; target=&quot;_blank&quot;&gt;dotlesscss&lt;/a&gt;) will automatically parse CSS files ending with .less using the LESS CSS language.&lt;/p&gt;
+
+&lt;p&gt;Variables behave exactly as you would expect them to and are awesome for making sure you don’t keep repeating yourself with things like colours.&lt;/p&gt;
+
+&lt;pre class=&quot;brush: css;&quot;&gt;
+@brand_color: #4D926F;
+
+#header {
+  color: @brand_color;
+}
+
+h2 {
+  color: @brand_color;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;The other feature I really love is mixins. Mixins behave in a way like functions that take parameters as input and return a set of CSS properties based off those parameters. CSS 3 rounded corners are a good example of this.&lt;/p&gt;
+
+&lt;pre class=&quot;brush: css;&quot;&gt;
+.rounded_corners (@radius: 5px) {
+  -moz-border-radius: @radius;
+  -webkit-border-radius: @radius;
+  border-radius: @radius;
+}
+
+#header {
+  .rounded_corners;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;LESS has a number of other cool features you can check out on the &lt;a href=&quot;http://lesscss.org/docs&quot; target=&quot;_blank&quot;&gt;documentation&lt;/a&gt;.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Calling Web Services in Android using HttpClient</title>
+   <link href="http://lukencode.com/2010/04/27/calling-web-services-in-android-using-httpclient/"/>
+   <updated>2010-04-27T21:02:21+10:00</updated>
+   <id>http://lukencode.com/2010/04/27/calling-web-services-in-android-using-httpclient</id>
+   <content type="html">&lt;p&gt;I’ve decided recently to branch out from mainly web development into the mobile app space – starting with Google’s Android (because I own a Android phone). One of the first things I wanted to do was start calling webservices, specifically Google Analytics.&lt;/p&gt;
+
+&lt;p&gt;Now I am pretty new to Android and Java in general but I feel I’ve come up with a nice simple way to make requests to web services and APIs (and plain html pages if you want). The class uses the org.apache.http library which is included in Android.&lt;/p&gt;
+
+&lt;p&gt;This is the code for the class.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class RestClient {
+
+    private ArrayList &amp;lt;NameValuePair&amp;gt; params;
+    private ArrayList &amp;lt;NameValuePair&amp;gt; headers;
+
+    private String url;
+
+    private int responseCode;
+    private String message;
+
+    private String response;
+
+    public String getResponse() {
+        return response;
+    }
+
+    public String getErrorMessage() {
+        return message;
+    }
+
+    public int getResponseCode() {
+        return responseCode;
+    }
+
+    public RestClient(String url)
+    {
+        this.url = url;
+        params = new ArrayList&amp;lt;NameValuePair&amp;gt;();
+        headers = new ArrayList&amp;lt;NameValuePair&amp;gt;();
+    }
+
+    public void AddParam(String name, String value)
+    {
+        params.add(new BasicNameValuePair(name, value));
+    }
+
+    public void AddHeader(String name, String value)
+    {
+        headers.add(new BasicNameValuePair(name, value));
+    }
+
+    public void Execute(RequestMethod method) throws Exception
+    {
+        switch(method) {
+            case GET:
+            {
+                //add parameters
+                String combinedParams = &quot;&quot;;
+                if(!params.isEmpty()){
+                    combinedParams += &quot;?&quot;;
+                    for(NameValuePair p : params)
+                    {
+                        String paramString = p.getName() + &quot;=&quot; + URLEncoder.encode(p.getValue(),”UTF-8″);
+                        if(combinedParams.length() &amp;gt; 1)
+                        {
+                            combinedParams  +=  &quot;&amp;amp;&quot; + paramString;
+                        }
+                        else
+                        {
+                            combinedParams += paramString;
+                        }
+                    }
+                }
+
+                HttpGet request = new HttpGet(url + combinedParams);
+
+                //add headers
+                for(NameValuePair h : headers)
+                {
+                    request.addHeader(h.getName(), h.getValue());
+                }
+
+                executeRequest(request, url);
+                break;
+            }
+            case POST:
+            {
+                HttpPost request = new HttpPost(url);
+
+                //add headers
+                for(NameValuePair h : headers)
+                {
+                    request.addHeader(h.getName(), h.getValue());
+                }
+
+                if(!params.isEmpty()){
+                    request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+                }
+
+                executeRequest(request, url);
+                break;
+            }
+        }
+    }
+
+    private void executeRequest(HttpUriRequest request, String url)
+    {
+        HttpClient client = new DefaultHttpClient();
+
+        HttpResponse httpResponse;
+
+        try {
+            httpResponse = client.execute(request);
+            responseCode = httpResponse.getStatusLine().getStatusCode();
+            message = httpResponse.getStatusLine().getReasonPhrase();
+
+            HttpEntity entity = httpResponse.getEntity();
+
+            if (entity != null) {
+
+                InputStream instream = entity.getContent();
+                response = convertStreamToString(instream);
+
+                // Closing the input stream will trigger connection release
+                instream.close();
+            }
+
+        } catch (ClientProtocolException e)  {
+            client.getConnectionManager().shutdown();
+            e.printStackTrace();
+        } catch (IOException e) {
+            client.getConnectionManager().shutdown();
+            e.printStackTrace();
+        }
+    }
+
+    private static String convertStreamToString(InputStream is) {
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + &quot;\n&quot;);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sb.toString();
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;Here is an example of how I use the class to call the Google Analytics API. I use the AddParam methods to add query string / post values and the AddHeader method to add headers to the request. RequestMethod is a simple enum with GET and POST values.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;RestClient client = new RestClient(LOGIN_URL);
+client.AddParam(&quot;accountType&quot;, &quot;GOOGLE&quot;);
+client.AddParam(&quot;source&quot;, &quot;tboda-widgalytics-0.1&quot;);
+client.AddParam(&quot;Email&quot;, _username);
+client.AddParam(&quot;Passwd&quot;, _password);
+client.AddParam(&quot;service&quot;, &quot;analytics&quot;);
+client.AddHeader(&quot;GData-Version&quot;, &quot;2&quot;);
+
+try {
+    client.Execute(RequestMethod.POST);
+} catch (Exception e) {
+    e.printStackTrace();
+}
+
+String response = client.getResponse();
+&lt;/pre&gt;
+
+&lt;p&gt;The class also exposes the Http response code and message which are important when using some Restful APIs. I know could definitely improve/extend on this code and would love to hear from those more experienced in Java and Android than myself.&lt;/p&gt;
+
+&lt;div&gt;
+	&lt;script src=&quot;http://pollfu.com/public/js/embed.v1.js&quot; data-id=&quot;8&quot;&gt; &lt;/script&gt;
+&lt;/div&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Split String Into Array of Chunks</title>
+   <link href="http://lukencode.com/2010/04/21/split-string-into-array-of-chunks/"/>
+   <updated>2010-04-21T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2010/04/21/split-string-into-array-of-chunks</id>
+   <content type="html">&lt;p&gt;Here is a little function I needed to use today for spliting a string into an array of strings of a given length rather than by a particular character. I ran into a situation where the database columns I wanted to insert some text into were split over a number of columns eg “DescriptionLine1”, “DescriptionLine2”, “DescriptionLine3”.&lt;/p&gt;
+
+&lt;p&gt;Through the magic of extension methods I can split the string into chunks using this code.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var splitItemDescription = item.Product.Description.SplitIntoChunks(40);
+&lt;/pre&gt;
+
+&lt;p&gt;Here is the code for the extension method, written in C#.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; public static string[] SplitIntoChunks(this string toSplit, int chunkSize)
+ {
+      int stringLength = toSplit.Length;
+ 
+      int chunksRequired = (int)Math.Ceiling((decimal)stringLength / (decimal)chunkSize);
+      var stringArray = new string[chunksRequired];
+ 
+      int lengthRemaining = stringLength;
+ 
+      for (int i = 0; i &amp;lt; chunksRequired; i++)
+      {
+          int lengthToUse = Math.Min(lengthRemaining, chunkSize);
+          int startIndex = chunkSize * i;
+          stringArray[i] = toSplit.Substring(startIndex, lengthToUse);
+             
+          lengthRemaining = lengthRemaining - lengthToUse;
+      }
+             
+      return stringArray;
+ }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The method takes into account strings of which the length is not a factor of the chunk size being used by using what is remaing of the string for the last element of the array.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Google Weather API with RestSharp</title>
+   <link href="http://lukencode.com/2010/04/14/google-weather-api-with-restsharp/"/>
+   <updated>2010-04-14T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2010/04/14/google-weather-api-with-restsharp</id>
+   <content type="html">&lt;p&gt;Guest post by &lt;a href=&quot;http://github.com/dkarzon&quot;&gt;DK&lt;/a&gt;!&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&quot;http://www.googleapihelp.com/2009/08/google-weather-api.html&quot;&gt;Google Weather API&lt;/a&gt; is a grand service for developers to get weather data for any location with ease. &lt;a href=&quot;http://restsharp.org/&quot;&gt;RestSharp&lt;/a&gt; is a open source .NET REST Client…&lt;/p&gt;
+
+&lt;p&gt;Been doing some work getting weather information from Google Weather and I thought I might take the time to explain how I used Restsharp with this API. I started with the xml from the API itself.&lt;/p&gt;
+
+&lt;p&gt;&lt;a title=&quot;http://www.google.com/ig/api?weather=Brisbane+au&quot; href=&quot;http://www.google.com/ig/api?weather=Brisbane+au&quot;&gt;http://www.google.com/ig/api?weather=Brisbane+au&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;xml_api_reply version=&quot;1&quot;&amp;gt;
+    &amp;lt;weather&amp;gt;
+        &amp;lt;forecast_information&amp;gt;
+            &amp;lt;city data=&quot;Brisbane, QLD&quot;/&amp;gt;
+            &amp;lt;postal_code data=&quot;Brisbane au&quot;/&amp;gt;
+            &amp;lt;latitude_e6 data=&quot;&quot;/&amp;gt;
+            &amp;lt;longitude_e6 data=&quot;&quot;/&amp;gt;
+            &amp;lt;forecast_date data=&quot;2010-04-14&quot;/&amp;gt;
+            &amp;lt;current_date_time data=&quot;2010-04-14 14:00:00 +0000&quot;/&amp;gt;
+            &amp;lt;unit_system data=&quot;US&quot;/&amp;gt;
+        &amp;lt;/forecast_information&amp;gt;
+        &amp;lt;current_conditions&amp;gt;
+            &amp;lt;condition data=&quot;Partly Cloudy&quot;/&amp;gt;
+            &amp;lt;temp_f data=&quot;72&quot;/&amp;gt;
+            &amp;lt;temp_c data=&quot;22&quot;/&amp;gt;
+            &amp;lt;humidity data=&quot;Humidity: 64%&quot;/&amp;gt;
+            &amp;lt;icon data=&quot;/ig/images/weather/partly_cloudy.gif&quot;/&amp;gt;
+            &amp;lt;wind_condition data=&quot;Wind: SW at 14 mph&quot;/&amp;gt;
+        &amp;lt;/current_conditions&amp;gt;
+        &amp;lt;forecast_conditions&amp;gt;
+            &amp;lt;day_of_week data=&quot;Wed&quot;/&amp;gt;
+            &amp;lt;low data=&quot;64&quot;/&amp;gt;
+            &amp;lt;high data=&quot;78&quot;/&amp;gt;
+            &amp;lt;icon data=&quot;/ig/images/weather/chance_of_rain.gif&quot;/&amp;gt;
+            &amp;lt;condition data=&quot;Chance of Rain&quot;/&amp;gt;
+        &amp;lt;/forecast_conditions&amp;gt;
+	  ...
+    &amp;lt;/weather&amp;gt;
+&amp;lt;/xml_api_reply&amp;gt;
+&lt;/pre&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Notice the weather element contains multiple forecast_conditions elements without a single container element as well as the other forecast_information and current_conditions elements. At first this was a problem, I spoke to John Sheehan (the creator of RestSharp) about this and he told me it was currently unsupported with RestSharp. So I took a dive into the RestSharp source (mainly the XmlDeserialiser) to try and find a solution to this problem and I came across the support for Derived Lists, therein lies a solution…&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class xml_api_reply
+{
+    public string version { get; set; }
+    public Weather weather { get; set; }
+}
+public class Weather : List&amp;lt;Forecast_Conditions&amp;gt;
+{
+    public Forecast_Information Forecast_Information { get; set; }
+    public Current_Conditions Current_Conditions { get; set; }
+}
+public class DataElement
+{
+    public string Data { get; set; }
+}
+public class Forecast_Information
+{
+    public DataElement City { get; set; }
+    public DataElement Postal_Code { get; set; }
+    public DataElement Forecast_Date { get; set; }
+    public DataElement Unit_System { get; set; }
+}
+public class Current_Conditions
+{
+    public DataElement Condition { get; set; }
+    public DataElement Temp_c { get; set; }
+    public DataElement Humidity { get; set; }
+    public DataElement Icon { get; set; }
+    public DataElement Wind_condition { get; set; }
+}
+public class Forecast_Conditions
+{
+    public DataElement Day_Of_Week { get; set; }
+    public DataElement Condition { get; set; }
+    public DataElement Low { get; set; }
+    public DataElement High { get; set; }
+    public DataElement Icon { get; set; }
+}
+&lt;/pre&gt;
+&lt;p&gt;These classes are then used by RestSharp to Deserialise the response. xml_api_reply is the root element and under it is weather. The weather class inherits from a List&amp;lt;forecast_conditions&amp;gt; because it can contain multiple elements as well as other properties. The DataElement class was created because of the way the xml has its data ie. &amp;lt;city data=”Brisbane, QLD”/&amp;gt;  instead of &amp;lt;city&amp;gt;Brisbane, QLD&amp;lt;/city&amp;gt;.&lt;/p&gt;
+
+&lt;p&gt;Now that we have setup the Response classes we can use get to the real code…&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var client = new RestClient(&amp;quot;http://www.google.com/ig/api&amp;quot;);
+var request = new RestRequest(Method.GET);
+request.AddParameter(&amp;quot;weather&amp;quot;, &amp;quot;Brisbane&amp;quot;);
+
+var response = client.Execute&amp;lt;Models.xml_api_reply&amp;gt;(request);
+&lt;/pre&gt;
+
+&lt;p&gt;Pretty easy, and the response is a RestResponse&amp;lt;T&amp;gt; where T is my xml_api_reply class, this object then gives us access to anything we could need from the response including the content itself (response.Content) and the deserialised class (response.Data).&lt;/p&gt;
+
+&lt;p&gt;And to find the current temperature:&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;response.Data.weather.Current_Conditions.Temp_c.Data&lt;/pre&gt;
+&lt;p&gt;Now you know how to use RestSharp the world of Restful services is yours for the taking!&lt;/p&gt;
+
+&lt;p&gt;Update: Updated the reponse class to Pascal Case.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Fluent Email in .NET</title>
+   <link href="http://lukencode.com/2010/04/11/fluent-email-in-net/"/>
+   <updated>2010-04-11T18:33:01+10:00</updated>
+   <id>http://lukencode.com/2010/04/11/fluent-email-in-net</id>
+   <content type="html">&lt;p&gt;I have been working with &lt;a href=&quot;http://lukencode.com/2010/04/08/synchronous-asynchronous-email-sender/&quot;&gt;sending emails with System.Net.Mail&lt;/a&gt; and had a few people mention they would like fluent interface. It sounded like a pretty cool idea and I also needed an excuse to learn git/github thus was born &lt;a href=&quot;http://github.com/lukencode/FluentEmail&quot; target=&quot;_blank&quot;&gt;FluentEmail for .NET&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Here is a quick example of intended usage, the Smtp details if not provided using the .UsingClient(SmptClient client) method will be taken from the mailSettings config section.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var email = Email
+            .From(&quot;john@email.com&quot;)
+            .To(&quot;bob@email.com&quot;, &quot;bob&quot;)
+            .Subject(&quot;hows it going bob&quot;)
+            .Body(&quot;yo dawg, sup?&quot;);
+
+//send normally
+email.Send();
+
+//send asynchronously
+email.SendAsync(MailDeliveredCallback);
+&lt;/pre&gt;
+
+&lt;p&gt;The fluent interface is acheived by using a builder pattern. The .From method is static and returns the underlying email object for the other methods to build upon.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class Email : IHideObjectMembers
+{
+    private SmtpClient _client;
+    public MailMessage Message { get; set; }
+
+    private Email()
+    {
+        Message = new MailMessage() { IsBodyHtml = true };
+        _client = new SmtpClient();
+    }
+
+    public static Email From(string emailAddress, string name = &quot;&quot;)
+    {
+        var email = new Email();
+        email.Message.From = new MailAddress(emailAddress, name);
+        return email;
+    }
+
+    public Email To(string emailAddress, string name = &quot;&quot;)
+    {
+        Message.To.Add(new MailAddress(emailAddress, name));
+        return this;
+    }
+
+    //other methods left out for readability
+}&lt;/pre&gt;
+
+&lt;p&gt;Its early days at the moment but it does support multiple recipients, BCC and CC. Some of the things I would like to eventually include is support for bulk email sending (sending in batches) and easy support for different Smpt clients such as gmail.&lt;/p&gt;
+
+&lt;p&gt;You can grab/fork the code at &lt;a title=&quot;http://github.com/lukencode/FluentEmail&quot; href=&quot;http://github.com/lukencode/FluentEmail&quot;&gt;http://github.com/lukencode/FluentEmail&lt;/a&gt;. Let me know if you have any comments or suggestions.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Simple C# Synchronous / Asynchronous Email Sender</title>
+   <link href="http://lukencode.com/2010/04/08/synchronous-asynchronous-email-sender/"/>
+   <updated>2010-04-08T10:47:51+10:00</updated>
+   <id>http://lukencode.com/2010/04/08/synchronous-asynchronous-email-sender</id>
+   <content type="html">&lt;p&gt;&lt;strong&gt;UPDATE:&lt;/strong&gt; 
+I am now using a &lt;a href=&quot;http://lukencode.com/2010/04/11/fluent-email-in-net/&quot;&gt;Fluent Email Class &lt;/a&gt; that implements similar techniques.&lt;/p&gt;
+
+&lt;p&gt;I noticed quite a few search queries coming in for my post on &lt;a title=&quot;c# email templates&quot; href=&quot;http://lukencode.com/2010/03/23/user-control-email-templates-in-asp-net/&quot;&gt;User Control Email Templates&lt;/a&gt; so I thought I should post the code I am using to actually send the emails in that example. The class uses the SMTP configuration information in the web.config or app.config of the application. An example of the config is after the code.&lt;/p&gt;
+
+&lt;p&gt;The code is pretty quick and dirty but if you are only sending one off emails it works fine.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;    
+
+public static class EmailSender
+{
+	///
+	/// Sends an Email.
+	///
+	public static bool Send(string sender, string senderName, string recipient, string recipientName, string subject, string body)
+	{
+		var message = new MailMessage()
+		{
+			From = new MailAddress(sender, senderName),
+			Subject = subject,
+			Body = body,
+			IsBodyHtml = true
+		};
+		
+		message.To.Add(new MailAddress(recipient, recipientName));
+
+		try
+		{
+			var client = new SmtpClient();
+			client.Send(message);
+		}
+		catch (Exception ex)
+		{
+			//handle exeption
+			return false;
+		}
+
+		return true;
+	}
+
+	///
+	/// Sends an Email asynchronously
+	///
+	public static void SendAsync(string sender, string senderName, string recipient, string recipientName, string subject, string body)
+	{
+		var message = new MailMessage()
+			{
+				From = new MailAddress(sender, senderName),
+				Subject = subject,
+				Body = body,
+				IsBodyHtml = true
+			};
+		message.To.Add(new MailAddress(recipient, recipientName));
+
+		var client = new SmtpClient();
+		client.SendCompleted += MailDeliveryComplete;
+		client.SendAsync(message, message);
+	}
+
+	private static void MailDeliveryComplete(object sender, AsyncCompletedEventArgs e)
+	{
+		if (e.Error != null)
+		{
+			//handle error
+		}
+		else if (e.Cancelled)
+		{
+			//handle cancelled
+		}
+		else
+		{
+			//handle sent email
+			MailMessage message = (MailMessage)e.UserState;
+		}
+	}
+}
+&lt;/pre&gt;
+
+&lt;p&gt;Here is an example of the mailSettings config section.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+    &amp;lt;system.net&amp;gt;
+      &amp;lt;mailSettings&amp;gt;
+        &amp;lt;smtp from=&amp;quot;test@test.test&amp;quot;&amp;gt;
+          &amp;lt;network host=&amp;quot;smtphost&amp;quot; port=&amp;quot;25&amp;quot; username=&amp;quot;user&amp;quot; password=&amp;quot;password&amp;quot; defaultCredentials=&amp;quot;true&amp;quot; /&amp;gt;
+        &amp;lt;/smtp&amp;gt;
+      &amp;lt;/mailSettings&amp;gt;
+    &amp;lt;/system.net&amp;gt;
+&lt;/pre&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>C# Micro Performance Testing Class</title>
+   <link href="http://lukencode.com/2010/03/28/c-micro-performance-testing-class/"/>
+   <updated>2010-03-28T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2010/03/28/c-micro-performance-testing-class</id>
+   <content type="html">&lt;p&gt;I often find myself wondering which version of a method would run more efficiently so for my own amusement I built this little class so I could easily test various method’s performance. I understand this is no substitute for real profiling but it is handy to do some quick comparisons.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class PerformanceTester
+{
+    public TimeSpan TotalTime { get; private set; }
+    public TimeSpan AverageTime { get; private set; }
+    public TimeSpan MinTime { get; private set; }
+    public TimeSpan MaxTime { get; private set; }
+    public Action Action { get; set; }
+
+    public PerformanceTester(Action action)
+    {
+        Action = action;
+        MaxTime = TimeSpan.MinValue;
+        MinTime = TimeSpan.MaxValue;
+    }
+
+    /// &amp;lt;summary&amp;gt;
+    /// Micro performance testing
+    /// &amp;lt;/summary&amp;gt;
+    public void MeasureExecTime()
+    {
+        var sw = Stopwatch.StartNew();
+        Action();
+        sw.Stop();
+        AverageTime = sw.Elapsed;
+        TotalTime = sw.Elapsed;
+    }
+
+    /// &amp;lt;summary&amp;gt;
+    /// Micro performance testing
+    /// &amp;lt;/summary&amp;gt;
+    /// &amp;lt;param name=&quot;iterations&quot;&amp;gt;the number of times to perform action&amp;lt;/param&amp;gt;
+    /// &amp;lt;returns&amp;gt;&amp;lt;/returns&amp;gt;
+    public void MeasureExecTime(int iterations)
+    {
+        Action(); // warm up
+        var sw = Stopwatch.StartNew();
+        for (int i = 0; i &amp;lt; iterations; i++)
+        {
+            Action();
+        }
+        sw.Stop();
+        AverageTime = new TimeSpan(sw.Elapsed.Ticks/iterations);
+        TotalTime = sw.Elapsed;
+    }
+
+    /// &amp;lt;summary&amp;gt;
+    /// Micro performance testing, also measures
+    /// max and min execution times
+    /// &amp;lt;/summary&amp;gt;
+    /// &amp;lt;param name=&quot;iterations&quot;&amp;gt;the number of times to perform action&amp;lt;/param&amp;gt;
+    public void MeasureExecTimeWithMetrics(int iterations)
+    {
+        TimeSpan total = new TimeSpan(0);
+
+        Action(); // warm up
+        for (int i = 0; i &amp;lt; iterations; i++)
+        {
+            var sw = Stopwatch.StartNew();
+
+            Action();
+
+            sw.Stop();
+            TimeSpan thisIteration = sw.Elapsed;
+            total += thisIteration;
+
+            if (thisIteration &amp;gt; MaxTime) MaxTime = thisIteration;
+            if (thisIteration &amp;lt; MinTime) MinTime = thisIteration;
+        }
+
+        TotalTime = total;
+        AverageTime = new TimeSpan(total.Ticks/iterations);
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;Here is how you can use it.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+//usage
+var tester = new PerformanceTester(() =&amp;gt; SomeMethod());
+tester.MeasureExecTimeWithMetrics(1000);
+Console.Writeline(string.Format(&quot;Executed in {0} milliseconds&quot;, tester.AverageTime.TotalMilliseconds));
+&lt;/pre&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>6 Useful SQL Server Scripts</title>
+   <link href="http://lukencode.com/2010/03/26/6-useful-sql-sever-scripts/"/>
+   <updated>2010-03-26T19:10:49+10:00</updated>
+   <id>http://lukencode.com/2010/03/26/6-useful-sql-sever-scripts</id>
+   <content type="html">&lt;p&gt;This is a post we had on the short lived blog.tboda.com with input from DK and &lt;a href=&quot;http://benjii.me&quot;&gt;Benjii&lt;/a&gt;. People seemed to find it useful so I thought I’d give it second chance at life (plus one extra script).&lt;/p&gt;
+
+&lt;h3&gt;Database Backup&lt;/h3&gt;
+
+&lt;p&gt;This script is used to do regular backups of a given database when running as a scheduled sql job. It appends the date to each backup to prevent conflicts.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;DECLARE @currentday varchar(10)
+set @currentday = datepart(day,getdate())
+IF LEN(@currentday) = 1
+BEGIN
+	SET @currentday = '0' + @currentday
+END
+DECLARE @currentmonth varchar(10)
+SET @currentmonth = datepart(month,getdate())
+IF LEN(@currentmonth) = 1
+BEGIN
+	SET @currentmonth = '0' + @currentmonth
+END
+DECLARE @currentyear varchar(10)
+SET @currentyear = datepart(year,getdate())
+DECLARE @fileName varchar(100)
+SET @fileName = 'c:\Backups\Database\myDatabase_' + @currentyear
++ '_'	 + @currentmonth  + '_' + @currentday  + '.bak'
+BACKUP DATABASE myDatabase TO DISK = @fileName WITH NOFORMAT, INIT,
+NAME = N'myDatabase -Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10
+GO&lt;/pre&gt;
+
+&lt;h3&gt;Clear all Records&lt;/h3&gt;
+
+&lt;p&gt;This script basically ‘resets’ your database by removing all records from every table whilst keeping constraints intact and resetting identities.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;--Disable Constraints &amp;amp; Triggers
+EXEC sp_MSforeachtable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL'
+EXEC sp_MSforeachtable 'ALTER TABLE ? DISABLE TRIGGER ALL'
+--Perform delete operation on all table for cleanup
+EXEC sp_MSforeachtable 'DELETE ?'
+--Enable Constraints &amp;amp; Triggers again
+EXEC sp_MSforeachtable 'ALTER TABLE ? CHECK CONSTRAINT ALL'
+EXEC sp_MSforeachtable 'ALTER TABLE ? ENABLE TRIGGER ALL'
+--Reset Identity on tables with identity column
+EXEC sp_MSforeachtable 'IF OBJECTPROPERTY(OBJECT_ID(''?''), ''TableHasIdentity'') = 1
+BEGIN DBCC CHECKIDENT (''?'',RESEED,0) END'&lt;/pre&gt;
+
+&lt;h3&gt;Distance between points&lt;/h3&gt;
+
+&lt;p&gt;Taking 2 sets of longitude/latitude points this function will calculate the distance between them and return it as a real.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+
+CREATE FUNCTION [dbo].[DistanceBetween] (@Lat1 as real,
+@Long1 as real, @Lat2 as real, @Long2 as real)
+RETURNS real
+AS
+BEGIN
+DECLARE @dLat1InRad as float(53);
+SET @dLat1InRad = @Lat1 * (PI()/180.0);
+DECLARE @dLong1InRad as float(53);
+SET @dLong1InRad = @Long1 * (PI()/180.0);
+DECLARE @dLat2InRad as float(53);
+SET @dLat2InRad = @Lat2 * (PI()/180.0);
+DECLARE @dLong2InRad as float(53);
+SET @dLong2InRad = @Long2 * (PI()/180.0);
+DECLARE @dLongitude as float(53);
+SET @dLongitude = @dLong2InRad - @dLong1InRad;
+DECLARE @dLatitude as float(53);
+SET @dLatitude = @dLat2InRad - @dLat1InRad;
+-- Intermediate result a.
+DECLARE @a as float(53);
+SET @a = SQUARE (SIN (@dLatitude / 2.0)) + COS (@dLat1InRad)
+* COS (@dLat2InRad)
+* SQUARE(SIN (@dLongitude / 2.0));
+-- Intermediate result c (great circle distance in Radians).
+DECLARE @c as real;
+SET @c = 2.0 * ATN2 (SQRT (@a), SQRT (1.0 - @a));
+DECLARE @kEarthRadius as real;
+-- SET kEarthRadius = 3956.0 miles
+SET @kEarthRadius = 6376.5; -- kms
+DECLARE @dDistance as real;
+SET @dDistance = @kEarthRadius * @c;
+RETURN (@dDistance);
+END
+
+&lt;/pre&gt;
+
+&lt;h3&gt;Get Table Size&lt;/h3&gt;
+
+&lt;p&gt;This is a SQL Server 2005 stored procedure that returns a table with details on the storage spaced used by all tables in the database.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;CREATE PROCEDURE [dbo].[GetDBTableSize]
+AS
+BEGIN
+SET NOCOUNT ON;
+DECLARE @cmdstr varchar(100)
+--Create Temporary Table
+CREATE TABLE #TempTable
+(
+        [Table_Name] varchar(50),
+	Row_Count int,
+	Table_Size varchar(50),
+	Data_Space_Used varchar(50),
+	Index_Space_Used varchar(50),
+	Unused_Space varchar(50)
+)
+--Create Stored Procedure String
+SELECT @cmdstr = 'sp_msforeachtable ''sp_spaceused &quot;?&quot;'''
+--Populate Tempoary Table
+INSERT INTO #TempTable EXEC(@cmdstr)
+--Determine sorting method
+SELECT * FROM #TempTable ORDER BY Table_Name
+--Delete Temporay Table
+DROP TABLE #TempTable
+END&lt;/pre&gt;
+&lt;h3&gt;Clear Transaction Logs&lt;/h3&gt;
+&lt;p&gt;A small script to clear the transaction logs of a given database. During development these can get pretty excessive.&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;BACKUP log [myDatabase] with truncate_only
+go
+DBCC SHRINKDATABASE ([myDatabase], 10, TRUNCATEONLY)
+go&lt;/pre&gt;
+&lt;p&gt;This will stop the transaction logs from growing too large.&lt;/p&gt;
+
+&lt;p&gt;It is also a good idea to do regular backups of these logs (which shrinks them anyway)&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;BACKUP
+LOG [myDatabase] TO DISK = N'C:\Backups\myDatabase_log.trn' WITH
+NOFORMAT, NOINIT, NAME = N'myDatabase_log', SKIP, REWIND, NOUNLOAD,
+STATS = 10&lt;/pre&gt;
+
+&lt;h3&gt;Number of Tables in Database&lt;/h3&gt;
+
+&lt;p&gt;Working on a rather monolithic finance system the other day I wanted to check out just how many un necessary tables they had. Here is how via &lt;a href=&quot;http://www.sqlservercurry.com/2008/06/count-number-of-tables-in-sql-server.html&quot;&gt;sqlservercurry&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;USE YOURDBNAME
+SELECT COUNT(*) from information_schema.tables
+WHERE table_type = 'base table'&lt;/pre&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>User Control Email Templates in asp.net</title>
+   <link href="http://lukencode.com/2010/03/23/user-control-email-templates-in-asp-net/"/>
+   <updated>2010-03-23T00:00:00+10:00</updated>
+   <id>http://lukencode.com/2010/03/23/user-control-email-templates-in-asp-net</id>
+   <content type="html">&lt;p&gt;Just about every project i work on needs to send customized emails and everytime I hate doing it. Inspired by some answers in this &lt;a href=&quot;http://stackoverflow.com/questions/122784/hidden-net-base-class-library-classes/122967&quot;&gt;stackoverflow question&lt;/a&gt; I thought I’d give a simple .ascx based email template system a dig.&lt;/p&gt;
+
+&lt;p&gt;First thing I did was set up a base class for template controls to inherit from. This class inherits from UserControl and has the methods to render the control to a string. It also has methods and properties to set up “tags” to replace in the email body.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class EmailTemplateBase : UserControl
+{
+    public EmailTemplateBase()
+    {
+        Tags = new Dictionary&amp;lt;string, string&amp;gt;();
+    }
+
+    public Dictionary&amp;lt;string, string&amp;gt; Tags { get; set; }
+
+    protected string GetTagValue(string tagName)
+    {
+        return Tags[tagName].Value;
+    }
+
+    protected string GetTagValue(string tagName, string defaultValue)
+    {
+        string val = GetTagValue(tagName);
+        return string.IsNullOrEmpty(val) ? defaultValue : val;
+    }
+
+    public string RenderTemplate()
+    {
+        StringBuilder sb = new StringBuilder();
+        StringWriter sw = new StringWriter(sb);
+        Html32TextWriter htw = new Html32TextWriter(sw);
+        RenderControl(htw);
+
+        // Get full body text
+        return sb.ToString();
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;Below is a simple example from the project I am working on it is used for sending feedback emails  This template is really simple but because the rendering uses the same page cycle as a regular control you can style and render the template how ever you like.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;&amp;lt;p&amp;gt;
+   Feedback from System sent &amp;lt;%= GetTagValue(&quot;sent&quot;)%&amp;gt;
+&amp;lt;/p&amp;gt;
+
+&amp;lt;p&amp;gt;
+    &amp;lt;strong&amp;gt;Sender: &amp;lt;/strong&amp;gt; &amp;lt;%= GetTagValue(&quot;sender&quot;)%&amp;gt;&amp;lt;br /&amp;gt;
+    &amp;lt;strong&amp;gt;Subject: &amp;lt;/strong&amp;gt; &amp;lt;%= GetTagValue(&quot;subject&quot;)%&amp;gt;
+&amp;lt;/p&amp;gt;
+
+&amp;lt;p&amp;gt;
+    &amp;lt;strong&amp;gt;Message: &amp;lt;/strong&amp;gt; &amp;lt;br /&amp;gt;
+     &amp;lt;%= GetTagValue(&quot;message&quot;).Replace(Environment.NewLine, &quot;&amp;lt;br /&amp;gt;&quot;)%&amp;gt;
+&amp;lt;/p&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;I created a class to easily load and use the email templates within my code by passing the location of the template on the server.&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+
+public class EmailTemplate
+{
+    private readonly EmailTemplateBase _template;
+
+    public EmailTemplate(string templateLocation)
+    {
+        Page p = new Page();
+        _template = (EmailTemplateBase) p.LoadControl(templateLocation);
+    }
+
+    public Dictionary&amp;lt;string, string&amp;gt; Tags
+    {
+        get { return _template.Tags; }
+        set { _template.Tags = value; }
+    }
+
+    public string Render()
+    {
+        return _template.RenderTemplate();
+    }
+}
+
+&lt;/pre&gt;
+
+&lt;p&gt;Below is how I use the templates in my code, sending using a basic &lt;a title=&quot;c# email sender&quot; href=&quot;http://lukencode.com/2010/04/08/synchronous-asynchronous-email-sender/&quot;&gt;email sender&lt;/a&gt; class I have (or better still &lt;a title=&quot;.net fluent emal&quot; href=&quot;http://lukencode.com/2010/04/11/fluent-email-in-net/&quot;&gt;fluent email&lt;/a&gt;).&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var template = new Common.Email.EmailTemplate(&quot;~/Emails/Templates/Feedback.ascx&quot;);
+template.Tags.Add(&quot;sender&quot;, sender);
+template.Tags.Add(&quot;sent&quot;, sent);
+template.Tags.Add(&quot;subject&quot;, subject);
+template.Tags.Add(&quot;message&quot;, message);
+
+string body = template.Render();
+
+EmailSender.Send(from, fromName, to, toName, subject, body);
+&lt;/pre&gt;
+
+&lt;p&gt;I could probably try encapsulate a bit more of the email sending inside my template (toName, toAddress etc) to clean this up a bit so feel free to tell me how come I suck.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ 
+</feed>

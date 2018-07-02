@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      NetBash Updated – Formatting Helpers Added &middot; lukencode
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Source+Serif+Pro">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-9813084-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-9813084-8');
+  </script>
+
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png"> -->
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          lukencode
+        </a>
+      </h1>
+      <div><p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p> <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      
+
+      
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+
+      <a class="sidebar-nav-item" href="http://lukelowrey.com">lukelowrey.com</a>
+      <a class="sidebar-nav-item" href="https://twitter.com/lukencode">@lukencode</a>
+      <a class="sidebar-nav-item" href="https://github.com/lukencode">GitHub</a>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">NetBash Updated – Formatting Helpers Added</h1>
+  <span class="post-date">14 Jan 2012</span>
+  <p>NetBash (drop in command line for asp.net web applications) was first released late last year with little to no response from the community. No big deal – I built it to scratch my own itch so it was at least going to be useful to me. Then, like clockwork I go on holidays for a week and a bit and it is featured on <a href="http://asp.net" target="_blank">Asp.net</a> and tweeted by close to 100 people. I have used the past few days to catch up with the bugs people have found (thanks heaps to those who forked and fixed bugs themselves) and get a new release out on <a href="http://nuget.org/packages/NetBash" target="_blank">NuGet</a>.</p>
+
+<h3>Bug Fixes</h3>
+
+<ul>
+  <li>NetBash is now compatible with older versions of JQuery (1.5 at least). This was causing some issues with people using a fresh file – new project mvc app to test it out.</li>
+  <li>Console now auto scrolls to bottom when opened.</li>
+  <li>Now more compatible with older versions of IE.</li>
+</ul>
+
+<h3>Formatting Extensions</h3>
+
+<p>A couple of classes have been included in the NetBash.Formatting namespace to help make the output of your commands a bit prettier. The most useful is the <strong>TableExtensions</strong> class contributed by <a href="https://twitter.com/#!/d1k_is" target="_blank">Damian Karzon</a>. This class includes a couple of extension methods on IEnumerable&lt;T&gt; that take a list of objects and using reflection output them into a nice consoley table. Here is an example:</p>
+
+<pre class="prettyprint">public string Process(string[] args)
+{
+    var tempData = new List&lt;GridData&gt;
+    {
+        new GridData
+        {
+            RowId = 1,
+            SomeName = "NUMBER1",
+            Longtext = "12345678901234567890",
+            SomeDate = DateTime.Today
+        },
+        new GridData
+        {
+            RowId = 2,
+            SomeName = "sup bro",
+            Longtext = "I AM THE GREATEST",
+            SomeDate = DateTime.Now.AddDays(21)
+        },
+        new GridData
+        {
+            RowId = 5,
+            SomeName = "GridCommand",
+            Longtext = "longish",
+            SomeDate = DateTime.Now.AddDays(-3)
+        }
+    };
+
+    return tempData.ToConsoleTable();
+}</pre>
+
+<p>Output:</p>
+
+<p><a href="http://lukencode.com/wp-content/uploads/2012/01/gridyo.png"><img title="gridyo" border="0" alt="gridyo" src="http://lukencode.com/wp-content/uploads/2012/01/gridyo_thumb.png" width="624" height="115" /></a></p>
+<p>Pretty neat I think. It works with most things I’ve thrown at it including anonymous classes but not dynamic.</p>
+<p>The other class is called <strong>SparkExtensions</strong>. This class is a C# port of this <a href="https://github.com/holman/spark" target="_blank">cool little shell script</a>. The Spark() methods are extension methods on various IEnumerable collections (int, decimal, string, etc) they take the list and turn it into a cool little spark line graph similar to this: ▁▂▃▅▂▇. Here is a basic example:</p>
+
+<pre class="prettyprint">
+public string Process(string[] args)
+{
+    var list = new List&lt;int&gt;() { 5, 7, 3, 8, 9, 2, 12, 7, 6 };
+
+    return list.Spark();
+}
+</pre>
+
+<p>Hopefully these additions make building commands a little more painless. If you are using NetBash or better still have built some open source commands I'd love to hear from you. NetBash source can be found on <a href="https://github.com/lukencode/NetBash" target="_blank">Github</a> and downloaded using <a href="http://nuget.org/packages/NetBash" target="_blank">NuGet</a>.</p>
+
+</div>
+
+<div class="message">
+  👋 Are you an 🇦🇺 Australian developer or IT professional? 
+  Go check out my site <a href="https://austechjobs.com.au">Australian Technology Jobs - a Premium developer and IT job board</a> 
+  and find awesome Australian dev jobs (and people).
+</div>
+
+
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+
+    var disqus_config = function () {
+      this.page.url = 'https://lukencode.com/2012/01/14/netbash-updatedformatting-helpers-added/';  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = '/2012/01/14/netbash-updatedformatting-helpers-added'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://lukencode.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+
+  </script>
+  <script id="dsq-count-scr" src="//lukencode.disqus.com/count.js" async></script>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+    <li>
+      <h3>
+        <a href="/2018/04/18/caching-in-aspnet-core-with-lazycache/">
+          Caching in ASP.NET Core with LazyCache
+          <small>18 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/14/simple-webpack-config-to-build-javascript-sass-and-css-using-npm-and-aspnet-core/">
+          Simple webpack config to build javascript, sass and css using NPM and ASP.NET Core
+          <small>14 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+    <li>
+      <h3>
+        <a href="/2018/04/09/introducing-austechjobs-an-australian-technology-job-board/">
+          Introducing Austechjobs an Australian technology job board
+          <small>09 Apr 2018</small>
+        </a>
+      </h3>
+    </li>
+    
+  </ul>
+</div>
+    </div>
+
+  </body>
+</html>

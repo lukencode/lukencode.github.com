@@ -1,0 +1,30 @@
+
+div#inner {
+	padding: 0 30px;
+	margin: 0 auto !important;
+}
+
+.yui-gf, .yui-u {
+	page-break-inside:avoid !important;
+}
+
+#pdf-wrap {
+	display:none;
+}
+
+#ft .right { display:block; }
+
+a:link, a:visited {
+   color: #520;
+   background: transparent;
+   font-weight: bold;
+   text-decoration: underline;
+   }
+#bd a:link:after, #bd a:visited:after {
+   content: " (" attr(href) ") ";
+   font-size: 90%;
+   }
+   
+#bd a[href^="/"]:after {
+   content: " (http://lukencode.com" attr(href) ") ";
+   }
