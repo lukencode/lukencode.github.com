@@ -19,6 +19,7 @@ is based off the [Simple webpack config](https://lukencode.com/2018/04/14/simple
 The webpack config was already setup to process sass and combine css into a single file. I added the PurgecssPlugin which will run at after the initial css processing.
 
 `npm i -D purgecss-webpack-plugin`
+
 `npm i -D extract-text-webpack-plugin`
 
 ```javascript
