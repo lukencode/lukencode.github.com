@@ -2,7 +2,8 @@
 #markdown:        redcarpet
 #highlighter:     pygments
 
-plugins:          [jekyll-paginate]
+plugins:
+  - jekyll-paginate
 
 # Setup
 name:             lukencode
