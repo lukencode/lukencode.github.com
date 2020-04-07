@@ -9,7 +9,7 @@ name:             lukencode
 title:            lukencode
 permalink:        /:year/:month/:day/:title/
 tagline:          'development blog by Luke Lowrey'
-description:      '<p>A  blog by Luke Lowrey - development team manager (and developer!) specialising in web applications.</p>						
+description:      '<p>A  blog by Luke Lowrey - CTO co-founder (and developer!) at <a href='https://endpointiq.com.au/'>Endpoint IQ</a></p>						
                   <p>Founder of <a href="https://austechjobs.com.au">austechjobs.com.au</a> a job board for high quality Australian tech jobs.</p>'
 url:              http://lukencode.com
 baseurl:          /
